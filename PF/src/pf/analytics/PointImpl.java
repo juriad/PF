@@ -1,12 +1,8 @@
 package pf.analytics;
 
 public class PointImpl implements Point {
-	@Override
-	public String toString() {
-		return "PointImpl [x=" + x + ", y=" + y + "]";
-	}
-
 	public static final Point O = new PointImpl(0, 0);
+
 	private final int x;
 	private final int y;
 
@@ -17,15 +13,12 @@ public class PointImpl implements Point {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj) {
+		if (this == obj)
 			return true;
-		}
-		if (obj == null) {
+		if (obj == null)
 			return false;
-		}
-		if (!(obj instanceof PointImpl)) {
+		if (!(obj instanceof PointImpl))
 			return false;
-		}
 		PointImpl other = (PointImpl) obj;
 		return x == other.getX() && y == other.getY();
 	}
@@ -51,11 +44,9 @@ public class PointImpl implements Point {
 
 	@Override
 	public boolean isInside(Point p1, Point p2) {
-		if (p1.getX() <= getX() && p2.getX() >= getX()) {
-			if (p1.getY() <= getY() && p2.getY() >= getY()) {
+		if (p1.getX() <= getX() && p2.getX() >= getX())
+			if (p1.getY() <= getY() && p2.getY() >= getY())
 				return true;
-			}
-		}
 		return false;
 	}
 
@@ -67,6 +58,11 @@ public class PointImpl implements Point {
 	@Override
 	public Vector positionVector() {
 		return new VectorImpl(x, y);
+	}
+
+	@Override
+	public String toString() {
+		return "PointImpl [x=" + x + ", y=" + y + "]";
 	}
 
 	@Override

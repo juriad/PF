@@ -83,9 +83,9 @@ public abstract class AbstractGrid implements Grid {
 		int[] maxs = new int[getGridType().getLines()];
 		for (int i = 0; i < mins.length; i++) {
 			mins[i] = getLowerLimit(i, width, height);
-			System.out.print("min "+mins[i]);
+			System.out.print("min " + mins[i]);
 			maxs[i] = getUpperLimit(i, width, height);
-			System.out.println(" max "+maxs[i]);
+			System.out.println(" max " + maxs[i]);
 		}
 
 		Graph g = new GraphImpl(null);
@@ -105,11 +105,11 @@ public abstract class AbstractGrid implements Grid {
 					for (int jj = mins[j]; jj <= maxs[j]; jj++) {
 						l2 = gl2.getLine(jj);
 						pp = l1.intersection(l2);
-						System.out.println("point "+pp);
-						//System.out.println(l1+" x "+l2);
+						System.out.println("point " + pp);
+						// System.out.println(l1+" x "+l2);
 						if (pp != null
 								&& pp.isInside(PointImpl.O, new PointImpl(
-										width, height))) {
+										width, height)))
 							if (!ps.contains(pp)) {
 								Vertex v = new VertexImpl(g, pp.getX(),
 										pp.getY());
@@ -117,7 +117,6 @@ public abstract class AbstractGrid implements Grid {
 								ps.add(pp);
 								System.out.println("new vertex");
 							}
-						}
 					}
 				}
 			}
@@ -148,9 +147,8 @@ public abstract class AbstractGrid implements Grid {
 	public int getLowerLimit(int line, int width, int height) {
 		GridLine gl = getGridLine(line);
 		double min = Double.POSITIVE_INFINITY;
-		for (Point p : getCorners(width, height)) {
+		for (Point p : getCorners(width, height))
 			min = Math.min(min, gl.getNearest(p));
-		}
 		return (int) Math.floor(min);
 	}
 
@@ -158,9 +156,8 @@ public abstract class AbstractGrid implements Grid {
 	public int getUpperLimit(int line, int width, int height) {
 		GridLine gl = getGridLine(line);
 		double max = Double.NEGATIVE_INFINITY;
-		for (Point p : getCorners(width, height)) {
+		for (Point p : getCorners(width, height))
 			max = Math.max(max, gl.getNearest(p));
-		}
 		return (int) Math.ceil(max);
 	}
 

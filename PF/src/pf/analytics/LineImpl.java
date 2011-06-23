@@ -2,11 +2,6 @@ package pf.analytics;
 
 public class LineImpl implements Line {
 
-	@Override
-	public String toString() {
-		return "LineImpl [p1=" + p1 + ", p2=" + p2 + "]";
-	}
-
 	private final static double eps = 1;
 
 	public static int det(int a, int b, int c, int d) {
@@ -18,9 +13,8 @@ public class LineImpl implements Line {
 	private final Point p2;
 
 	public LineImpl(Point p1, Point p2) {
-		if (p1.equals(p2)) {
+		if (p1.equals(p2))
 			throw new IllegalArgumentException();
-		}
 		this.p1 = p1;
 		this.p2 = p2;
 	}
@@ -67,11 +61,9 @@ public class LineImpl implements Line {
 		System.out.println(a + " " + b + " " + c + " " + d + " " + e + " " + f);
 
 		int det = det(a, b, c, d);
-		if (det == 0) {
+		if (det == 0)
 			return null;
-		} else {
-			return this.getPoint(det(e, f, c, d) / det);
-		}
+		return this.getPoint(det(e, f, c, d) / det);
 	}
 
 	@Override
@@ -94,5 +86,10 @@ public class LineImpl implements Line {
 
 		return new PointImpl((a.getX() * d) / c, (a.getY() * d) / c).move(p1
 				.positionVector());
+	}
+
+	@Override
+	public String toString() {
+		return "LineImpl [p1=" + p1 + ", p2=" + p2 + "]";
 	}
 }

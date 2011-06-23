@@ -14,13 +14,12 @@ public enum GridType {
 			new PointImpl(11, 19), new PointImpl(22, 0) });
 
 	public static GridType getType(String desc) {
-		for (GridType gt : values()) {
-			if (gt.getDesc().equals(desc)) {
+		for (GridType gt : values())
+			if (gt.getDesc().equals(desc))
 				return gt;
-			}
-		}
 		return null;
 	}
+
 	private final String desc;
 	private final int lines;
 

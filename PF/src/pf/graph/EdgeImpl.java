@@ -15,38 +15,34 @@ public class EdgeImpl implements Edge {
 
 	@Override
 	public Vertex getCommon(Edge e2) {
-		if (e2 == null) {
+		if (e2 == null)
 			throw new NullPointerException();
-		}
-		if (v1 == e2.getV1() || v1 == e2.getV2()) {
+		if (v1 == e2.getV1() || v1 == e2.getV2())
 			return v1;
-		} else if (v2 == e2.getV1() || v2 == e2.getV2()) {
+		else if (v2 == e2.getV1() || v2 == e2.getV2())
 			return v2;
-		} else {
+		else
 			return null;
-		}
 	}
 
 	@Override
 	public Direction getDirection(Vertex from) {
-		if (from == v1) {
+		if (from == v1)
 			return d;
-		} else if (from == v2) {
+		else if (from == v2)
 			return d.getOpposite();
-		} else {
+		else
 			throw new IllegalArgumentException();
-		}
 	}
 
 	@Override
 	public Vertex getOther(Vertex v) {
-		if (v1 == v) {
+		if (v1 == v)
 			return v2;
-		} else if (v2 == v) {
+		else if (v2 == v)
 			return v1;
-		} else {
+		else
 			throw new IllegalArgumentException();
-		}
 	}
 
 	@Override

@@ -25,23 +25,23 @@ public class BoardImpl implements Board {
 		ss = s.next();
 		Grid grid;
 		System.out.println(ss);
-		if (ss.equals("regular")) {
+		if (ss.equals("regular"))
 			grid = AbstractGrid.createRegularGrid(type);
-		} else if (ss.equals("free")) {
+		else if (ss.equals("free")) {
 			Point p1 = new PointImpl(s.nextInt(), s.nextInt());
 			Point p2 = new PointImpl(s.nextInt(), s.nextInt());
 			Point p3 = new PointImpl(s.nextInt(), s.nextInt());
 			grid = AbstractGrid.createGrid(type, p1, p2, p3);
-		} else {
+		} else
 			throw new IllegalStateException();
-		}
 		s.close();
 
-		System.out.println(width+" "+height);
+		System.out.println(width + " " + height);
 		BoardImpl b = new BoardImpl(grid, width, height);
 		b.graph = grid.createGraph(width, height);
 		return b;
 	}
+
 	private Graph graph;
 	private final Grid grid;
 	private final int height;
@@ -79,24 +79,21 @@ public class BoardImpl implements Board {
 	@Override
 	public Vertex getNearest(Point p) {
 		Line[] pars = new Line[grid.getGridType().getLines()];
-		for (int i = 0; i < grid.getGridType().getLines(); i++) {
+		for (int i = 0; i < grid.getGridType().getLines(); i++)
 			pars[i] = grid.getGridLine(i).getNearestLine(p);
-		}
 
 		Point pp = null;
 		Vertex v = null;
 		int dist = Integer.MAX_VALUE;
-		for (int i = 0; i < pars.length; i++) {
+		for (int i = 0; i < pars.length; i++)
 			for (int j = i + 1; j < pars.length; j++) {
 				pp = pars[i].intersection(pars[j]);
-				if (pp != null && getVertex(pp) != null) {
+				if (pp != null && getVertex(pp) != null)
 					if (dist > p.vectorTo(pp).lengthSq()) {
 						v = getVertex(pp);
 						dist = p.vectorTo(pp).lengthSq();
 					}
-				}
 			}
-		}
 		return v;
 	}
 
