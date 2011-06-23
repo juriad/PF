@@ -13,7 +13,7 @@ public class LineImpl implements Line {
 	private final Point p2;
 
 	public LineImpl(Point p1, Point p2) {
-		if (p1.equals(p2))
+		if (p1 == null || p2 == null || p1.equals(p2))
 			throw new IllegalArgumentException();
 		this.p1 = p1;
 		this.p2 = p2;
@@ -28,6 +28,21 @@ public class LineImpl implements Line {
 	public int distanceSq(Point p) {
 		Point pp = projection(p);
 		return pp.vectorTo(p).lengthSq();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		LineImpl other = (LineImpl) obj;
+		if (getBaseVector().isLinearDependent(other.getBaseVector()))
+			if (other.contains(p1))
+				return true;
+		return false;
 	}
 
 	@Override
@@ -48,6 +63,14 @@ public class LineImpl implements Line {
 	@Override
 	public Point getPoint(float f) {
 		return p1.move(p1.vectorTo(p2).scale(f));
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + distanceSq(PointImpl.O);
+		return result;
 	}
 
 	@Override

@@ -5,7 +5,17 @@ import java.util.InputMismatchException;
 public class PointImpl implements Point {
 	public static final Point O = new PointImpl(0, 0);
 
+	public static Point read(String s) {
+		String ss = s.substring(s.indexOf('[') + 1, s.indexOf(']')).trim();
+		String[] sss = ss.split(",");
+		if (sss.length != 2)
+			throw new InputMismatchException(ss);
+		return new PointImpl(Integer.valueOf(sss[0].trim()),
+				Integer.valueOf(sss[1].trim()));
+	}
+
 	private final int x;
+
 	private final int y;
 
 	public PointImpl(int x, int y) {
@@ -70,14 +80,5 @@ public class PointImpl implements Point {
 	@Override
 	public Vector vectorTo(Point p) {
 		return new VectorImpl(p.getX() - x, p.getY() - y);
-	}
-
-	public static Point read(String s) {
-		String ss = s.substring(s.indexOf('[') + 1, s.indexOf(']')).trim();
-		String[] sss = ss.split(",");
-		if (sss.length != 2)
-			throw new InputMismatchException(ss);
-		return new PointImpl(Integer.valueOf(sss[0].trim()),
-				Integer.valueOf(sss[1].trim()));
 	}
 }

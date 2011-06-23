@@ -1,10 +1,9 @@
 package pf.board;
 
 import pf.graph.Directions;
-import pf.graph.Graph;
 
 public interface Grid {
-	Graph createGraph(int width, int height);
+	BoardGraph createGraph(int width, int height);
 
 	Directions getDirections();
 

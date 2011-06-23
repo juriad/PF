@@ -12,8 +12,6 @@ import pf.analytics.PointImpl;
 import pf.graph.Direction;
 import pf.graph.Directions;
 import pf.graph.DirectionsImpl;
-import pf.graph.Graph;
-import pf.graph.GraphImpl;
 import pf.graph.Vertex;
 import pf.graph.VertexImpl;
 
@@ -68,11 +66,11 @@ public abstract class AbstractGrid implements Grid {
 	protected abstract void addLinesAndDirections();
 
 	@Override
-	public Graph createGraph(int width, int height) {
+	public BoardGraph createGraph(int width, int height) {
 		return generateVertices(width, height);
 	}
 
-	protected Graph generateVertices(int width, int height) {
+	protected BoardGraph generateVertices(int width, int height) {
 		System.out.println("generate vertices");
 		int[] mins = new int[getGridType().getLines()];
 		int[] maxs = new int[getGridType().getLines()];
@@ -83,7 +81,7 @@ public abstract class AbstractGrid implements Grid {
 			System.out.println(" max " + maxs[i]);
 		}
 
-		Graph g = new GraphImpl(null);
+		BoardGraph g = new BoardGraph();
 		Set<Point> ps = new HashSet<Point>();
 
 		Point pp = null;

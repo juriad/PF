@@ -59,17 +59,17 @@ public class BoardImpl implements Board {
 		FREE("free"),
 		REGULAR("regular");
 
-		private final String desc;
-
-		private Form(String desc) {
-			this.desc = desc;
-		}
-
 		public static Form getForm(String desc) {
 			for (Form f : values())
 				if (f.getDesc().equals(desc))
 					return f;
 			return null;
+		}
+
+		private final String desc;
+
+		private Form(String desc) {
+			this.desc = desc;
 		}
 
 		public String getDesc() {
@@ -88,14 +88,13 @@ public class BoardImpl implements Board {
 		Grid grid = AbstractGrid.createGrid(fl1.type, fl1.points[0],
 				fl1.points[1], fl1.points[2]);
 		BoardImpl b = new BoardImpl(grid, fl1.width, fl1.height);
-		return b;
-		//b.graph = grid.createGraph(fl1.width, fl1.height);
+		b.graph = grid.createGraph(fl1.width, fl1.height);
 
-		//s.close();
-		//return b;
+		s.close();
+		return b;
 	}
 
-	private Graph graph;
+	private BoardGraph graph;
 	private final Grid grid;
 	private final int height;
 	protected final Map<Integer, Vertex> vs;
@@ -152,12 +151,12 @@ public class BoardImpl implements Board {
 
 	@Override
 	public Vertex getVertex(int x, int y) {
-		return vs.get(y * width + x);
+		return getVertex(new PointImpl(x, y));
 	}
 
 	@Override
 	public Vertex getVertex(Point p) {
-		return getVertex(p.getX(), p.getY());
+		return graph.getVertex(p);
 	}
 
 	@Override

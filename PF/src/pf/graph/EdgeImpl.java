@@ -7,10 +7,25 @@ public class EdgeImpl implements Edge {
 	private final Vertex v2;
 
 	public EdgeImpl(Vertex v1, Vertex v2, Direction d) {
+		if (v1 == null || v2 == null || d == null)
+			throw new IllegalArgumentException();
 		this.v1 = v1;
 		this.v2 = v2;
 		this.d = d;
 		used = false;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Edge other = (Edge) obj;
+		return v1.equals(other.getV1()) && v2.equals(other.getV2())
+				|| v2.equals(other.getV1()) && v1.equals(other.getV2());
 	}
 
 	@Override
@@ -53,6 +68,14 @@ public class EdgeImpl implements Edge {
 	@Override
 	public Vertex getV2() {
 		return v2;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + (v1.hashCode() + v2.hashCode());
+		return result;
 	}
 
 	@Override
