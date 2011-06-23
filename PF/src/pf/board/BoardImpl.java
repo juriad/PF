@@ -2,7 +2,9 @@ package pf.board;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -14,32 +16,83 @@ import pf.graph.Vertex;
 
 public class BoardImpl implements Board {
 
+	private static class FileLine1 {
+		final String stype;
+		final GridType type;
+		final int width;
+		final int height;
+		final String sform;
+		final Form form;
+		final Point[] points;
+
+		public FileLine1(String line) {
+			Scanner s = new Scanner(line);
+			stype = s.next();
+			type = GridType.getType(stype);
+			if (type == null)
+				throw new InputMismatchException();
+			width = s.nextInt();
+			height = s.nextInt();
+			sform = s.next();
+			form = Form.getForm(sform);
+			switch (form) {
+			case FREE:
+				points = new Point[3];
+				String p;
+				p = s.findInLine(Point.pattern);
+				points[0] = PointImpl.read(p);
+				p = s.findInLine(Point.pattern);
+				points[1] = PointImpl.read(p);
+				p = s.findInLine(Point.pattern);
+				points[2] = PointImpl.read(p);
+				break;
+			case REGULAR:
+				points = type.getRegularPoints();
+				break;
+			default:
+				throw new InputMismatchException();
+			}
+		}
+	}
+
+	private enum Form {
+		FREE("free"),
+		REGULAR("regular");
+
+		private final String desc;
+
+		private Form(String desc) {
+			this.desc = desc;
+		}
+
+		public static Form getForm(String desc) {
+			for (Form f : values())
+				if (f.getDesc().equals(desc))
+					return f;
+			return null;
+		}
+
+		public String getDesc() {
+			return desc;
+		}
+	}
+
 	public static Board createBoard(File f) throws FileNotFoundException {
 		Scanner s = new Scanner(f);
-		s.useDelimiter("[\\n ]\\s*[\\],\\[]*\\s*");
-		String ss = s.next();
-		System.out.println(ss);
-		GridType type = GridType.getType(ss);
-		int width = s.nextInt();
-		int height = s.nextInt();
-		ss = s.next();
-		Grid grid;
-		System.out.println(ss);
-		if (ss.equals("regular"))
-			grid = AbstractGrid.createRegularGrid(type);
-		else if (ss.equals("free")) {
-			Point p1 = new PointImpl(s.nextInt(), s.nextInt());
-			Point p2 = new PointImpl(s.nextInt(), s.nextInt());
-			Point p3 = new PointImpl(s.nextInt(), s.nextInt());
-			grid = AbstractGrid.createGrid(type, p1, p2, p3);
-		} else
-			throw new IllegalStateException();
-		s.close();
-
-		System.out.println(width + " " + height);
-		BoardImpl b = new BoardImpl(grid, width, height);
-		b.graph = grid.createGraph(width, height);
+		String line = s.nextLine();
+		FileLine1 fl1 = new FileLine1(line);
+		System.out.println(fl1.type);
+		System.out.println(fl1.width + " " + fl1.height);
+		System.out.println(fl1.form);
+		System.out.println(Arrays.toString(fl1.points));
+		Grid grid = AbstractGrid.createGrid(fl1.type, fl1.points[0],
+				fl1.points[1], fl1.points[2]);
+		BoardImpl b = new BoardImpl(grid, fl1.width, fl1.height);
 		return b;
+		//b.graph = grid.createGraph(fl1.width, fl1.height);
+
+		//s.close();
+		//return b;
 	}
 
 	private Graph graph;

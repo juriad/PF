@@ -1,6 +1,8 @@
 package pf.analytics;
 
 public interface Point {
+	public static final String pattern = "\\[\\s*-?[0-9]+\\s*,\\s*-?[0-9]+\\s*\\]";
+
 	int getX();
 
 	int getY();

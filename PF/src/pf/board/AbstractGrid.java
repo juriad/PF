@@ -34,11 +34,6 @@ public abstract class AbstractGrid implements Grid {
 		}
 	}
 
-	public static Grid createRegularGrid(GridType type) {
-		Point[] points = type.getRegularPoints();
-		return createGrid(type, points[0], points[1], points[2]);
-	}
-
 	private final DirectionsImpl ds;
 
 	private final List<GridLine> lines;
