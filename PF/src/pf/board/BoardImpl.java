@@ -22,7 +22,7 @@ public class BoardImpl implements Board {
 		final int width;
 		final int height;
 		final String sform;
-		final Form form;
+		final GridForm form;
 		final Point[] points;
 
 		public FileLine1(String line) {
@@ -34,7 +34,7 @@ public class BoardImpl implements Board {
 			width = s.nextInt();
 			height = s.nextInt();
 			sform = s.next();
-			form = Form.getForm(sform);
+			form = GridForm.getForm(sform);
 			switch (form) {
 			case FREE:
 				points = new Point[3];
@@ -55,12 +55,12 @@ public class BoardImpl implements Board {
 		}
 	}
 
-	private enum Form {
-		FREE("free"),
-		REGULAR("regular");
+	private enum GridForm {
+		FREE ("free"),
+		REGULAR ("regular");
 
-		public static Form getForm(String desc) {
-			for (Form f : values())
+		public static GridForm getForm(String desc) {
+			for (GridForm f : values())
 				if (f.getDesc().equals(desc))
 					return f;
 			return null;
@@ -68,7 +68,7 @@ public class BoardImpl implements Board {
 
 		private final String desc;
 
-		private Form(String desc) {
+		private GridForm(String desc) {
 			this.desc = desc;
 		}
 

@@ -19,6 +19,7 @@ public class GraphImpl implements Graph {
 			this.root = root;
 			this.used = used;
 			ie = i.next().edgesIterator(root, used);
+			// FIXME graph has no children
 			next = getNext();
 		}
 
