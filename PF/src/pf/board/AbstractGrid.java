@@ -50,13 +50,8 @@ public abstract class AbstractGrid implements Grid {
 		ds = new DirectionsImpl();
 		addLinesAndDirections();
 		if (lines.size() != getGridType().getLines()
-				|| ds.getDirections().size() != getGridType().getLines() * 2) {
-			System.out.println(lines.size());
-			System.out.println(getGridType().getLines());
-			System.out.println(ds.getDirections().size());
-			System.out.println(getGridType().getLines() * 2);
+				|| ds.getDirections().size() != getGridType().getLines() * 2)
 			throw new IllegalStateException();
-		}
 	}
 
 	protected void addDirection(Direction d) {
@@ -76,14 +71,11 @@ public abstract class AbstractGrid implements Grid {
 	}
 
 	protected BoardGraph generateVertices(int width, int height) {
-		System.out.println("generate vertices");
 		int[] mins = new int[getGridType().getLines()];
 		int[] maxs = new int[getGridType().getLines()];
 		for (int i = 0; i < mins.length; i++) {
 			mins[i] = getLowerLimit(i, width, height);
-			System.out.print("min " + mins[i]);
 			maxs[i] = getUpperLimit(i, width, height);
-			System.out.println(" max " + maxs[i]);
 		}
 
 		BoardGraph g = new BoardGraph();
@@ -103,11 +95,6 @@ public abstract class AbstractGrid implements Grid {
 					for (int jj = mins[j]; jj <= maxs[j]; jj++) {
 						l2 = gl2.getLine(jj);
 						pp = l1.intersection(l2);
-						System.out.println();
-						System.out.println(i + ": " + ii + " x " + j + ": "
-								+ jj);
-						System.out.println(l1 + " x " + l2);
-						System.out.println("point " + pp);
 						if (pp != null
 								&& pp.isInside(PointImpl.O, new PointImpl(
 										width, height)))
@@ -116,7 +103,6 @@ public abstract class AbstractGrid implements Grid {
 										pp.getY());
 								g.addSubGraph(v);
 								ps.add(pp);
-								System.out.println("new vertex");
 							}
 					}
 				}

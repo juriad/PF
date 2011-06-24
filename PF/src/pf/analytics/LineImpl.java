@@ -81,7 +81,6 @@ public class LineImpl implements Line {
 		int d = l.getP1().getY() - l.getP2().getY();
 		int e = l.getP1().getX() - getP1().getX();
 		int f = l.getP1().getY() - getP1().getY();
-		System.out.println(a + " " + b + " " + c + " " + d + " " + e + " " + f);
 
 		int det = det(a, b, c, d);
 		if (det == 0)

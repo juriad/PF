@@ -145,6 +145,11 @@ public class GraphImpl implements Graph {
 	}
 
 	@Override
+	public Iterator<Graph> subGraphsIterator() {
+		return subs.iterator();
+	}
+
+	@Override
 	public Iterator<Vertex> verticesIterator() {
 		return new VerticesIterator();
 	}

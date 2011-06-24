@@ -40,13 +40,13 @@ public class DirectionsImpl implements Directions {
 	}
 
 	@Override
-	public Iterator<Direction> iterator() {
-		return ds.iterator();
+	public Direction getNearestDirection(Vertex v1, Vertex v2) {
+		return getNearestDirection(v2.getX() - v1.getX(), v2.getY() - v1.getY());
 	}
 
 	@Override
-	public Direction getNearestDirection(Vertex v1, Vertex v2) {
-		return getNearestDirection(v2.getX() - v1.getX(), v2.getY() - v1.getY());
+	public Iterator<Direction> iterator() {
+		return ds.iterator();
 	}
 
 }

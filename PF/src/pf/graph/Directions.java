@@ -6,6 +6,6 @@ public interface Directions extends Iterable<Direction> {
 	Set<Direction> getDirections();
 
 	Direction getNearestDirection(int dx, int dy);
-	
+
 	Direction getNearestDirection(Vertex v1, Vertex v2);
 }

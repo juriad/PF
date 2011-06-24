@@ -209,6 +209,11 @@ public class VertexImpl implements Vertex {
 	}
 
 	@Override
+	public Iterator<Graph> subGraphsIterator() {
+		return graphSet.iterator();
+	}
+
+	@Override
 	public String toString() {
 		return "[x=" + x + ", y=" + y + "]";
 	}

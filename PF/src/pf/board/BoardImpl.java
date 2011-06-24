@@ -2,9 +2,9 @@ package pf.board;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.InputMismatchException;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
 
@@ -89,18 +89,16 @@ public class BoardImpl implements Board {
 
 	public static Board createBoard(File f) throws FileNotFoundException {
 		FileHeader fh = new FileHeader(f);
-		System.out.println(fh.type);
-		System.out.println(fh.width + " " + fh.height);
-		System.out.println(fh.form);
-		System.out.println(Arrays.toString(fh.points));
 		Grid grid = AbstractGrid.createGrid(fh.type, fh.points[0],
 				fh.points[1], fh.points[2]);
 		BoardImpl b = new BoardImpl(grid, fh.width, fh.height);
 		b.graph = grid.createGraph(fh.width, fh.height);
 		BoardPattern bp = AbstractBoardPattern.createBoardPattern(b,
 				fh.pattern, f);
+		fillVs(b);
 		for (PointsEdge pe : bp)
 			createEdge(b, pe);
+		b.graph.makeComponents();
 		return b;
 	}
 
@@ -110,29 +108,32 @@ public class BoardImpl implements Board {
 
 		Edge e = new EdgeImpl(v1, v2, b.getGrid().getDirections()
 				.getNearestDirection(v1, v2));
-		System.out.println(e.getDirection(v1).getVector());
-		int d = v1.getDegree(false);
 		v1.add(e);
-		if (v1.getDegree(false) == d)
-			System.out.println("Error1: " + e);
-		d = v2.getDegree(false);
 		v2.add(e);
-		if (v2.getDegree(false) == d)
-			System.out.println("Error2: " + e);
+	}
+
+	private static void fillVs(BoardImpl b) {
+		Iterator<Vertex> vi = b.getGraph().verticesIterator();
+		while (vi.hasNext())
+			b.addVertex(vi.next());
 	}
 
 	private BoardGraph graph;
+
 	private final Grid grid;
 	private final int height;
-	protected final Map<Integer, Vertex> vs;
-
+	protected final Map<Point, Vertex> vs;
 	private final int width;
 
 	public BoardImpl(Grid grid, int width, int height) {
 		this.grid = grid;
 		this.width = width;
 		this.height = height;
-		vs = new HashMap<Integer, Vertex>();
+		vs = new HashMap<Point, Vertex>();
+	}
+
+	private void addVertex(Vertex v) {
+		vs.put(new PointImpl(v.getX(), v.getY()), v);
 	}
 
 	@Override
@@ -183,7 +184,7 @@ public class BoardImpl implements Board {
 
 	@Override
 	public Vertex getVertex(Point p) {
-		return graph.getVertex(p);
+		return vs.get(p);
 	}
 
 	@Override

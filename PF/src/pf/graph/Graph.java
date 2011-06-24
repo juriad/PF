@@ -18,5 +18,7 @@ public interface Graph {
 
 	void setParent(Graph parent);
 
+	Iterator<Graph> subGraphsIterator();
+
 	Iterator<Vertex> verticesIterator();
 }
