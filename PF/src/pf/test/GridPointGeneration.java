@@ -20,7 +20,7 @@ public class GridPointGeneration {
 		 * 
 		 * int i = 1; if (i == 1) // return; ;
 		 */
-		File f = new File("/home/adam/srgrid.txt");
+		File f = new File("/home/adam/trgrid.txt");
 		Board b = BoardImpl.createBoard(f);
 		Iterator<Vertex> v = b.getGraph().verticesIterator();
 		while (v.hasNext())
