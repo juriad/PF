@@ -50,8 +50,13 @@ public abstract class AbstractGrid implements Grid {
 		ds = new DirectionsImpl();
 		addLinesAndDirections();
 		if (lines.size() != getGridType().getLines()
-				|| ds.getDirections().size() != getGridType().getLines() * 2)
+				|| ds.getDirections().size() != getGridType().getLines() * 2) {
+			System.out.println(lines.size());
+			System.out.println(getGridType().getLines());
+			System.out.println(ds.getDirections().size());
+			System.out.println(getGridType().getLines() * 2);
 			throw new IllegalStateException();
+		}
 	}
 
 	protected void addDirection(Direction d) {
@@ -98,8 +103,11 @@ public abstract class AbstractGrid implements Grid {
 					for (int jj = mins[j]; jj <= maxs[j]; jj++) {
 						l2 = gl2.getLine(jj);
 						pp = l1.intersection(l2);
+						System.out.println();
+						System.out.println(i + ": " + ii + " x " + j + ": "
+								+ jj);
+						System.out.println(l1 + " x " + l2);
 						System.out.println("point " + pp);
-						// System.out.println(l1+" x "+l2);
 						if (pp != null
 								&& pp.isInside(PointImpl.O, new PointImpl(
 										width, height)))

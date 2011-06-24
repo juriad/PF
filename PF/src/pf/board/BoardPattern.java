@@ -13,5 +13,10 @@ public interface BoardPattern extends Iterable<PointsEdge> {
 			this.p1 = p1;
 			this.p2 = p2;
 		}
+
+		@Override
+		public String toString() {
+			return "PointsEdge [p1=" + p1 + ", p2=" + p2 + "]";
+		}
 	}
 }

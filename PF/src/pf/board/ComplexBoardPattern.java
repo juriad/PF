@@ -2,34 +2,26 @@ package pf.board;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.Scanner;
 
-import pf.analytics.Point;
-import pf.analytics.PointImpl;
+public abstract class ComplexBoardPattern extends AbstractBoardPattern {
 
-public class ComplexBoardPattern extends AbstractBoardPattern {
-
-	public ComplexBoardPattern(Board board, GridPattern gp, File f)
-			throws FileNotFoundException {
-		super();
+	public static BoardPattern createComplexBoardPattern(Board board, File f,
+			GridPattern gp) {
 		switch (gp) {
 		case COMPLEX_LIST:
-			readFromFile(f);
-			break;
+			return ListBoardPattern.createListBoardPattern(board, f);
+		case COMPLEX_SCHEMA:
+			return SchemaBoardPattern.createSchemaBoardPattern(board, f);
 		default:
-			throw new IllegalStateException();
+			throw new IllegalArgumentException();
 		}
 	}
 
-	protected void readFromFile(File f) throws FileNotFoundException {
-		Scanner s = new Scanner(f);
-		s.nextLine();
-		String p1, p2;
-		while (s.hasNextLine()) {
-			p1 = s.findInLine(Point.pattern);
-			p2 = s.findInLine(Point.pattern);
-			addEdge(PointImpl.read(p1), PointImpl.read(p2));
-		}
+	protected ComplexBoardPattern(Board board, File f)
+			throws FileNotFoundException {
+		super();
+		readFromFile(f);
 	}
 
+	protected abstract void readFromFile(File f) throws FileNotFoundException;
 }

@@ -1,6 +1,8 @@
 package pf.analytics;
 
 public interface Vector {
+	Vector addVector(Vector v);
+
 	int getX();
 
 	int getY();
@@ -14,4 +16,6 @@ public interface Vector {
 	Vector opposite();
 
 	Vector scale(float s);
+
+	Point toPoint();
 }

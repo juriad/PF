@@ -1,7 +1,6 @@
 package pf.board;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -12,13 +11,11 @@ public abstract class AbstractBoardPattern implements BoardPattern {
 
 	public static BoardPattern createBoardPattern(Board board, GridPattern gp,
 			File f) {
-		if (!gp.isSimple())
-			try {
-				return new ComplexBoardPattern(board, gp, f);
-			} catch (FileNotFoundException ex) {
-				return null;
-			}
-		throw new IllegalArgumentException();
+		if (gp.isSimple()) {
+
+		} else
+			return ComplexBoardPattern.createComplexBoardPattern(board, f, gp);
+		return null;
 	}
 
 	protected final List<PointsEdge> pes;

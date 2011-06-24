@@ -33,7 +33,11 @@ public class DirectionImpl implements Direction {
 		if (!(obj instanceof DirectionImpl))
 			return false;
 		DirectionImpl other = (DirectionImpl) obj;
-		return other.getVector().isLinearDependent(getVector());
+		if (other.getVector().isLinearDependent(getVector()))
+			if (getVector().lengthSq() + other.getVector().lengthSq() < getVector()
+					.addVector(other.getVector()).lengthSq())
+				return true;
+		return false;
 	}
 
 	@Override

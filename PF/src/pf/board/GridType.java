@@ -11,7 +11,7 @@ public enum GridType {
 	SQUARE (2, "square", new Point[] { new PointImpl(0, 0),
 			new PointImpl(0, 1), new PointImpl(1, 0) }),
 	TRIANGLE (3, "triangle", new Point[] { new PointImpl(0, 0),
-			new PointImpl(11, 19), new PointImpl(22, 0) });
+			new PointImpl(4, 7), new PointImpl(8, 0) });
 
 	public static GridType getType(String desc) {
 		for (GridType gt : values())

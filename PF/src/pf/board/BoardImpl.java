@@ -11,12 +11,13 @@ import java.util.Scanner;
 import pf.analytics.Line;
 import pf.analytics.Point;
 import pf.analytics.PointImpl;
+import pf.board.BoardPattern.PointsEdge;
 import pf.graph.Graph;
 import pf.graph.Vertex;
 
 public class BoardImpl implements Board {
 
-	private static class FileLine1 {
+	private static class FileHeader {
 		final String stype;
 		final GridType type;
 		final int width;
@@ -24,13 +25,15 @@ public class BoardImpl implements Board {
 		final String sform;
 		final GridForm form;
 		final Point[] points;
+		final String spattern;
+		final GridPattern pattern;
 
-		public FileLine1(String line) {
-			Scanner s = new Scanner(line);
+		public FileHeader(File f) throws FileNotFoundException {
+			Scanner s = new Scanner(f);
 			stype = s.next();
 			type = GridType.getType(stype);
 			if (type == null)
-				throw new InputMismatchException();
+				throw new InputMismatchException(stype);
 			width = s.nextInt();
 			height = s.nextInt();
 			sform = s.next();
@@ -50,8 +53,13 @@ public class BoardImpl implements Board {
 				points = type.getRegularPoints();
 				break;
 			default:
-				throw new InputMismatchException();
+				throw new InputMismatchException(sform);
 			}
+			s.nextLine();
+			spattern = s.nextLine();
+			pattern = GridPattern.getPattern(spattern);
+			if (pattern == null)
+				throw new InputMismatchException(spattern);
 		}
 	}
 
@@ -78,19 +86,20 @@ public class BoardImpl implements Board {
 	}
 
 	public static Board createBoard(File f) throws FileNotFoundException {
-		Scanner s = new Scanner(f);
-		String line = s.nextLine();
-		FileLine1 fl1 = new FileLine1(line);
-		System.out.println(fl1.type);
-		System.out.println(fl1.width + " " + fl1.height);
-		System.out.println(fl1.form);
-		System.out.println(Arrays.toString(fl1.points));
-		Grid grid = AbstractGrid.createGrid(fl1.type, fl1.points[0],
-				fl1.points[1], fl1.points[2]);
-		BoardImpl b = new BoardImpl(grid, fl1.width, fl1.height);
-		b.graph = grid.createGraph(fl1.width, fl1.height);
+		FileHeader fh = new FileHeader(f);
+		System.out.println(fh.type);
+		System.out.println(fh.width + " " + fh.height);
+		System.out.println(fh.form);
+		System.out.println(Arrays.toString(fh.points));
+		Grid grid = AbstractGrid.createGrid(fh.type, fh.points[0],
+				fh.points[1], fh.points[2]);
+		BoardImpl b = new BoardImpl(grid, fh.width, fh.height);
+		b.graph = grid.createGraph(fh.width, fh.height);
+		BoardPattern bp = AbstractBoardPattern.createBoardPattern(b,
+				fh.pattern, f);
+		for (PointsEdge pe : bp)
+			System.out.println(pe);
 
-		s.close();
 		return b;
 	}
 

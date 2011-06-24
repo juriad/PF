@@ -11,6 +11,11 @@ public class VectorImpl implements Vector {
 	}
 
 	@Override
+	public Vector addVector(Vector v) {
+		return new VectorImpl(x + v.getX(), y + v.getY());
+	}
+
+	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -68,6 +73,11 @@ public class VectorImpl implements Vector {
 	@Override
 	public Vector scale(float s) {
 		return new VectorImpl((int) (x * s), (int) (y * s));
+	}
+
+	@Override
+	public Point toPoint() {
+		return PointImpl.O.move(this);
 	}
 
 }

@@ -6,9 +6,10 @@ public enum GridPattern {
 	SIMPLE_HEXAGONAL ("hexagonal", true),
 	SIMPLE_SQUARE ("square", true),
 	SIMPLE_PARALLEL ("parallel", true),
-	COMPLEX_LIST ("list", false);
+	COMPLEX_LIST ("list", false),
+	COMPLEX_SCHEMA ("schema", false);
 
-	public static GridPattern getType(String desc) {
+	public static GridPattern getPattern(String desc) {
 		for (GridPattern gp : values())
 			if (gp.getDesc().equals(desc))
 				return gp;
