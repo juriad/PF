@@ -210,7 +210,7 @@ public class VertexImpl implements Vertex {
 
 	@Override
 	public String toString() {
-		return "VertexImpl [parent=" + parent + ", x=" + x + ", y=" + y + "]";
+		return "[x=" + x + ", y=" + y + "]";
 	}
 
 	@Override

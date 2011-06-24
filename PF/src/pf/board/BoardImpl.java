@@ -12,6 +12,8 @@ import pf.analytics.Line;
 import pf.analytics.Point;
 import pf.analytics.PointImpl;
 import pf.board.BoardPattern.PointsEdge;
+import pf.graph.Edge;
+import pf.graph.EdgeImpl;
 import pf.graph.Graph;
 import pf.graph.Vertex;
 
@@ -98,9 +100,25 @@ public class BoardImpl implements Board {
 		BoardPattern bp = AbstractBoardPattern.createBoardPattern(b,
 				fh.pattern, f);
 		for (PointsEdge pe : bp)
-			System.out.println(pe);
-
+			createEdge(b, pe);
 		return b;
+	}
+
+	private static void createEdge(Board b, PointsEdge pe) {
+		Vertex v1 = b.getVertex(pe.p1);
+		Vertex v2 = b.getVertex(pe.p2);
+
+		Edge e = new EdgeImpl(v1, v2, b.getGrid().getDirections()
+				.getNearestDirection(v1, v2));
+		System.out.println(e.getDirection(v1).getVector());
+		int d = v1.getDegree(false);
+		v1.add(e);
+		if (v1.getDegree(false) == d)
+			System.out.println("Error1: " + e);
+		d = v2.getDegree(false);
+		v2.add(e);
+		if (v2.getDegree(false) == d)
+			System.out.println("Error2: " + e);
 	}
 
 	private BoardGraph graph;

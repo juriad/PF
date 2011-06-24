@@ -5,6 +5,11 @@ public class VectorImpl implements Vector {
 	private final int x;
 	private final int y;
 
+	@Override
+	public String toString() {
+		return "VectorImpl [x=" + x + ", y=" + y + "]";
+	}
+
 	public VectorImpl(int x, int y) {
 		this.x = x;
 		this.y = y;

@@ -91,4 +91,10 @@ public class EdgeImpl implements Edge {
 			v2.edgeUsageChanged(this);
 		}
 	}
+
+	@Override
+	public String toString() {
+		return "Edge [v1=" + v1 + ", v2="
+				+ v2 + ", used=" + used + "]";
+	}
 }
