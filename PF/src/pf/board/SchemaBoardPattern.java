@@ -9,6 +9,110 @@ import pf.analytics.PointImpl;
 
 public class SchemaBoardPattern {
 
+	public static class SquareSchemaBoardPattern extends ComplexBoardPattern {
+
+		public SquareSchemaBoardPattern(Board board, File f)
+				throws FileNotFoundException {
+			super(board, f);
+		}
+
+		@Override
+		protected void readFromFile(File f) throws FileNotFoundException {
+			Scanner s = new Scanner(f);
+			s.nextLine();
+			s.nextLine();
+			String line;
+			int l = 0;
+			int e, ee;
+			while (s.hasNextLine()) {
+				line = s.nextLine();
+				if (l % 2 == 0) {
+					if (!line.matches("([. ][- ])*[. ]?"))
+						throw new InputMismatchException();
+					e = -1;
+					while ((e = line.indexOf("-", e + 1)) >= 0) {
+						ee = (e - 1) / 2;
+						addEdge(new PointImpl(ee, l / 2), new PointImpl(ee + 1,
+								l / 2));
+					}
+				} else {
+					if (!line.matches("([| ] )*[| ]?"))
+						throw new InputMismatchException();
+					e = -1;
+					while ((e = line.indexOf("|", e + 1)) >= 0) {
+						ee = e / 2;
+						addEdge(new PointImpl(ee, (l - 1) / 2), new PointImpl(
+								ee, (l + 1) / 2));
+					}
+				}
+
+				l++;
+			}
+		}
+	}
+
+	public static class DiagonalSchemaBoardPattern extends ComplexBoardPattern {
+
+		public DiagonalSchemaBoardPattern(Board board, File f)
+				throws FileNotFoundException {
+			super(board, f);
+		}
+
+		@Override
+		protected void readFromFile(File f) throws FileNotFoundException {
+			Scanner s = new Scanner(f);
+			s.nextLine();
+			s.nextLine();
+			String line;
+			int l = 0;
+			int e, ee;
+			while (s.hasNextLine()) {
+				line = s.nextLine();
+				if (l % 2 == 0) {
+					if (!line.matches("([. ][- ])*[. ]?"))
+						throw new InputMismatchException();
+					e = -1;
+					while ((e = line.indexOf("-", e + 1)) >= 0) {
+						ee = (e - 1) / 2;
+						addEdge(new PointImpl(ee, l / 2), new PointImpl(ee + 1,
+								l / 2));
+					}
+				} else {
+					if (!line.matches("([| ][\\\\/X ])*[| ]?"))
+						throw new InputMismatchException();
+					e = -1;
+					while ((e = line.indexOf("|", e + 1)) >= 0) {
+						ee = e / 2;
+						addEdge(new PointImpl(ee, (l - 1) / 2), new PointImpl(
+								ee, (l + 1) / 2));
+					}
+					e = -1;
+					while ((e = line.indexOf("/", e + 1)) >= 0) {
+						ee = (e + 1) / 2;
+						addEdge(new PointImpl(ee, (l - 1) / 2), new PointImpl(
+								ee - 1, (l + 1) / 2));
+					}
+					e = -1;
+					while ((e = line.indexOf("\\", e + 1)) >= 0) {
+						ee = (e - 1) / 2;
+						addEdge(new PointImpl(ee, (l - 1) / 2), new PointImpl(
+								ee + 1, (l + 1) / 2));
+					}
+					e = -1;
+					while ((e = line.indexOf("X", e + 1)) >= 0) {
+						ee = (e - 1) / 2;
+						addEdge(new PointImpl(ee, (l - 1) / 2), new PointImpl(
+								ee + 1, (l + 1) / 2));
+						addEdge(new PointImpl(ee + 1, (l - 1) / 2),
+								new PointImpl(ee, (l + 1) / 2));
+					}
+				}
+
+				l++;
+			}
+		}
+	}
+
 	public static class TriangleSchemaBoardPattern extends ComplexBoardPattern {
 
 		protected TriangleSchemaBoardPattern(Board board, File f)
@@ -30,7 +134,7 @@ public class SchemaBoardPattern {
 					if (!line.matches("(  )?([. ]((   )|(---)))*[. ]"))
 						throw new InputMismatchException();
 					e = -1;
-					while ((e = line.indexOf("---", e + 1)) > 0) {
+					while ((e = line.indexOf("---", e + 1)) >= 0) {
 						ee = (e - 1) * 2;
 						addEdge(new PointImpl(ee, l / 2 * 7), new PointImpl(
 								ee + 8, l / 2 * 7));
@@ -39,13 +143,13 @@ public class SchemaBoardPattern {
 					if (!line.matches("( [\\\\ ] [/ ])* ?"))
 						throw new InputMismatchException();
 					e = -1;
-					while ((e = line.indexOf("\\", e + 1)) > 0) {
+					while ((e = line.indexOf("\\", e + 1)) >= 0) {
 						ee = (e - 1) * 2;
 						addEdge(new PointImpl(ee, l / 2 * 7), new PointImpl(
 								ee + 4, (l + 1) / 2 * 7));
 					}
 					e = -1;
-					while ((e = line.indexOf("/", e + 1)) > 0) {
+					while ((e = line.indexOf("/", e + 1)) >= 0) {
 						ee = (e + 1) * 2;
 						addEdge(new PointImpl(ee, l / 2 * 7), new PointImpl(
 								ee - 4, (l + 1) / 2 * 7));
@@ -54,13 +158,13 @@ public class SchemaBoardPattern {
 					if (!line.matches("( [/ ] [\\\\ ])* ?"))
 						throw new InputMismatchException();
 					e = -1;
-					while ((e = line.indexOf("/", e + 1)) > 0) {
+					while ((e = line.indexOf("/", e + 1)) >= 0) {
 						ee = (e + 1) * 2;
 						addEdge(new PointImpl(ee, l / 2 * 7), new PointImpl(
 								ee - 4, (l + 1) / 2 * 7));
 					}
 					e = -1;
-					while ((e = line.indexOf("\\", e + 1)) > 0) {
+					while ((e = line.indexOf("\\", e + 1)) >= 0) {
 						ee = (e - 1) * 2;
 						addEdge(new PointImpl(ee, l / 2 * 7), new PointImpl(
 								ee + 4, (l + 1) / 2 * 7));
@@ -78,9 +182,9 @@ public class SchemaBoardPattern {
 			case TRIANGLE:
 				return new TriangleSchemaBoardPattern(board, f);
 			case SQUARE:
-				// TODO square schema
+				return new SquareSchemaBoardPattern(board, f);
 			case DIAGONAL:
-				// TODO diagonal schema
+				return new DiagonalSchemaBoardPattern(board, f);
 			case DIAGONALX:
 				// TODO diagonalx schema
 			}

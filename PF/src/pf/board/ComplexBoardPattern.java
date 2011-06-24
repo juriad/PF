@@ -5,13 +5,13 @@ import java.io.FileNotFoundException;
 
 public abstract class ComplexBoardPattern extends AbstractBoardPattern {
 
-	public static BoardPattern createComplexBoardPattern(Board board, File f,
+	public static BoardPattern createComplexBoardPattern(Board b, File f,
 			GridPattern gp) {
 		switch (gp) {
 		case COMPLEX_LIST:
-			return ListBoardPattern.createListBoardPattern(board, f);
+			return ListBoardPattern.createListBoardPattern(b, f);
 		case COMPLEX_SCHEMA:
-			return SchemaBoardPattern.createSchemaBoardPattern(board, f);
+			return SchemaBoardPattern.createSchemaBoardPattern(b, f);
 		default:
 			throw new IllegalArgumentException();
 		}
