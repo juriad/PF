@@ -13,5 +13,9 @@ public interface Grid {
 
 	int getLowerLimit(int line, int width, int height);
 
+	int getLowerLimit(int line, int x, int y, int width, int height);
+
 	int getUpperLimit(int line, int width, int height);
+
+	int getUpperLimit(int line, int x, int y, int width, int height);
 }

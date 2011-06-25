@@ -111,12 +111,12 @@ public abstract class AbstractGrid implements Grid {
 		return g;
 	}
 
-	private Set<Point> getCorners(int width, int height) {
+	private Set<Point> getCorners(int x, int y, int width, int height) {
 		Set<Point> c = new HashSet<Point>();
-		c.add(new PointImpl(0, 0));
-		c.add(new PointImpl(width, 0));
-		c.add(new PointImpl(0, height));
-		c.add(new PointImpl(width, height));
+		c.add(new PointImpl(x, y));
+		c.add(new PointImpl(x + width, y));
+		c.add(new PointImpl(x, y + height));
+		c.add(new PointImpl(x + width, y + height));
 		return c;
 	}
 
@@ -132,18 +132,28 @@ public abstract class AbstractGrid implements Grid {
 
 	@Override
 	public int getLowerLimit(int line, int width, int height) {
+		return getLowerLimit(line, 0, 0, width, height);
+	}
+
+	@Override
+	public int getLowerLimit(int line, int x, int y, int width, int height) {
 		GridLine gl = getGridLine(line);
 		double min = Double.POSITIVE_INFINITY;
-		for (Point p : getCorners(width, height))
+		for (Point p : getCorners(x, y, width, height))
 			min = Math.min(min, gl.getNearest(p));
 		return (int) Math.floor(min);
 	}
 
 	@Override
 	public int getUpperLimit(int line, int width, int height) {
+		return getUpperLimit(line, 0, 0, width, height);
+	}
+
+	@Override
+	public int getUpperLimit(int line, int x, int y, int width, int height) {
 		GridLine gl = getGridLine(line);
 		double max = Double.NEGATIVE_INFINITY;
-		for (Point p : getCorners(width, height))
+		for (Point p : getCorners(x, y, width, height))
 			max = Math.max(max, gl.getNearest(p));
 		return (int) Math.ceil(max);
 	}
