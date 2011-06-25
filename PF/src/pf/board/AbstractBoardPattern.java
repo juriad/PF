@@ -12,7 +12,7 @@ public abstract class AbstractBoardPattern implements BoardPattern {
 	public static BoardPattern createBoardPattern(Board board, GridPattern gp,
 			File f) {
 		if (gp.isSimple()) {
-
+			// TODO simple pattern
 		} else
 			return ComplexBoardPattern.createComplexBoardPattern(board, f, gp);
 		return null;

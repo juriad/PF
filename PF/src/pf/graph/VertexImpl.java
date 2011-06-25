@@ -6,6 +6,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import pf.analytics.Point;
+import pf.analytics.PointImpl;
+
 public class VertexImpl implements Vertex {
 
 	private class EdgesIterator implements Iterator<Edge> {
@@ -99,6 +102,14 @@ public class VertexImpl implements Vertex {
 	@Override
 	public Iterator<Edge> edgesIterator(Graph root, boolean used) {
 		return new EdgesIterator(root, used);
+	}
+
+	@Override
+	public Edge edgeToVertex(Vertex v) {
+		for (Direction d : getDirections(false))
+			if (get(d).getOther(this).equals(v))
+				return get(d);
+		return null;
 	}
 
 	@Override
@@ -211,6 +222,11 @@ public class VertexImpl implements Vertex {
 	@Override
 	public Iterator<Graph> subGraphsIterator() {
 		return graphSet.iterator();
+	}
+
+	@Override
+	public Point toPoint() {
+		return new PointImpl(getX(), getY());
 	}
 
 	@Override
