@@ -3,7 +3,9 @@ package pf.analytics;
 public interface Line {
 	boolean contains(Point p);
 
-	int distanceSq(Point p);
+	double distanceSq(Point p);
+
+	Line extend(float f);
 
 	Vector getBaseVector();
 
@@ -18,6 +20,4 @@ public interface Line {
 	Line move(Vector v);
 
 	Line moveTo(Point p);
-
-	Point projection(Point p);
 }

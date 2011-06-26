@@ -39,9 +39,9 @@ public class VerticesPainterImpl implements VerticesPainter {
 	protected class Info {
 
 		private final int degree;
-		Color color = Color.DARK_GRAY;
-		int outerR = 3;
-		int innerR = 0;
+		Color color = Color.GREEN;
+		int outerR = 10;
+		int innerR = 3;
 
 		public Info(int degree) {
 			this.degree = degree;
@@ -66,10 +66,13 @@ public class VerticesPainterImpl implements VerticesPainter {
 
 	private void drawVertex(Graphics2D g2d, GameBoard board, Vertex v) {
 		int degree = degreeType.degree(v);
-		g2d.setStroke(new BasicStroke(getRadius(degree) / 2));
+		g2d.setStroke(new BasicStroke(getOuterRadius(degree)
+				- getInnerRadius(degree)));
+		g2d.setColor(getColor(degree));
 		int cx = board.translateXToScreen(v.getX());
 		int cy = board.translateYToScreen(v.getY());
-		g2d.drawOval(cx - degree / 2, cy - degree - 2, degree, degree);
+		g2d.drawOval(cx - getRadius(degree) / 2, cy - getRadius(degree) / 2,
+				getRadius(degree), getRadius(degree));
 	}
 
 	public Color getColor(int degree) {
@@ -102,18 +105,18 @@ public class VerticesPainterImpl implements VerticesPainter {
 		Vertex v;
 		while (vi.hasNext()) {
 			v = vi.next();
-			int dx = (int) Math.ceil(board.translateXFromScreen(degreeType
+			float dx = board.translateRawXFromScreen(getRadius(degreeType
 					.degree(v)));
-			int dy = (int) Math.ceil(board.translateYFromScreen(degreeType
+			float dy = board.translateRawYFromScreen(getRadius(degreeType
 					.degree(v)));
-			int d = Math.max(dx, dy);
+			float d = Math.min(dx, dy);
 
-			int x = board.translateXToScreen(v.getX() - d);
-			int y = board.translateXToScreen(v.getY() - d);
-			int w = board.translateXToScreen(2 * d);
-			int h = board.translateXToScreen(2 * d);
+			int x = board.translateXToScreen(v.getX() - 2 * d);
+			int y = board.translateYToScreen(v.getY() - 2 * d);
+			int w = board.translateRawXToScreen(4 * d);
+			int h = board.translateRawYToScreen(4 * d);
 
-			Rectangle r = new Rectangle(x, y, w, h);
+			Rectangle r = new Rectangle(x, y, Math.max(w, h), Math.max(w, h));
 
 			if (g2d.getClipBounds().intersects(r))
 				drawVertex(g2d, board, v);

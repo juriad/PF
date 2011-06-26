@@ -16,7 +16,7 @@ public class GridLineImpl extends LineImpl implements GridLine {
 	}
 
 	@Override
-	public int distanceSq() {
+	public double distanceSq() {
 		return distanceSq(p3);
 	}
 

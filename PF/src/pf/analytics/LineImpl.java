@@ -25,9 +25,12 @@ public class LineImpl implements Line {
 	}
 
 	@Override
-	public int distanceSq(Point p) {
-		Point pp = projection(p);
-		return pp.vectorTo(p).lengthSq();
+	public double distanceSq(Point p) {
+		int d1 = (getP2().getX() - getP1().getX())
+				* (getP1().getY() - p.getY());
+		int d2 = (getP1().getX() - p.getX())
+				* (getP2().getY() - getP1().getY());
+		return (d1 - d2) * (d1 - d2) / ((double) getBaseVector().lengthSq());
 	}
 
 	@Override
@@ -43,6 +46,14 @@ public class LineImpl implements Line {
 			if (other.contains(p1))
 				return true;
 		return false;
+	}
+
+	@Override
+	public Line extend(float f) {
+		Vector b = getBaseVector();
+		Point pp2 = p2.move(b.scale(f));
+		Point pp1 = p1.move(b.scale(-f));
+		return new LineImpl(pp1, pp2);
 	}
 
 	@Override
@@ -69,7 +80,7 @@ public class LineImpl implements Line {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + distanceSq(PointImpl.O);
+		result = prime * result + (int) distanceSq(PointImpl.O);
 		return result;
 	}
 
@@ -96,18 +107,6 @@ public class LineImpl implements Line {
 	@Override
 	public Line moveTo(Point p) {
 		return move(p1.vectorTo(p));
-	}
-
-	@Override
-	public Point projection(Point p) {
-		Point x = p.move(p1.positionVector().opposite());
-		Point a = p2.move(p1.positionVector().opposite());
-
-		int c = a.positionVector().lengthSq();
-		int d = a.getX() * x.getX() + a.getY() * x.getY();
-
-		return new PointImpl((a.getX() * d) / c, (a.getY() * d) / c).move(p1
-				.positionVector());
 	}
 
 	@Override

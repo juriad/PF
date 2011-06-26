@@ -12,12 +12,16 @@ import pf.graph.Edge;
 
 public class EdgesPainterImpl implements EdgesPainter {
 
-	private Color usedColor = Color.GRAY;
-	private Stroke unusedStroke = new BasicStroke();
+	private Color usedColor;
+	private Stroke unusedStroke;
 	private boolean drawUnused = true;
-	private Color unusedColor = Color.BLACK;
-	private Stroke usedStroke = new BasicStroke();
+	private Color unusedColor;
+	private Stroke usedStroke;
 	private boolean drawUsed = true;
+
+	public EdgesPainterImpl() {
+		this(Color.BLACK, Color.GRAY);
+	}
 
 	public EdgesPainterImpl(Color unusedColor, Color usedColor) {
 		this(unusedColor, new BasicStroke(), usedColor, new BasicStroke());
@@ -76,7 +80,7 @@ public class EdgesPainterImpl implements EdgesPainter {
 			e = ei.next();
 			int x1 = gameBoard.translateXToScreen(e.getV1().getX());
 			int y1 = gameBoard.translateYToScreen(e.getV1().getY());
-			int x2 = gameBoard.translateXToScreen(e.getV1().getX());
+			int x2 = gameBoard.translateXToScreen(e.getV2().getX());
 			int y2 = gameBoard.translateYToScreen(e.getV2().getY());
 			l = new Line2D.Float(x1, y1, x2, y2);
 			if (l.intersects(g2d.getClipBounds()))

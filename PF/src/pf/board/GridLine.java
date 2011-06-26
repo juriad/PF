@@ -4,7 +4,7 @@ import pf.analytics.Line;
 import pf.analytics.Point;
 
 public interface GridLine extends Line {
-	int distanceSq();
+	double distanceSq();
 
 	Line getLine(int parallel);
 
