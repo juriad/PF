@@ -18,7 +18,7 @@ public class GridPainterImpl implements GridPainter {
 
 	protected class Info {
 		final int line;
-		Color color = Color.YELLOW.brighter();
+		Color color = Color.ORANGE;
 		Color mainColor = Color.YELLOW;
 		Stroke stroke = new BasicStroke();
 		Stroke mainStroke = new BasicStroke(2);
@@ -44,8 +44,6 @@ public class GridPainterImpl implements GridPainter {
 	protected void drawGrid(Graphics2D g2d, GameBoard board, int line, int min,
 			int max) {
 		GridLine gridLine = board.getBoard().getGrid().getGridLine(line);
-		System.out.println(gridLine + ": " + min + " - " + max);
-
 		for (int i = min; i <= max; i++) {
 			if (isMainLine(line, i)) {
 				g2d.setColor(getMainColor(line));
@@ -83,7 +81,6 @@ public class GridPainterImpl implements GridPainter {
 				board.translateYToScreen(line.getP1().getY()));
 		p2 = new Point2D.Float(board.translateXToScreen(line.getP2().getX()),
 				board.translateYToScreen(line.getP2().getY()));
-		System.out.println(z);
 		g2d.drawLine((int) p1.getX(), (int) p1.getY(), (int) p2.getX(),
 				(int) p2.getY());
 	}
@@ -126,7 +123,6 @@ public class GridPainterImpl implements GridPainter {
 
 	@Override
 	public void paintGrid(Graphics2D g2d, GameBoard board) {
-		System.out.println();
 		if (board.getBoard().getGrid().getGridType() != getGridType())
 			throw new IllegalArgumentException();
 		Grid grid = board.getBoard().getGrid();
@@ -136,7 +132,6 @@ public class GridPainterImpl implements GridPainter {
 		float y = board.translateYFromScreen((int) r.getY());
 		float w = board.translateRawXFromScreen((int) r.getWidth());
 		float h = board.translateRawYFromScreen((int) r.getHeight());
-		System.out.println(x + " " + y + " " + (w + x) + " " + (h + y));
 
 		for (int line = 0; line < getLines(); line++) {
 			int min = grid

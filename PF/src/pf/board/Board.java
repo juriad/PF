@@ -11,6 +11,8 @@ public interface Board {
 
 	int getHeight();
 
+	Vertex getNearest(float x, float y);
+
 	Vertex getNearest(int x, int y);
 
 	Vertex getNearest(Point p);

@@ -40,7 +40,7 @@ public class VerticesPainterImpl implements VerticesPainter {
 
 		private final int degree;
 		Color color = Color.GREEN;
-		int outerR = 10;
+		int outerR = 5;
 		int innerR = 3;
 
 		public Info(int degree) {

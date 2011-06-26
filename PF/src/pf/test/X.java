@@ -9,8 +9,8 @@ import javax.swing.JFrame;
 import pf.board.Board;
 import pf.board.BoardImpl;
 import pf.gui.EdgesPainterImpl;
-import pf.gui.GameBoard;
 import pf.gui.GridPainterImpl;
+import pf.gui.InteractiveBoard;
 import pf.gui.VerticesPainterImpl;
 
 public class X {
@@ -20,7 +20,7 @@ public class X {
 		frame.setVisible(true);
 		File f = new File("/home/adam/srgrid.txt");
 		Board b = BoardImpl.createBoard(f);
-		GameBoard gb = new GameBoard(b);
+		InteractiveBoard gb = new InteractiveBoard(b);
 		gb.setVerticesPainterAndPaint(new VerticesPainterImpl(gb.getBoard()
 				.getGrid().getGridType(),
 				VerticesPainterImpl.DegreeType.BY_UNUSED));

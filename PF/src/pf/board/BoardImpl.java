@@ -1,5 +1,7 @@
 package pf.board;
 
+import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.HashMap;
@@ -149,6 +151,52 @@ public class BoardImpl implements Board {
 	@Override
 	public int getHeight() {
 		return height;
+	}
+
+	@Override
+	public Vertex getNearest(float x, float y) {
+		Line[] pars = new Line[grid.getGridType().getLines()];
+		for (int i = 0; i < grid.getGridType().getLines(); i++) {
+			GridLine gl = getGrid().getGridLine(i);
+			Line ll1 = gl.getLine(-1);
+			Line2D.Float l1 = new Line2D.Float(ll1.getP1().getX(), ll1.getP1()
+					.getY(), ll1.getP2().getX(), ll1.getP2().getY());
+			Line ll2 = gl.getLine(1);
+			Line2D.Float l2 = new Line2D.Float(ll2.getP1().getX(), ll2.getP1()
+					.getY(), ll2.getP2().getX(), ll2.getP2().getY());
+			l1.ptLineDist(ll2.getP1().getX(), ll2.getP1().getY());
+
+			Line ll0 = gl.getLine(0);
+			Line2D.Float l0 = new Line2D.Float(ll0.getP1().getX(), ll0.getP1()
+					.getY(), ll0.getP2().getX(), ll0.getP2().getY());
+
+			double dist = l0.ptLineDist(x, y);
+			double dist1 = l1.ptLineDist(x, y);
+			double dist2 = l2.ptLineDist(x, y);
+
+			dist *= (dist1 < dist2 ? -1 : 1);
+
+			double pard = dist / Math.abs(l0.ptLineDist(l1.getP1()));
+			int par = (int) Math.round(pard);
+
+			pars[i] = gl.getLine(par);
+		}
+
+		Point pp = null;
+		Vertex v = null;
+		double dist = Integer.MAX_VALUE;
+		for (int i = 0; i < pars.length; i++)
+			for (int j = i + 1; j < pars.length; j++) {
+				pp = pars[i].intersection(pars[j]);
+				if (pp != null && getVertex(pp) != null) {
+					Point2D.Float p = new Point2D.Float(pp.getX(), pp.getY());
+					if (dist > p.distanceSq(x, y)) {
+						v = getVertex(pp);
+						dist = p.distanceSq(x, y);
+					}
+				}
+			}
+		return v;
 	}
 
 	@Override

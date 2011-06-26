@@ -1,5 +1,6 @@
 package pf.gui;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 
@@ -11,13 +12,15 @@ public class GameBoard extends JComponent {
 	private static final long serialVersionUID = 1L;
 	private VerticesPainter vp = null;
 	private boolean paintVertices = false;
-	private GridPainter gp = null;
+	private GridPainter gridPainter = null;
 	private boolean paintGrid = false;
-	private EdgesPainter ep = null;
+	private EdgesPainter edgesPainter = null;
 	private boolean paintEdges = false;
 	private Board board;
 	private int horizontalPadding = 10;
 	private int verticalPadding = 10;
+
+	protected static final int unitSize = 100;
 
 	public GameBoard(Board board) {
 		this.board = board;
@@ -28,15 +31,24 @@ public class GameBoard extends JComponent {
 	}
 
 	public EdgesPainter getEdgesPainter() {
-		return ep;
+		return edgesPainter;
 	}
 
 	public GridPainter getGridPainter() {
-		return gp;
+		return gridPainter;
 	}
 
 	public int getHorizontalPadding() {
 		return horizontalPadding;
+	}
+
+	@Override
+	public Dimension getPreferredSize() {
+		float unit = unitSize
+				/ getBoard().getGrid().getGridType().getUnitSize();
+		return new Dimension((int) (board.getWidth() * unit)
+				+ getHorizontalPadding() * 2, (int) (board.getHeight() * unit)
+				+ getVerticalPadding() * 2);
 	}
 
 	public int getVerticalPadding() {
@@ -59,8 +71,6 @@ public class GameBoard extends JComponent {
 		return paintVertices;
 	}
 
-	// TODO preffered size
-
 	@Override
 	protected void paintComponent(Graphics g) {
 		super.paintComponent(g);
@@ -73,13 +83,13 @@ public class GameBoard extends JComponent {
 	}
 
 	protected void paintEdges(Graphics2D g2d) {
-		if (isPaintEdges() && ep != null)
-			ep.paintEdges(g2d, this);
+		if (isPaintEdges() && edgesPainter != null)
+			edgesPainter.paintEdges(g2d, this);
 	}
 
 	protected void paintGrid(Graphics2D g2d) {
-		if (isPaintGrid() && gp != null)
-			gp.paintGrid(g2d, this);
+		if (isPaintGrid() && gridPainter != null)
+			gridPainter.paintGrid(g2d, this);
 	}
 
 	protected void paintVertices(Graphics2D g2d) {
@@ -88,7 +98,7 @@ public class GameBoard extends JComponent {
 	}
 
 	public void setEdgesPainter(EdgesPainter painter) {
-		this.ep = painter;
+		this.edgesPainter = painter;
 	}
 
 	public void setEdgesPainterAndPaint(EdgesPainter painter) {
@@ -97,7 +107,7 @@ public class GameBoard extends JComponent {
 	}
 
 	public void setGridPainter(GridPainter painter) {
-		this.gp = painter;
+		this.gridPainter = painter;
 	}
 
 	public void setGridPainterAndPaint(GridPainter painter) {
@@ -160,7 +170,7 @@ public class GameBoard extends JComponent {
 	}
 
 	public float translateXFromScreen(int x) {
-		return translateXFromScreen(x - getHorizontalPadding());
+		return translateRawXFromScreen(x - getHorizontalPadding());
 	}
 
 	public int translateXToScreen(float x) {
