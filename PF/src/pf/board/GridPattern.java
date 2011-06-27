@@ -7,12 +7,16 @@ public enum GridPattern {
 	SIMPLE_SQUARE ("square", true),
 	SIMPLE_PARALLEL ("parallel", true),
 	COMPLEX_LIST ("list", false),
-	COMPLEX_SCHEMA ("schema", false);
+	COMPLEX_SCHEMA ("schema", false),
+	INTERACTIVE_EDIT ("edit", true),
+	INTERACTIVE_SHOW ("show", true);
 
 	public static GridPattern getPattern(String desc) {
-		for (GridPattern gp : values())
-			if (gp.getDesc().equals(desc))
+		for (GridPattern gp : values()) {
+			if (gp.getDesc().equals(desc)) {
 				return gp;
+			}
+		}
 		return null;
 	}
 

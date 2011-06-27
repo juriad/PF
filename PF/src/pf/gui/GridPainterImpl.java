@@ -36,9 +36,10 @@ public class GridPainterImpl implements GridPainter {
 
 	public GridPainterImpl(GridType gt) {
 		this.gt = gt;
-		this.infos = new ArrayList<Info>();
-		for (int i = 0; i < getLines(); i++)
+		infos = new ArrayList<Info>();
+		for (int i = 0; i < getLines(); i++) {
 			infos.add(new Info(i));
+		}
 	}
 
 	protected void drawGrid(Graphics2D g2d, GameBoard board, int line, int min,
@@ -123,8 +124,9 @@ public class GridPainterImpl implements GridPainter {
 
 	@Override
 	public void paintGrid(Graphics2D g2d, GameBoard board) {
-		if (board.getBoard().getGrid().getGridType() != getGridType())
+		if (board.getBoard().getGrid().getGridType() != getGridType()) {
 			throw new IllegalArgumentException();
+		}
 		Grid grid = board.getBoard().getGrid();
 
 		Rectangle r = g2d.getClipBounds();
@@ -148,36 +150,42 @@ public class GridPainterImpl implements GridPainter {
 	}
 
 	public void setColor(int line, Color color) {
-		if (color == null)
+		if (color == null) {
 			throw new IllegalArgumentException();
+		}
 		infos.get(line).color = color;
 	}
 
 	public void setColors(Color color) {
-		for (int line = 0; line < getLines(); line++)
+		for (int line = 0; line < getLines(); line++) {
 			setColor(line, color);
+		}
 	}
 
 	public void setMainColor(int line, Color color) {
-		if (color == null)
+		if (color == null) {
 			throw new IllegalArgumentException();
+		}
 		infos.get(line).mainColor = color;
 	}
 
 	public void setMainColors(Color color) {
-		for (int line = 0; line < getLines(); line++)
+		for (int line = 0; line < getLines(); line++) {
 			setMainColor(line, color);
+		}
 	}
 
 	public void setMainStroke(int line, Stroke stroke) {
-		if (stroke == null)
+		if (stroke == null) {
 			throw new IllegalArgumentException();
+		}
 		infos.get(line).mainStroke = stroke;
 	}
 
 	public void setMainStrokes(Stroke stroke) {
-		for (int line = 0; line < getLines(); line++)
+		for (int line = 0; line < getLines(); line++) {
 			setMainStroke(line, stroke);
+		}
 	}
 
 	public void setOffset(int line, int offset) {
@@ -185,30 +193,35 @@ public class GridPainterImpl implements GridPainter {
 	}
 
 	public void setOffsets(int offset) {
-		for (int line = 0; line < getLines(); line++)
+		for (int line = 0; line < getLines(); line++) {
 			setOffset(line, offset);
+		}
 	}
 
 	public void setRepetition(int line, int repetition) {
-		if (repetition <= 0)
+		if (repetition <= 0) {
 			throw new IllegalArgumentException();
+		}
 		infos.get(line).repetition = repetition;
 	}
 
 	public void setRepetitions(int repetition) {
-		for (int line = 0; line < getLines(); line++)
+		for (int line = 0; line < getLines(); line++) {
 			setRepetition(line, repetition);
+		}
 	}
 
 	public void setStroke(int line, Stroke stroke) {
-		if (stroke == null)
+		if (stroke == null) {
 			throw new IllegalArgumentException();
+		}
 		infos.get(line).stroke = stroke;
 	}
 
 	public void setStroked(Stroke stroke) {
-		for (int line = 0; line < getLines(); line++)
+		for (int line = 0; line < getLines(); line++) {
 			setStroke(line, stroke);
+		}
 	}
 
 }

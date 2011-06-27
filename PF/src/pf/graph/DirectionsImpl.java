@@ -24,8 +24,9 @@ public class DirectionsImpl implements Directions {
 
 	@Override
 	public Direction getNearestDirection(int dx, int dy) {
-		if (ds.isEmpty())
+		if (ds.isEmpty()) {
 			return null;
+		}
 		Direction best = null;
 		int bestLen = Integer.MAX_VALUE;
 		for (Direction d : ds) {

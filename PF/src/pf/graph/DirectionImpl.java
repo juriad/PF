@@ -26,17 +26,22 @@ public class DirectionImpl implements Direction {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (!(obj instanceof DirectionImpl))
+		}
+		if (!(obj instanceof DirectionImpl)) {
 			return false;
+		}
 		DirectionImpl other = (DirectionImpl) obj;
-		if (other.getVector().isLinearDependent(getVector()))
+		if (other.getVector().isLinearDependent(getVector())) {
 			if (getVector().lengthSq() + other.getVector().lengthSq() < getVector()
-					.addVector(other.getVector()).lengthSq())
+					.addVector(other.getVector()).lengthSq()) {
 				return true;
+			}
+		}
 		return false;
 	}
 

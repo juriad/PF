@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.swing.event.EventListenerList;
 
 import pf.board.Board;
+import pf.board.BoardImpl;
 import pf.graph.Edge;
 import pf.graph.Path;
 import pf.graph.PathImpl;
@@ -30,9 +31,11 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		@Override
 		public Vertex request(GameBoard board, float x, float y) {
 			Vertex v = board.getBoard().getNearest(x, y);
-			if ((v.getX() - x) * (v.getX() - x) + (v.getY() - y)
-					* (v.getY() - y) < dist)
+			if (v != null
+					&& (v.getX() - x) * (v.getX() - x) + (v.getY() - y)
+							* (v.getY() - y) < dist) {
 				return v;
+			}
 			return null;
 		}
 
@@ -75,8 +78,8 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 			nearest = getNearest(e.getPoint());
 			if (isTouchInProgress() && nearest != null) {
 				Edge edge = last.edgeToVertex(nearest);
-				if (edge != null)
-					if (path.getLast().equals(edge)) {
+				if (edge != null) {
+					if (path.length() > 0 && path.getLast().equals(edge)) {
 						if (isTouchReturnAllowed()) {
 							path.shorten(edge);
 							last = nearest;
@@ -89,8 +92,9 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 						fireTouchLonger(new TouchEvent(InteractiveBoard.this,
 								path, nearest, edge));
 					}
+				}
 			}
-
+			setCursor();
 		}
 
 		@Override
@@ -130,15 +134,16 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		}
 
 		private void setCursor() {
-			if (isTouchInProgress())
+			if (isTouchInProgress()) {
 				InteractiveBoard.this.setCursor(Cursor
 						.getPredefinedCursor(Cursor.MOVE_CURSOR));
-			else if (nearest != null)
+			} else if (nearest != null) {
 				InteractiveBoard.this.setCursor(Cursor
 						.getPredefinedCursor(Cursor.HAND_CURSOR));
-			else
+			} else {
 				InteractiveBoard.this.setCursor(Cursor
 						.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+			}
 		}
 
 	}
@@ -168,8 +173,8 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		ell = new EventListenerList();
 		paths = new HashMap<Path, PathPainter>();
 		ts = new TouchSupport();
-		this.addMouseListener(ts);
-		this.addMouseMotionListener(ts);
+		addMouseListener(ts);
+		addMouseMotionListener(ts);
 		snapping = new DefaultSnapPolicy();
 	}
 
@@ -185,72 +190,150 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		ell.add(TouchListener.class, l);
 	}
 
+	public boolean can(GameMode m) {
+		switch (m) {
+		case EDIT:
+			return canEdit();
+		case PAUSE:
+			return canPause();
+		case RUN:
+			return canRun();
+		case SHOW:
+			return canShow();
+		}
+		return false;
+	}
+
 	public void cancelTouch() {
 		ts.cancelTouch();
 	}
 
-	public void edit() {
+	public boolean canEdit() {
 		switch (mode) {
 		case EDIT:
-			break;
+			return false;
 		case PAUSE:
-			throw new IllegalStateException();
+			return false;
 		case RUN:
-			throw new IllegalStateException();
+			return false;
 		case SHOW:
+			return true;
+		}
+		return false;
+	}
+
+	public boolean canPause() {
+		switch (mode) {
+		case EDIT:
+			return false;
+		case PAUSE:
+			return false;
+		case RUN:
+			return true;
+		case SHOW:
+			return false;
+		}
+		return false;
+	}
+
+	public boolean canRun() {
+		switch (mode) {
+		case EDIT:
+			return false;
+		case PAUSE:
+			return true;
+		case RUN:
+			return false;
+		case SHOW:
+			return true;
+		}
+		return false;
+	}
+
+	public boolean canShow() {
+		switch (getMode()) {
+		case EDIT:
+			return true;
+		case PAUSE:
+			return true;
+		case RUN:
+			return true;
+		case SHOW:
+			return false;
+		}
+		return false;
+	}
+
+	public void edit() {
+		if (isEdit()) {
+			return;
+		}
+		if (!canEdit()) {
+			throw new IllegalStateException();
+		}
+		if (mode.equals(GameMode.SHOW)) {
 			fromShowToEdit();
-			break;
 		}
 	}
 
 	void fireModeEdit(GameModeEvent e) {
-		for (GameModeListener l : ell.getListeners(GameModeListener.class))
+		for (GameModeListener l : ell.getListeners(GameModeListener.class)) {
 			l.modeEdit(e);
+		}
 	}
 
 	void fireModePause(GameModeEvent e) {
-		for (GameModeListener l : ell.getListeners(GameModeListener.class))
+		for (GameModeListener l : ell.getListeners(GameModeListener.class)) {
 			l.modePause(e);
+		}
 	}
 
 	void fireModeRun(GameModeEvent e) {
-		for (GameModeListener l : ell.getListeners(GameModeListener.class))
+		for (GameModeListener l : ell.getListeners(GameModeListener.class)) {
 			l.modeRun(e);
+		}
 	}
 
 	void fireModeShow(GameModeEvent e) {
-		for (GameModeListener l : ell.getListeners(GameModeListener.class))
+		for (GameModeListener l : ell.getListeners(GameModeListener.class)) {
 			l.modeShow(e);
+		}
 	}
 
 	void fireTouchCancelled(TouchEvent e) {
-		for (TouchListener l : ell.getListeners(TouchListener.class))
+		for (TouchListener l : ell.getListeners(TouchListener.class)) {
 			l.touchCancelled(e);
+		}
 	}
 
 	void fireTouchEnded(TouchEvent e) {
-		for (TouchListener l : ell.getListeners(TouchListener.class))
+		for (TouchListener l : ell.getListeners(TouchListener.class)) {
 			l.touchEnded(e);
+		}
 	}
 
 	void fireTouchLonger(TouchEvent e) {
-		for (TouchListener l : ell.getListeners(TouchListener.class))
+		for (TouchListener l : ell.getListeners(TouchListener.class)) {
 			l.touchLonger(e);
+		}
 	}
 
 	void fireTouchShorter(TouchEvent e) {
-		for (TouchListener l : ell.getListeners(TouchListener.class))
+		for (TouchListener l : ell.getListeners(TouchListener.class)) {
 			l.touchShorter(e);
+		}
 	}
 
 	void fireTouchStarted(TouchEvent e) {
-		for (TouchListener l : ell.getListeners(TouchListener.class))
+		for (TouchListener l : ell.getListeners(TouchListener.class)) {
 			l.touchStarted(e);
+		}
 	}
 
 	private void fromEditToShow() {
+		setBoard(BoardImpl.createShowBoard(getBoard()));
+		mode = GameMode.SHOW;
 		// TODO autogen method: fromEditToShow
-
 	}
 
 	private void fromPauseToRun() {
@@ -273,8 +356,9 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	}
 
 	private void fromShowToEdit() {
-		// TODO
-
+		setBoard(BoardImpl.createEditBoard(getBoard()));
+		mode = GameMode.EDIT;
+		// TODO fromShowToEdit
 	}
 
 	private void fromShowToRun() {
@@ -349,22 +433,21 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	protected void paintPaths(Graphics2D g2d) {
 		for (Path p : this) {
 			PathPainter pp = paths.get(p);
-			if (pp != null && isPaintPaths())
+			if (pp != null && isPaintPaths()) {
 				pp.paintPath(g2d, this, p);
+			}
 		}
 	}
 
 	public void pause() {
-		switch (mode) {
-		case EDIT:
+		if (isPause()) {
+			return;
+		}
+		if (!canPause()) {
 			throw new IllegalStateException();
-		case PAUSE:
-			break;
-		case RUN:
+		}
+		if (mode.equals(GameMode.RUN)) {
 			fromRunToPause();
-			break;
-		case SHOW:
-			throw new IllegalStateException();
 		}
 	}
 
@@ -380,29 +463,46 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		ell.remove(TouchListener.class, l);
 	}
 
+	public void repaintEdge(Edge e) {
+		// TODO repaintEdge
+	}
+
+	public void repaintEdgeSurrounding(Edge e) {
+		// TODO repaintEdgeSurrounding
+	}
+
+	public void repaintVertex(Vertex v) {
+		// TODO repaintVertex
+	}
+
 	public void run() {
-		switch (mode) {
-		case EDIT:
+		if (isRun()) {
+			return;
+		}
+		if (!canRun()) {
 			throw new IllegalStateException();
-		case PAUSE:
+		}
+		if (mode.equals(GameMode.PAUSE)) {
 			fromPauseToRun();
-			break;
-		case RUN:
-			break;
-		case SHOW:
+		} else if (mode.equals(GameMode.SHOW)) {
 			fromShowToRun();
-			break;
 		}
 	}
 
 	public void setAnimator(Animator animator) {
-		if (isRun() || isPause())
+		if (isRun() || isPause()) {
 			throw new IllegalStateException();
+		}
 		this.animator = animator;
 	}
 
+	protected void setBoard(Board board) {
+		this.board = board;
+		// TODO setBoard
+	}
+
 	public void setDefaultPathPainter(PathPainter pathPainter) {
-		this.defaultPathPainter = pathPainter;
+		defaultPathPainter = pathPainter;
 	}
 
 	public void setMode(GameMode m) {
@@ -435,27 +535,30 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	}
 
 	public void setTouchActive(boolean active) {
-		cancelTouch();
-		this.setTouchActive(active);
+		if (isTouchInProgress()) {
+			cancelTouch();
+		}
+		touchActive = active;
 	}
 
 	public void setTouchReturnAllowed(boolean allowed) {
-		this.touchReturnAllowed = allowed;
+		touchReturnAllowed = allowed;
 	}
 
 	@Override
 	public void show() {
-		switch (mode) {
-		case EDIT:
+		if (isShow()) {
+			return;
+		}
+		if (!canShow()) {
+			throw new IllegalStateException();
+		}
+		if (mode.equals(GameMode.EDIT)) {
 			fromEditToShow();
-			break;
-		case PAUSE:
+		} else if (mode.equals(GameMode.PAUSE)) {
 			fromPauseToShow();
-			break;
-		case RUN:
+		} else if (mode.equals(GameMode.RUN)) {
 			fromRunToShow();
-		case SHOW:
-			break;
 		}
 	}
 

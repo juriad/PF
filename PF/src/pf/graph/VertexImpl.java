@@ -27,8 +27,9 @@ public class VertexImpl implements Vertex {
 			while (i.hasNext() && next == null) {
 				Edge e = i.next();
 				if (!isChild(e.getOther(VertexImpl.this))
-						|| e.getDirection(VertexImpl.this).isPrimary())
+						|| e.getDirection(VertexImpl.this).isPrimary()) {
 					next = e;
+				}
 			}
 		}
 
@@ -40,8 +41,9 @@ public class VertexImpl implements Vertex {
 		private boolean isChild(Vertex v) {
 			Graph g = v;
 			while (g != null) {
-				if (g.equals(root))
+				if (g.equals(root)) {
 					return true;
+				}
 				g = g.getParent();
 			}
 			return false;
@@ -85,8 +87,9 @@ public class VertexImpl implements Vertex {
 	public void add(Edge e) {
 		Direction d = e.getDirection(this);
 		edges.put(d, e);
-		if (!e.isUsed())
+		if (!e.isUsed()) {
 			unusedEdges.put(d, e);
+		}
 	}
 
 	@Override
@@ -106,34 +109,42 @@ public class VertexImpl implements Vertex {
 
 	@Override
 	public Edge edgeToVertex(Vertex v) {
-		for (Direction d : getDirections(false))
-			if (get(d).getOther(this).equals(v))
+		for (Direction d : getDirections(false)) {
+			if (get(d).getOther(this).equals(v)) {
 				return get(d);
+			}
+		}
 		return null;
 	}
 
 	@Override
 	public void edgeUsageChanged(Edge e) {
 		Direction d = e.getDirection(this);
-		if (e.isUsed() && unusedEdges.containsKey(d))
+		if (e.isUsed() && unusedEdges.containsKey(d)) {
 			unusedEdges.remove(d);
-		else if (!e.isUsed() && !unusedEdges.containsKey(d))
+		} else if (!e.isUsed() && !unusedEdges.containsKey(d)) {
 			unusedEdges.put(d, e);
+		}
 	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		VertexImpl other = (VertexImpl) obj;
-		if (x != other.x)
+		if (x != other.x) {
 			return false;
-		if (y != other.y)
+		}
+		if (y != other.y) {
 			return false;
+		}
 		return true;
 	}
 
@@ -144,15 +155,17 @@ public class VertexImpl implements Vertex {
 
 	@Override
 	public int getDegree(boolean used) {
-		if (used)
+		if (used) {
 			return unusedEdges.size();
+		}
 		return edges.size();
 	}
 
 	@Override
 	public Set<Direction> getDirections(boolean used) {
-		if (used)
+		if (used) {
 			return unusedEdges.keySet();
+		}
 		return edges.keySet();
 	}
 
@@ -199,8 +212,9 @@ public class VertexImpl implements Vertex {
 	public void remove(Edge e) {
 		Direction d = e.getDirection(this);
 		edges.remove(d);
-		if (!e.isUsed())
+		if (!e.isUsed()) {
 			unusedEdges.remove(d);
+		}
 	}
 
 	@Override
@@ -211,10 +225,12 @@ public class VertexImpl implements Vertex {
 	@Override
 	public void setParent(Graph parent) {
 		if (this.parent != parent) {
-			if (this.parent != null)
+			if (this.parent != null) {
 				this.parent.removeSubGraph(this);
-			if (parent != null)
+			}
+			if (parent != null) {
 				parent.addSubGraph(this);
+			}
 			this.parent = parent;
 		}
 	}

@@ -1,8 +1,18 @@
 package pf.gui;
 
 public enum GameMode {
-	RUN,
-	PAUSE,
-	EDIT,
-	SHOW;
+	EDIT ("Edit"),
+	SHOW ("Show"),
+	RUN ("Run"),
+	PAUSE ("Pause");
+
+	private final String desc;
+
+	private GameMode(String desc) {
+		this.desc = desc;
+	}
+
+	public String getDesc() {
+		return desc;
+	}
 }

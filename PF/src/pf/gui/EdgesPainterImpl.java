@@ -20,7 +20,7 @@ public class EdgesPainterImpl implements EdgesPainter {
 	private boolean drawUsed = true;
 
 	public EdgesPainterImpl() {
-		this(Color.BLACK, Color.GRAY);
+		this(Color.BLACK, Color.RED);
 	}
 
 	public EdgesPainterImpl(Color unusedColor, Color usedColor) {
@@ -29,10 +29,10 @@ public class EdgesPainterImpl implements EdgesPainter {
 
 	public EdgesPainterImpl(Color unusedColor, Stroke unusedStroke,
 			Color usedColor, Stroke usedStroke) {
-		this.setUnusedColor(unusedColor);
-		this.setUnusedStroke(unusedStroke);
-		this.setUsedColor(usedColor);
-		this.setUsedStroke(usedStroke);
+		setUnusedColor(unusedColor);
+		setUnusedStroke(unusedStroke);
+		setUsedColor(usedColor);
+		setUsedStroke(usedStroke);
 	}
 
 	protected void drawLine(Graphics2D g2d, Edge e, Float l) {
@@ -83,8 +83,9 @@ public class EdgesPainterImpl implements EdgesPainter {
 			int x2 = gameBoard.translateXToScreen(e.getV2().getX());
 			int y2 = gameBoard.translateYToScreen(e.getV2().getY());
 			l = new Line2D.Float(x1, y1, x2, y2);
-			if (l.intersects(g2d.getClipBounds()))
+			if (l.intersects(g2d.getClipBounds())) {
 				drawLine(g2d, e, l);
+			}
 		}
 	}
 
@@ -97,26 +98,30 @@ public class EdgesPainterImpl implements EdgesPainter {
 	}
 
 	public void setUnusedColor(Color unusedColor) {
-		if (unusedColor == null)
+		if (unusedColor == null) {
 			throw new IllegalArgumentException();
+		}
 		this.unusedColor = unusedColor;
 	}
 
 	public void setUnusedStroke(Stroke unusedStroke) {
-		if (unusedStroke == null)
+		if (unusedStroke == null) {
 			throw new IllegalArgumentException();
+		}
 		this.unusedStroke = unusedStroke;
 	}
 
 	public void setUsedColor(Color usedColor) {
-		if (usedColor == null)
+		if (usedColor == null) {
 			throw new IllegalArgumentException();
+		}
 		this.usedColor = usedColor;
 	}
 
 	public void setUsedStroke(Stroke usedStroke) {
-		if (usedStroke == null)
+		if (usedStroke == null) {
 			throw new IllegalArgumentException();
+		}
 		this.usedStroke = usedStroke;
 	}
 

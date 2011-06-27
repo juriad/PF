@@ -60,8 +60,9 @@ public class VerticesPainterImpl implements VerticesPainter {
 		this.gt = gt;
 		this.degreeType = degreeType;
 		infos = new ArrayList<VerticesPainterImpl.Info>();
-		for (int i = 0; i < gt.getLines() * 2; i++)
+		for (int i = 0; i < gt.getLines() * 2 + 1; i++) {
 			infos.add(new Info(i));
+		}
 	}
 
 	private void drawVertex(Graphics2D g2d, GameBoard board, Vertex v) {
@@ -118,44 +119,51 @@ public class VerticesPainterImpl implements VerticesPainter {
 
 			Rectangle r = new Rectangle(x, y, Math.max(w, h), Math.max(w, h));
 
-			if (g2d.getClipBounds().intersects(r))
+			if (g2d.getClipBounds().intersects(r)) {
 				drawVertex(g2d, board, v);
+			}
 		}
 	}
 
 	public void setColor(int degree, Color color) {
-		if (color == null)
+		if (color == null) {
 			throw new IllegalArgumentException();
+		}
 		infos.get(degree).color = color;
 	}
 
 	public void setColors(Color color) {
-		for (int i = 0; i < infos.size(); i++)
+		for (int i = 0; i < infos.size(); i++) {
 			setColor(i, color);
+		}
 	}
 
 	public void setRadius(int degree, int radius) {
-		if (radius <= 0)
+		if (radius <= 0) {
 			throw new IllegalArgumentException();
+		}
 		infos.get(degree).innerR = 0;
 		infos.get(degree).outerR = radius;
 	}
 
 	public void setRadius(int degree, int outer, int inner) {
-		if (inner < 0 || outer <= inner)
+		if (inner < 0 || outer <= inner) {
 			throw new IllegalArgumentException();
+		}
 		infos.get(degree).innerR = inner;
 		infos.get(degree).outerR = outer;
 	}
 
 	public void setRadiuses(int radius) {
-		for (int i = 0; i < infos.size(); i++)
+		for (int i = 0; i < infos.size(); i++) {
 			setRadius(i, radius);
+		}
 	}
 
 	public void setRadiuses(int outer, int inner) {
-		for (int i = 0; i < infos.size(); i++)
+		for (int i = 0; i < infos.size(); i++) {
 			setRadius(i, outer, inner);
+		}
 	}
 
 }

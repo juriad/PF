@@ -1,9 +1,9 @@
 package pf.board;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
+import java.util.Set;
 
 import pf.analytics.Point;
 
@@ -12,20 +12,23 @@ public abstract class AbstractBoardPattern implements BoardPattern {
 	public static BoardPattern createBoardPattern(Board board, GridPattern gp,
 			File f) {
 		if (gp.isSimple()) {
-			// TODO simple pattern
-		} else
-			return ComplexBoardPattern.createComplexBoardPattern(board, f, gp);
-		return null;
+			return SimpleBoardPattern.createSimpleBoardPattern(board, gp);
+		}
+		return ComplexBoardPattern.createComplexBoardPattern(board, f, gp);
 	}
 
-	protected final List<PointsEdge> pes;
+	protected final Set<PointsEdge> pes;
 
 	public AbstractBoardPattern() {
-		pes = new ArrayList<PointsEdge>();
+		pes = new HashSet<PointsEdge>();
 	}
 
 	protected void addEdge(Point p1, Point p2) {
-		pes.add(new PointsEdge(p1, p2));
+		addEdge(p1, p2, false);
+	}
+
+	protected void addEdge(Point p1, Point p2, boolean b) {
+		pes.add(new PointsEdge(p1, p2, b));
 	}
 
 	@Override

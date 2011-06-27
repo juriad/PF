@@ -12,7 +12,7 @@ public class GridLineImpl extends LineImpl implements GridLine {
 	public GridLineImpl(Point p1, Point p2, Point p3) {
 		super(p1, p2);
 		this.p3 = p3;
-		this.v = p1.vectorTo(p3);
+		v = p1.vectorTo(p3);
 	}
 
 	@Override

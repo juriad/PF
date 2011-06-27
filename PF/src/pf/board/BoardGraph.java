@@ -21,23 +21,26 @@ public class BoardGraph extends GraphImpl {
 
 	private void clear() {
 		Set<Graph> gs = new HashSet<Graph>();
-		for (Graph g : this.getSubGraphs())
+		for (Graph g : getSubGraphs()) {
 			gs.add(g);
-		for (Graph g : gs)
+		}
+		for (Graph g : gs) {
 			removeSubGraph(g);
+		}
 	}
 
 	void makeComponents() {
 		Map<Vertex, Integer> vs = new HashMap<Vertex, Integer>();
 		Queue<Vertex> fifo = new LinkedList<Vertex>();
 		Iterator<Vertex> vi = verticesIterator();
-		while (vi.hasNext())
+		while (vi.hasNext()) {
 			vs.put(vi.next(), 0);
+		}
 		clear();
 
 		Graph c;
 		int comp = 0;
-		for (Vertex v : vs.keySet())
+		for (Vertex v : vs.keySet()) {
 			if (vs.get(v) == 0) {
 				comp++;
 				fifo.offer(v);
@@ -59,6 +62,7 @@ public class BoardGraph extends GraphImpl {
 					}
 				}
 			}
+		}
 	}
 
 	@Override

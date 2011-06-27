@@ -7,8 +7,9 @@ public class EdgeImpl implements Edge {
 	private final Vertex v2;
 
 	public EdgeImpl(Vertex v1, Vertex v2, Direction d) {
-		if (v1 == null || v2 == null || d == null)
+		if (v1 == null || v2 == null || d == null) {
 			throw new IllegalArgumentException();
+		}
 		this.v1 = v1;
 		this.v2 = v2;
 		this.d = d;
@@ -17,12 +18,15 @@ public class EdgeImpl implements Edge {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (getClass() != obj.getClass())
+		}
+		if (getClass() != obj.getClass()) {
 			return false;
+		}
 		Edge other = (Edge) obj;
 		return v1.equals(other.getV1()) && v2.equals(other.getV2())
 				|| v2.equals(other.getV1()) && v1.equals(other.getV2());
@@ -30,34 +34,38 @@ public class EdgeImpl implements Edge {
 
 	@Override
 	public Vertex getCommon(Edge e2) {
-		if (e2 == null)
+		if (e2 == null) {
 			throw new NullPointerException();
-		if (v1 == e2.getV1() || v1 == e2.getV2())
+		}
+		if (v1 == e2.getV1() || v1 == e2.getV2()) {
 			return v1;
-		else if (v2 == e2.getV1() || v2 == e2.getV2())
+		} else if (v2 == e2.getV1() || v2 == e2.getV2()) {
 			return v2;
-		else
+		} else {
 			return null;
+		}
 	}
 
 	@Override
 	public Direction getDirection(Vertex from) {
-		if (from == v1)
+		if (from == v1) {
 			return d;
-		else if (from == v2)
+		} else if (from == v2) {
 			return d.getOpposite();
-		else
+		} else {
 			throw new IllegalArgumentException();
+		}
 	}
 
 	@Override
 	public Vertex getOther(Vertex v) {
-		if (v1 == v)
+		if (v1 == v) {
 			return v2;
-		else if (v2 == v)
+		} else if (v2 == v) {
 			return v1;
-		else
+		} else {
 			throw new IllegalArgumentException();
+		}
 	}
 
 	@Override

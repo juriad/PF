@@ -16,9 +16,11 @@ public class GameBoard extends JComponent {
 	private boolean paintGrid = false;
 	private EdgesPainter edgesPainter = null;
 	private boolean paintEdges = false;
-	private Board board;
-	private int horizontalPadding = 10;
-	private int verticalPadding = 10;
+	protected Board board;
+	private int paddingTop = 10;
+	private int paddingLeft = 10;
+	private int paddingBottom = 10;
+	private int paddingRight = 10;
 
 	protected static final int unitSize = 100;
 
@@ -38,21 +40,29 @@ public class GameBoard extends JComponent {
 		return gridPainter;
 	}
 
-	public int getHorizontalPadding() {
-		return horizontalPadding;
+	public int getPaddingBottom() {
+		return paddingBottom;
+	}
+
+	public int getPaddingLeft() {
+		return paddingLeft;
+	}
+
+	public int getPaddingRight() {
+		return paddingRight;
+	}
+
+	public int getPaddingTop() {
+		return paddingTop;
 	}
 
 	@Override
 	public Dimension getPreferredSize() {
 		float unit = unitSize
 				/ getBoard().getGrid().getGridType().getUnitSize();
-		return new Dimension((int) (board.getWidth() * unit)
-				+ getHorizontalPadding() * 2, (int) (board.getHeight() * unit)
-				+ getVerticalPadding() * 2);
-	}
-
-	public int getVerticalPadding() {
-		return verticalPadding;
+		return new Dimension((int) (board.getWidth() * unit) + getPaddingLeft()
+				+ getPaddingRight(), (int) (board.getHeight() * unit)
+				+ getPaddingTop() + getPaddingBottom());
 	}
 
 	public VerticesPainter getVerticesPainter() {
@@ -83,22 +93,25 @@ public class GameBoard extends JComponent {
 	}
 
 	protected void paintEdges(Graphics2D g2d) {
-		if (isPaintEdges() && edgesPainter != null)
+		if (isPaintEdges() && edgesPainter != null) {
 			edgesPainter.paintEdges(g2d, this);
+		}
 	}
 
 	protected void paintGrid(Graphics2D g2d) {
-		if (isPaintGrid() && gridPainter != null)
+		if (isPaintGrid() && gridPainter != null) {
 			gridPainter.paintGrid(g2d, this);
+		}
 	}
 
 	protected void paintVertices(Graphics2D g2d) {
-		if (isPaintVertices() && vp != null)
+		if (isPaintVertices() && vp != null) {
 			vp.paintVertices(g2d, this);
+		}
 	}
 
 	public void setEdgesPainter(EdgesPainter painter) {
-		this.edgesPainter = painter;
+		edgesPainter = painter;
 	}
 
 	public void setEdgesPainterAndPaint(EdgesPainter painter) {
@@ -107,7 +120,7 @@ public class GameBoard extends JComponent {
 	}
 
 	public void setGridPainter(GridPainter painter) {
-		this.gridPainter = painter;
+		gridPainter = painter;
 	}
 
 	public void setGridPainterAndPaint(GridPainter painter) {
@@ -116,7 +129,8 @@ public class GameBoard extends JComponent {
 	}
 
 	public void setHorizontalPadding(int padding) {
-		this.horizontalPadding = padding;
+		setPaddingLeft(padding);
+		setPaddingRight(padding);
 	}
 
 	public void setPadding(int padding) {
@@ -124,24 +138,41 @@ public class GameBoard extends JComponent {
 		setVerticalPadding(padding);
 	}
 
+	public void setPaddingBottom(int paddingBottom) {
+		this.paddingBottom = paddingBottom;
+	}
+
+	public void setPaddingLeft(int padding) {
+		paddingLeft = padding;
+	}
+
+	public void setPaddingRight(int paddingRight) {
+		this.paddingRight = paddingRight;
+	}
+
+	public void setPaddingTop(int padding) {
+		paddingTop = padding;
+	}
+
 	public void setPaintEdges(boolean paint) {
-		this.paintEdges = paint;
+		paintEdges = paint;
 	}
 
 	public void setPaintGrid(boolean paint) {
-		this.paintGrid = paint;
+		paintGrid = paint;
 	}
 
 	public void setPaintVertices(boolean paint) {
-		this.paintVertices = paint;
+		paintVertices = paint;
 	}
 
 	public void setVerticalPadding(int padding) {
-		this.verticalPadding = padding;
+		setPaddingTop(padding);
+		setPaddingBottom(padding);
 	}
 
 	public void setVerticesPainter(VerticesPainter painter) {
-		this.vp = painter;
+		vp = painter;
 	}
 
 	public void setVerticesPainterAndPaint(VerticesPainter painter) {
@@ -151,37 +182,37 @@ public class GameBoard extends JComponent {
 
 	public float translateRawXFromScreen(int x) {
 		return x * ((float) getBoard().getWidth())
-				/ (getWidth() - 2 * getHorizontalPadding());
+				/ (getWidth() - getPaddingLeft() - getPaddingRight());
 	}
 
 	public int translateRawXToScreen(float x) {
-		return (int) ((x * (getWidth() - 2 * getHorizontalPadding())) / getBoard()
+		return (int) ((x * (getWidth() - getPaddingLeft() - getPaddingRight())) / getBoard()
 				.getWidth());
 	}
 
 	public float translateRawYFromScreen(int y) {
 		return y * ((float) getBoard().getHeight())
-				/ ((float) getHeight() - 2 * getVerticalPadding());
+				/ ((float) getHeight() - getPaddingTop() - getPaddingBottom());
 	}
 
 	public int translateRawYToScreen(float y) {
-		return (int) (y * (getHeight() - 2 * getVerticalPadding()) / getBoard()
+		return (int) (y * (getHeight() - getPaddingTop() - getPaddingBottom()) / getBoard()
 				.getHeight());
 	}
 
 	public float translateXFromScreen(int x) {
-		return translateRawXFromScreen(x - getHorizontalPadding());
+		return translateRawXFromScreen(x - getPaddingLeft());
 	}
 
 	public int translateXToScreen(float x) {
-		return translateRawXToScreen(x) + getHorizontalPadding();
+		return translateRawXToScreen(x) + getPaddingLeft();
 	}
 
 	public float translateYFromScreen(int y) {
-		return translateRawYFromScreen(y - getVerticalPadding());
+		return translateRawYFromScreen(y - getPaddingTop());
 	}
 
 	public int translateYToScreen(float y) {
-		return translateRawYToScreen(y) + getVerticalPadding();
+		return translateRawYToScreen(y) + getPaddingTop();
 	}
 }

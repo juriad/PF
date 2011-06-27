@@ -39,10 +39,12 @@ public abstract class AbstractGrid implements Grid {
 	protected final Point p1, p2, p3;
 
 	public AbstractGrid(Point p1, Point p2, Point p3) {
-		if (p1.equals(p2))
+		if (p1.equals(p2)) {
 			throw new IllegalArgumentException();
-		if ((new LineImpl(p1, p2)).contains(p3))
+		}
+		if ((new LineImpl(p1, p2)).contains(p3)) {
 			throw new IllegalArgumentException();
+		}
 		this.p1 = p1;
 		this.p2 = p2;
 		this.p3 = p3;
@@ -50,8 +52,9 @@ public abstract class AbstractGrid implements Grid {
 		ds = new DirectionsImpl();
 		addLinesAndDirections();
 		if (lines.size() != getGridType().getLines()
-				|| ds.getDirections().size() != getGridType().getLines() * 2)
+				|| ds.getDirections().size() != getGridType().getLines() * 2) {
 			throw new IllegalStateException();
+		}
 	}
 
 	protected void addDirection(Direction d) {
@@ -89,21 +92,23 @@ public abstract class AbstractGrid implements Grid {
 			for (int j = i + 1; j < getGridType().getLines(); j++) {
 				gl2 = getGridLine(j);
 				for (int ii = mins[i]; ii <= maxs[i]; ii++) {
-					if (!shouldIntersect(gl1, gl2))
+					if (!shouldIntersect(gl1, gl2)) {
 						continue;
+					}
 					l1 = gl1.getLine(ii);
 					for (int jj = mins[j]; jj <= maxs[j]; jj++) {
 						l2 = gl2.getLine(jj);
 						pp = l1.intersection(l2);
 						if (pp != null
 								&& pp.isInside(PointImpl.O, new PointImpl(
-										width, height)))
+										width, height))) {
 							if (!ps.contains(pp)) {
 								Vertex v = new VertexImpl(g, pp.getX(),
 										pp.getY());
 								g.addSubGraph(v);
 								ps.add(pp);
 							}
+						}
 					}
 				}
 			}
@@ -139,8 +144,9 @@ public abstract class AbstractGrid implements Grid {
 	public int getLowerLimit(int line, int x, int y, int width, int height) {
 		GridLine gl = getGridLine(line);
 		double min = Double.POSITIVE_INFINITY;
-		for (Point p : getCorners(x, y, width, height))
+		for (Point p : getCorners(x, y, width, height)) {
 			min = Math.min(min, gl.getNearest(p));
+		}
 		return (int) Math.floor(min);
 	}
 
@@ -153,8 +159,9 @@ public abstract class AbstractGrid implements Grid {
 	public int getUpperLimit(int line, int x, int y, int width, int height) {
 		GridLine gl = getGridLine(line);
 		double max = Double.NEGATIVE_INFINITY;
-		for (Point p : getCorners(x, y, width, height))
+		for (Point p : getCorners(x, y, width, height)) {
 			max = Math.max(max, gl.getNearest(p));
+		}
 		return (int) Math.ceil(max);
 	}
 

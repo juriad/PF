@@ -28,8 +28,9 @@ public class GridPointGeneration {
 		}
 
 		Iterator<Vertex> vi = b.getGraph().verticesIterator();
-		while (vi.hasNext())
+		while (vi.hasNext()) {
 			System.out.println(vi.next());
+		}
 
 	}
 }

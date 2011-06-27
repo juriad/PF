@@ -36,8 +36,9 @@ public class BoardImpl implements Board {
 			Scanner s = new Scanner(f);
 			stype = s.next();
 			type = GridType.getType(stype);
-			if (type == null)
+			if (type == null) {
 				throw new InputMismatchException(stype);
+			}
 			width = s.nextInt();
 			height = s.nextInt();
 			sform = s.next();
@@ -62,8 +63,13 @@ public class BoardImpl implements Board {
 			s.nextLine();
 			spattern = s.nextLine();
 			pattern = GridPattern.getPattern(spattern);
-			if (pattern == null)
+			if (pattern.equals(GridPattern.INTERACTIVE_EDIT)
+					|| pattern.equals(GridPattern.INTERACTIVE_SHOW)) {
+				throw new IllegalStateException();
+			}
+			if (pattern == null) {
 				throw new InputMismatchException(spattern);
+			}
 		}
 	}
 
@@ -72,9 +78,11 @@ public class BoardImpl implements Board {
 		REGULAR ("regular");
 
 		public static GridForm getForm(String desc) {
-			for (GridForm f : values())
-				if (f.getDesc().equals(desc))
+			for (GridForm f : values()) {
+				if (f.getDesc().equals(desc)) {
 					return f;
+				}
+			}
 			return null;
 		}
 
@@ -95,11 +103,12 @@ public class BoardImpl implements Board {
 				fh.points[1], fh.points[2]);
 		BoardImpl b = new BoardImpl(grid, fh.width, fh.height);
 		b.graph = grid.createGraph(fh.width, fh.height);
+		fillVs(b);
 		BoardPattern bp = AbstractBoardPattern.createBoardPattern(b,
 				fh.pattern, f);
-		fillVs(b);
-		for (PointsEdge pe : bp)
+		for (PointsEdge pe : bp) {
 			createEdge(b, pe);
+		}
 		b.graph.makeComponents();
 		return b;
 	}
@@ -110,21 +119,52 @@ public class BoardImpl implements Board {
 
 		Edge e = new EdgeImpl(v1, v2, b.getGrid().getDirections()
 				.getNearestDirection(v1, v2));
+		e.setUsed(pe.used);
 		v1.add(e);
 		v2.add(e);
 	}
 
+	public static Board createEditBoard(Board board) {
+		BoardImpl b = new BoardImpl(board.getGrid(), board.getWidth(),
+				board.getHeight());
+		b.graph = b.getGrid().createGraph(b.getWidth(), b.getHeight());
+		fillVs(b);
+		BoardPattern bp = AbstractBoardPattern.createBoardPattern(board,
+				GridPattern.INTERACTIVE_EDIT, null);
+		for (PointsEdge pe : bp) {
+			createEdge(b, pe);
+		}
+		b.graph.makeComponents();
+		return b;
+	}
+
+	public static Board createShowBoard(Board board) {
+		BoardImpl b = new BoardImpl(board.getGrid(), board.getWidth(),
+				board.getHeight());
+		b.graph = b.getGrid().createGraph(b.getWidth(), b.getHeight());
+		fillVs(b);
+		BoardPattern bp = AbstractBoardPattern.createBoardPattern(board,
+				GridPattern.INTERACTIVE_SHOW, null);
+		for (PointsEdge pe : bp) {
+			createEdge(b, pe);
+		}
+		b.graph.makeComponents();
+		return b;
+	}
+
 	private static void fillVs(BoardImpl b) {
 		Iterator<Vertex> vi = b.getGraph().verticesIterator();
-		while (vi.hasNext())
+		while (vi.hasNext()) {
 			b.addVertex(vi.next());
+		}
 	}
 
 	private BoardGraph graph;
-
 	private final Grid grid;
 	private final int height;
+
 	protected final Map<Point, Vertex> vs;
+
 	private final int width;
 
 	public BoardImpl(Grid grid, int width, int height) {
@@ -185,7 +225,7 @@ public class BoardImpl implements Board {
 		Point pp = null;
 		Vertex v = null;
 		double dist = Integer.MAX_VALUE;
-		for (int i = 0; i < pars.length; i++)
+		for (int i = 0; i < pars.length; i++) {
 			for (int j = i + 1; j < pars.length; j++) {
 				pp = pars[i].intersection(pars[j]);
 				if (pp != null && getVertex(pp) != null) {
@@ -196,6 +236,7 @@ public class BoardImpl implements Board {
 					}
 				}
 			}
+		}
 		return v;
 	}
 
@@ -207,21 +248,24 @@ public class BoardImpl implements Board {
 	@Override
 	public Vertex getNearest(Point p) {
 		Line[] pars = new Line[grid.getGridType().getLines()];
-		for (int i = 0; i < grid.getGridType().getLines(); i++)
+		for (int i = 0; i < grid.getGridType().getLines(); i++) {
 			pars[i] = grid.getGridLine(i).getNearestLine(p);
+		}
 
 		Point pp = null;
 		Vertex v = null;
 		int dist = Integer.MAX_VALUE;
-		for (int i = 0; i < pars.length; i++)
+		for (int i = 0; i < pars.length; i++) {
 			for (int j = i + 1; j < pars.length; j++) {
 				pp = pars[i].intersection(pars[j]);
-				if (pp != null && getVertex(pp) != null)
+				if (pp != null && getVertex(pp) != null) {
 					if (dist > p.vectorTo(pp).lengthSq()) {
 						v = getVertex(pp);
 						dist = p.vectorTo(pp).lengthSq();
 					}
+				}
 			}
+		}
 		return v;
 	}
 

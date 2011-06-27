@@ -8,8 +8,9 @@ public class PointImpl implements Point {
 	public static Point read(String s) {
 		String ss = s.substring(s.indexOf('[') + 1, s.indexOf(']')).trim();
 		String[] sss = ss.split(",");
-		if (sss.length != 2)
+		if (sss.length != 2) {
 			throw new InputMismatchException(ss);
+		}
 		return new PointImpl(Integer.valueOf(sss[0].trim()),
 				Integer.valueOf(sss[1].trim()));
 	}
@@ -25,12 +26,15 @@ public class PointImpl implements Point {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
+		if (this == obj) {
 			return true;
-		if (obj == null)
+		}
+		if (obj == null) {
 			return false;
-		if (!(obj instanceof PointImpl))
+		}
+		if (!(obj instanceof PointImpl)) {
 			return false;
+		}
 		PointImpl other = (PointImpl) obj;
 		return x == other.getX() && y == other.getY();
 	}
@@ -56,9 +60,11 @@ public class PointImpl implements Point {
 
 	@Override
 	public boolean isInside(Point p1, Point p2) {
-		if (p1.getX() <= getX() && p2.getX() >= getX())
-			if (p1.getY() <= getY() && p2.getY() >= getY())
+		if (p1.getX() <= getX() && p2.getX() >= getX()) {
+			if (p1.getY() <= getY() && p2.getY() >= getY()) {
 				return true;
+			}
+		}
 		return false;
 	}
 

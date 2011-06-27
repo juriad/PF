@@ -25,13 +25,14 @@ public class GraphImpl implements Graph {
 		}
 
 		private Edge getNext() {
-			if (ie.hasNext())
+			if (ie.hasNext()) {
 				return ie.next();
-			else if (i.hasNext()) {
+			} else if (i.hasNext()) {
 				ie = i.next().edgesIterator(root, used);
 				return getNext();
-			} else
+			} else {
 				return null;
+			}
 		}
 
 		@Override
@@ -67,13 +68,14 @@ public class GraphImpl implements Graph {
 		}
 
 		private Vertex getNext() {
-			if (iv.hasNext())
+			if (iv.hasNext()) {
 				return iv.next();
-			else if (i.hasNext()) {
+			} else if (i.hasNext()) {
 				iv = i.next().verticesIterator();
 				return getNext();
-			} else
+			} else {
 				return null;
+			}
 		}
 
 		@Override
@@ -136,10 +138,12 @@ public class GraphImpl implements Graph {
 	@Override
 	public void setParent(Graph parent) {
 		if (this.parent != parent) {
-			if (this.parent != null)
+			if (this.parent != null) {
 				this.parent.removeSubGraph(this);
-			if (parent != null)
+			}
+			if (parent != null) {
 				parent.addSubGraph(this);
+			}
 			this.parent = parent;
 		}
 	}

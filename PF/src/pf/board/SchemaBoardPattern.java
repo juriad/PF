@@ -28,8 +28,9 @@ public class SchemaBoardPattern {
 				line = s.nextLine();
 				switch (l % 2) {
 				case 0:
-					if (!line.matches("([. ][- ])*[. ]?"))
+					if (!line.matches("([. ][- ])*[. ]?")) {
 						throw new InputMismatchException();
+					}
 					e = -1;
 					while ((e = line.indexOf("-", e + 1)) >= 0) {
 						ee = (e - 1) / 2;
@@ -38,8 +39,9 @@ public class SchemaBoardPattern {
 					}
 					break;
 				case 1:
-					if (!line.matches("([| ][\\\\/X ])*[| ]?"))
+					if (!line.matches("([| ][\\\\/X ])*[| ]?")) {
 						throw new InputMismatchException();
+					}
 					e = -1;
 					while ((e = line.indexOf("|", e + 1)) >= 0) {
 						ee = e / 2;
@@ -93,8 +95,9 @@ public class SchemaBoardPattern {
 				line = s.nextLine();
 				switch (l % 4) {
 				case 0:
-					if (!line.matches("([. ]((   )|(---)|( - )))*[. ]?"))
+					if (!line.matches("([. ]((   )|(---)|( - )))*[. ]?")) {
 						throw new InputMismatchException();
+					}
 					e = -1;
 					while ((e = line.indexOf("---", e + 1)) >= 0) {
 						ee = (e - 1) / 2;
@@ -109,8 +112,9 @@ public class SchemaBoardPattern {
 					}
 					break;
 				case 1:
-					if (!line.matches("([| ][\\\\ ] [/ ])*[| ]?"))
+					if (!line.matches("([| ][\\\\ ] [/ ])*[| ]?")) {
 						throw new InputMismatchException();
+					}
 					e = -1;
 					while ((e = line.indexOf("\\", e + 1)) >= 0) {
 						ee = (e - 1) / 2;
@@ -125,8 +129,9 @@ public class SchemaBoardPattern {
 					}
 					break;
 				case 2:
-					if (!line.matches("([| ] [. ] )*[| ]?"))
+					if (!line.matches("([| ] [. ] )*[| ]?")) {
 						throw new InputMismatchException();
+					}
 					e = -1;
 					while ((e = line.indexOf("|", e + 1)) >= 0) {
 						ee = e / 2;
@@ -135,8 +140,9 @@ public class SchemaBoardPattern {
 					}
 					break;
 				case 3:
-					if (!line.matches("([| ][/ ] [\\\\ ])*[| ]?"))
+					if (!line.matches("([| ][/ ] [\\\\ ])*[| ]?")) {
 						throw new InputMismatchException();
+					}
 					e = -1;
 					while ((e = line.indexOf("/", e + 1)) >= 0) {
 						ee = (e + 1) / 2;
@@ -176,8 +182,9 @@ public class SchemaBoardPattern {
 				line = s.nextLine();
 				switch (l % 2) {
 				case 0:
-					if (!line.matches("([. ][- ])*[. ]?"))
+					if (!line.matches("([. ][- ])*[. ]?")) {
 						throw new InputMismatchException();
+					}
 					e = -1;
 					while ((e = line.indexOf("-", e + 1)) >= 0) {
 						ee = (e - 1) / 2;
@@ -186,8 +193,9 @@ public class SchemaBoardPattern {
 					}
 					break;
 				case 1:
-					if (!line.matches("([| ] )*[| ]?"))
+					if (!line.matches("([| ] )*[| ]?")) {
 						throw new InputMismatchException();
+					}
 					e = -1;
 					while ((e = line.indexOf("|", e + 1)) >= 0) {
 						ee = e / 2;
@@ -222,8 +230,9 @@ public class SchemaBoardPattern {
 				switch (l % 4) {
 				case 0:
 				case 2:
-					if (!line.matches("(  )?([. ]((   )|(---)|( - )))*[. ]"))
+					if (!line.matches("(  )?([. ]((   )|(---)|( - )))*[. ]")) {
 						throw new InputMismatchException();
+					}
 					e = -1;
 					while ((e = line.indexOf("---", e + 1)) >= 0) {
 						ee = (e - 1) * 2;
@@ -238,8 +247,9 @@ public class SchemaBoardPattern {
 					}
 					break;
 				case 1:
-					if (!line.matches("( [\\\\ ] [/ ])* ?"))
+					if (!line.matches("( [\\\\ ] [/ ])* ?")) {
 						throw new InputMismatchException();
+					}
 					e = -1;
 					while ((e = line.indexOf("\\", e + 1)) >= 0) {
 						ee = (e - 1) * 2;
@@ -254,8 +264,9 @@ public class SchemaBoardPattern {
 					}
 					break;
 				case 3:
-					if (!line.matches("( [/ ] [\\\\ ])* ?"))
+					if (!line.matches("( [/ ] [\\\\ ])* ?")) {
 						throw new InputMismatchException();
+					}
 					e = -1;
 					while ((e = line.indexOf("/", e + 1)) >= 0) {
 						ee = (e + 1) * 2;
@@ -289,8 +300,8 @@ public class SchemaBoardPattern {
 				return new DiagonalXSchemaBoardPattern(board, f);
 			}
 		} catch (FileNotFoundException ex) {
-			// FIXME return empty on file not found ex
-			return null;
+			return AbstractBoardPattern.createBoardPattern(board,
+					GridPattern.SIMPLE_EMPTY, null);
 		}
 		return null;
 	}
