@@ -1,6 +1,6 @@
 package pf.board;
 
-import java.io.Writer;
+import java.io.BufferedWriter;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -21,10 +21,10 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 		}
 
 		@Override
-		protected void calculateEdges(Board board) {
-			for (PointsEdge ep : new FullBoardPattern(board)) {
-				Vertex v1 = board.getVertex(ep.p1);
-				Vertex v2 = board.getVertex(ep.p2);
+		protected void calculateEdges() {
+			for (PointsEdge ep : new FullBoardPattern(getBoard())) {
+				Vertex v1 = getBoard().getVertex(ep.p1);
+				Vertex v2 = getBoard().getVertex(ep.p2);
 				Edge e;
 				if (v1 != null && v2 != null) {
 					e = v1.edgeToVertex(v2);
@@ -36,7 +36,7 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 		}
 
 		@Override
-		public void save(Writer w) {
+		public void save(BufferedWriter w) {
 			throw new UnsupportedOperationException();
 		}
 	}
@@ -52,13 +52,11 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 		}
 
 		@Override
-		protected void calculateEdges(Board board) {
+		protected void calculateEdges() {
 		}
 
 		@Override
-		public void save(Writer w) {
-			// TODO autogen method: save
-
+		public void save(BufferedWriter w) {
 		}
 
 	}
@@ -74,13 +72,13 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 		}
 
 		@Override
-		protected void calculateEdges(Board board) {
-			Iterator<Vertex> vi = board.getGraph().verticesIterator();
+		protected void calculateEdges() {
+			Iterator<Vertex> vi = getBoard().getGraph().verticesIterator();
 			while (vi.hasNext()) {
 				Vertex v = vi.next();
-				for (Direction d : board.getGrid().getDirections()) {
-					Vertex vv = board
-							.getVertex(v.toPoint().move(d.getVector()));
+				for (Direction d : getBoard().getGrid().getDirections()) {
+					Vertex vv = getBoard().getVertex(
+							v.toPoint().move(d.getVector()));
 					if (vv != null) {
 						addEdge(v.toPoint(), vv.toPoint());
 					}
@@ -89,9 +87,7 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 		}
 
 		@Override
-		public void save(Writer w) {
-			// TODO autogen method: save
-
+		public void save(BufferedWriter w) {
 		}
 	}
 
@@ -106,8 +102,8 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 		}
 
 		@Override
-		protected void calculateEdges(Board board) {
-			Iterator<Edge> ei = board.getGraph().edgesIterator(false);
+		protected void calculateEdges() {
+			Iterator<Edge> ei = getBoard().getGraph().edgesIterator(false);
 			while (ei.hasNext()) {
 				Edge e = ei.next();
 				if (e.isUsed()) {
@@ -117,7 +113,7 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 		}
 
 		@Override
-		public void save(Writer w) {
+		public void save(BufferedWriter w) {
 			throw new UnsupportedOperationException();
 		}
 	}
@@ -155,13 +151,13 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 	}
 
 	public SimpleBoardPattern(Board board) {
-		super();
-		calculateEdges(board);
+		super(board);
+		calculateEdges();
 	}
 
 	public SimpleBoardPattern(Board board, Set<PointsEdge> pes) {
-		super(pes);
+		super(board, pes);
 	}
 
-	protected abstract void calculateEdges(Board board);
+	protected abstract void calculateEdges();
 }

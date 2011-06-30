@@ -26,13 +26,15 @@ public abstract class AbstractBoardPattern implements BoardPattern {
 	}
 
 	protected final Set<PointsEdge> pes;
+	private final Board board;
 
-	public AbstractBoardPattern() {
-		pes = new HashSet<PointsEdge>();
+	public AbstractBoardPattern(Board board) {
+		this(board, new HashSet<PointsEdge>());
 	}
 
-	public AbstractBoardPattern(Set<PointsEdge> pes) {
+	public AbstractBoardPattern(Board board, Set<PointsEdge> pes) {
 		this.pes = pes;
+		this.board = board;
 	}
 
 	protected void addEdge(Point p1, Point p2) {
@@ -41,6 +43,10 @@ public abstract class AbstractBoardPattern implements BoardPattern {
 
 	protected void addEdge(Point p1, Point p2, boolean b) {
 		pes.add(new PointsEdge(p1, p2, b));
+	}
+
+	public Board getBoard() {
+		return board;
 	}
 
 	@Override

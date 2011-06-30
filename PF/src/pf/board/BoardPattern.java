@@ -1,6 +1,7 @@
 package pf.board;
 
-import java.io.Writer;
+import java.io.BufferedWriter;
+import java.io.IOException;
 
 import pf.analytics.Point;
 import pf.board.BoardPattern.PointsEdge;
@@ -49,10 +50,9 @@ public interface BoardPattern extends Iterable<PointsEdge> {
 
 		@Override
 		public String toString() {
-			return "PointsEdge [p1=" + p1 + ", p2=" + p2 + ", used=" + used
-					+ "]";
+			return "PointsEdge: " + p1 + " " + p2 + ": " + used;
 		}
 	}
 
-	void save(Writer w);
+	void save(BufferedWriter w) throws IOException;
 }

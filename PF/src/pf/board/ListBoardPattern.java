@@ -1,8 +1,9 @@
 package pf.board;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.Writer;
+import java.io.IOException;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -42,14 +43,17 @@ public class ListBoardPattern extends ComplexBoardPattern {
 		while (s.hasNextLine()) {
 			p1 = s.findInLine(Point.pattern);
 			p2 = s.findInLine(Point.pattern);
+			s.nextLine();
 			addEdge(PointImpl.fromString(p1), PointImpl.fromString(p2));
 		}
 	}
 
 	@Override
-	public void save(Writer w) {
-		// TODO autogen method: save
-
+	public void save(BufferedWriter w) throws IOException {
+		for (PointsEdge pe : this) {
+			w.write(pe.p1 + " " + pe.p2);
+			w.newLine();
+		}
 	}
 
 }

@@ -32,12 +32,12 @@ public abstract class ComplexBoardPattern extends AbstractBoardPattern {
 
 	protected ComplexBoardPattern(Board board, File f)
 			throws FileNotFoundException {
-		super();
+		super(board);
 		readFromFile(f);
 	}
 
 	protected ComplexBoardPattern(Board board, Set<PointsEdge> pes) {
-		super(pes);
+		super(board, pes);
 	}
 
 	protected abstract void readFromFile(File f) throws FileNotFoundException;
