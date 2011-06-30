@@ -151,6 +151,11 @@ public abstract class AbstractGrid implements Grid {
 	}
 
 	@Override
+	public Point[] getPoints() {
+		return new Point[] { p1, p2, p3 };
+	}
+
+	@Override
 	public int getUpperLimit(int line, int width, int height) {
 		return getUpperLimit(line, 0, 0, width, height);
 	}

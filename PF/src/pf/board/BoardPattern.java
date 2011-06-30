@@ -1,5 +1,7 @@
 package pf.board;
 
+import java.io.Writer;
+
 import pf.analytics.Point;
 import pf.board.BoardPattern.PointsEdge;
 
@@ -51,4 +53,6 @@ public interface BoardPattern extends Iterable<PointsEdge> {
 					+ "]";
 		}
 	}
+
+	void save(Writer w);
 }

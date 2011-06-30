@@ -2,13 +2,18 @@ package pf.board;
 
 import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.Set;
 
 import pf.analytics.Line;
 import pf.analytics.Point;
@@ -32,27 +37,32 @@ public class BoardImpl implements Board {
 		final String spattern;
 		final GridPattern pattern;
 
+		final String line1;
+		final String line2;
+
 		public FileHeader(File f) throws FileNotFoundException {
 			Scanner s = new Scanner(f);
-			stype = s.next();
+			line1 = s.nextLine();
+			Scanner ss = new Scanner(line1);
+			stype = ss.next();
 			type = GridType.getType(stype);
 			if (type == null) {
 				throw new InputMismatchException(stype);
 			}
-			width = s.nextInt();
-			height = s.nextInt();
-			sform = s.next();
+			width = ss.nextInt();
+			height = ss.nextInt();
+			sform = ss.next();
 			form = GridForm.getForm(sform);
 			switch (form) {
 			case FREE:
 				points = new Point[3];
 				String p;
-				p = s.findInLine(Point.pattern);
-				points[0] = PointImpl.read(p);
-				p = s.findInLine(Point.pattern);
-				points[1] = PointImpl.read(p);
-				p = s.findInLine(Point.pattern);
-				points[2] = PointImpl.read(p);
+				p = ss.findInLine(Point.pattern);
+				points[0] = PointImpl.fromString(p);
+				p = ss.findInLine(Point.pattern);
+				points[1] = PointImpl.fromString(p);
+				p = ss.findInLine(Point.pattern);
+				points[2] = PointImpl.fromString(p);
 				break;
 			case REGULAR:
 				points = type.getRegularPoints();
@@ -60,8 +70,8 @@ public class BoardImpl implements Board {
 			default:
 				throw new InputMismatchException(sform);
 			}
-			s.nextLine();
-			spattern = s.nextLine();
+			line2 = s.nextLine();
+			spattern = line2;
 			pattern = GridPattern.getPattern(spattern);
 			if (pattern.equals(GridPattern.INTERACTIVE_EDIT)
 					|| pattern.equals(GridPattern.INTERACTIVE_SHOW)) {
@@ -70,6 +80,31 @@ public class BoardImpl implements Board {
 			if (pattern == null) {
 				throw new InputMismatchException(spattern);
 			}
+		}
+
+		public FileHeader(GridType type, int width, int height, Point[] points,
+				GridPattern pattern) {
+			stype = type.getDesc();
+			this.type = type;
+			this.width = width;
+			this.height = height;
+			this.points = points;
+
+			String line12;
+			if (type.isRegular(points)) {
+				line12 = "";
+				form = GridForm.REGULAR;
+			} else {
+				form = GridForm.FREE;
+				line12 = points[0].toString() + " " + points[1].toString()
+						+ " " + points[2].toString();
+			}
+			sform = form.getDesc();
+			String line11 = stype + " " + width + " " + height + " " + sform;
+			line1 = line11 + " " + line12;
+			spattern = pattern.getDesc();
+			this.pattern = pattern;
+			line2 = spattern;
 		}
 	}
 
@@ -130,7 +165,7 @@ public class BoardImpl implements Board {
 		b.graph = b.getGrid().createGraph(b.getWidth(), b.getHeight());
 		fillVs(b);
 		BoardPattern bp = AbstractBoardPattern.createBoardPattern(board,
-				GridPattern.INTERACTIVE_EDIT, null);
+				GridPattern.INTERACTIVE_EDIT, (File) null);
 		for (PointsEdge pe : bp) {
 			createEdge(b, pe);
 		}
@@ -144,7 +179,7 @@ public class BoardImpl implements Board {
 		b.graph = b.getGrid().createGraph(b.getWidth(), b.getHeight());
 		fillVs(b);
 		BoardPattern bp = AbstractBoardPattern.createBoardPattern(board,
-				GridPattern.INTERACTIVE_SHOW, null);
+				GridPattern.INTERACTIVE_SHOW, (File) null);
 		for (PointsEdge pe : bp) {
 			createEdge(b, pe);
 		}
@@ -284,4 +319,28 @@ public class BoardImpl implements Board {
 		return width;
 	}
 
+	@Override
+	public void save(File file, GridPattern pattern) throws IOException {
+		FileHeader fh = new FileHeader(getGrid().getGridType(), width, height,
+				getGrid().getPoints(), pattern);
+		FileWriter fw = new FileWriter(file);
+		BufferedWriter bw = new BufferedWriter(fw);
+		bw.write(fh.line1);
+		bw.newLine();
+		bw.write(fh.line2);
+		bw.newLine();
+
+		Set<PointsEdge> pes = new HashSet<BoardPattern.PointsEdge>();
+		Iterator<Edge> ei = getGraph().edgesIterator(false);
+		while (ei.hasNext()) {
+			Edge e = ei.next();
+			pes.add(new PointsEdge(e.getV1().toPoint(), e.getV2().toPoint(), e
+					.isUsed()));
+		}
+		BoardPattern bp = AbstractBoardPattern.createBoardPattern(this,
+				pattern, pes);
+		bp.save(bw);
+		bw.close();
+		fw.close();
+	}
 }

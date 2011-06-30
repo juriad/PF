@@ -1,5 +1,6 @@
 package pf.board;
 
+import pf.analytics.Point;
 import pf.graph.Directions;
 
 public interface Grid {
@@ -14,6 +15,8 @@ public interface Grid {
 	int getLowerLimit(int line, int width, int height);
 
 	int getLowerLimit(int line, int x, int y, int width, int height);
+
+	Point[] getPoints();
 
 	int getUpperLimit(int line, int width, int height);
 

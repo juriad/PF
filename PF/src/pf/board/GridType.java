@@ -50,4 +50,19 @@ public enum GridType {
 	public int getUnitSize() {
 		return unitSize;
 	}
+
+	public boolean isRegular(Point[] points2) {
+		if (points2 == null) {
+			throw new IllegalArgumentException();
+		}
+		if (points2.length != points.length) {
+			return false;
+		}
+		for (int i = 0; i < points2.length; i++) {
+			if (!points2[i].equals(points[i])) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

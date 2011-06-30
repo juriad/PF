@@ -1,6 +1,8 @@
 package pf.board;
 
+import java.io.Writer;
 import java.util.Iterator;
+import java.util.Set;
 
 import pf.graph.Direction;
 import pf.graph.Edge;
@@ -12,6 +14,10 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 
 		public EditBoardPattern(Board board) {
 			super(board);
+		}
+
+		public EditBoardPattern(Board board, Set<PointsEdge> pes) {
+			super(board, pes);
 		}
 
 		@Override
@@ -28,6 +34,11 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 				addEdge(ep.p1, ep.p2, e != null ? true : false);
 			}
 		}
+
+		@Override
+		public void save(Writer w) {
+			throw new UnsupportedOperationException();
+		}
 	}
 
 	public static class EmptyBoardPattern extends SimpleBoardPattern {
@@ -36,8 +47,18 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 			super(board);
 		}
 
+		public EmptyBoardPattern(Board board, Set<PointsEdge> pes) {
+			super(board, pes);
+		}
+
 		@Override
 		protected void calculateEdges(Board board) {
+		}
+
+		@Override
+		public void save(Writer w) {
+			// TODO autogen method: save
+
 		}
 
 	}
@@ -46,6 +67,10 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 
 		public FullBoardPattern(Board board) {
 			super(board);
+		}
+
+		public FullBoardPattern(Board board, Set<PointsEdge> pes) {
+			super(board, pes);
 		}
 
 		@Override
@@ -62,12 +87,22 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 				}
 			}
 		}
+
+		@Override
+		public void save(Writer w) {
+			// TODO autogen method: save
+
+		}
 	}
 
 	public static class ShowBoardPattern extends SimpleBoardPattern {
 
 		public ShowBoardPattern(Board board) {
 			super(board);
+		}
+
+		public ShowBoardPattern(Board board, Set<PointsEdge> pes) {
+			super(board, pes);
 		}
 
 		@Override
@@ -79,6 +114,11 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 					addEdge(e.getV1().toPoint(), e.getV2().toPoint());
 				}
 			}
+		}
+
+		@Override
+		public void save(Writer w) {
+			throw new UnsupportedOperationException();
 		}
 	}
 
@@ -93,22 +133,34 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 			return new EmptyBoardPattern(board);
 		case SIMPLE_FULL:
 			return new FullBoardPattern(board);
-		case SIMPLE_HEXAGONAL:
-			break;
-		case SIMPLE_PARALLEL:
-			break;
-		case SIMPLE_SQUARE:
-			break;
 		default:
 			throw new IllegalArgumentException();
 		}
-		// TODO simple board pattern
-		return null;
+	}
+
+	public static BoardPattern createSimpleBoardPattern(Board board,
+			GridPattern gp, Set<PointsEdge> pes) {
+		switch (gp) {
+		case INTERACTIVE_EDIT:
+			return new EditBoardPattern(board, pes);
+		case INTERACTIVE_SHOW:
+			return new ShowBoardPattern(board, pes);
+		case SIMPLE_EMPTY:
+			return new EmptyBoardPattern(board, pes);
+		case SIMPLE_FULL:
+			return new FullBoardPattern(board, pes);
+		default:
+			throw new IllegalArgumentException();
+		}
 	}
 
 	public SimpleBoardPattern(Board board) {
 		super();
 		calculateEdges(board);
+	}
+
+	public SimpleBoardPattern(Board board, Set<PointsEdge> pes) {
+		super(pes);
 	}
 
 	protected abstract void calculateEdges(Board board);

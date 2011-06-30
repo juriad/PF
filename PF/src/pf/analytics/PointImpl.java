@@ -5,7 +5,7 @@ import java.util.InputMismatchException;
 public class PointImpl implements Point {
 	public static final Point O = new PointImpl(0, 0);
 
-	public static Point read(String s) {
+	public static Point fromString(String s) {
 		String ss = s.substring(s.indexOf('[') + 1, s.indexOf(']')).trim();
 		String[] sss = ss.split(",");
 		if (sss.length != 2) {
@@ -80,7 +80,7 @@ public class PointImpl implements Point {
 
 	@Override
 	public String toString() {
-		return "PointImpl [x=" + x + ", y=" + y + "]";
+		return "[ " + x + " , " + y + " ]";
 	}
 
 	@Override

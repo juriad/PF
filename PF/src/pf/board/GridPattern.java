@@ -3,9 +3,6 @@ package pf.board;
 public enum GridPattern {
 	SIMPLE_FULL ("full", true),
 	SIMPLE_EMPTY ("empty", true),
-	SIMPLE_HEXAGONAL ("hexagonal", true),
-	SIMPLE_SQUARE ("square", true),
-	SIMPLE_PARALLEL ("parallel", true),
 	COMPLEX_LIST ("list", false),
 	COMPLEX_SCHEMA ("schema", false),
 	INTERACTIVE_EDIT ("edit", true),

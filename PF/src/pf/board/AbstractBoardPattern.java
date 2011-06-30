@@ -17,10 +17,22 @@ public abstract class AbstractBoardPattern implements BoardPattern {
 		return ComplexBoardPattern.createComplexBoardPattern(board, f, gp);
 	}
 
+	public static BoardPattern createBoardPattern(Board board, GridPattern gp,
+			Set<PointsEdge> pes) {
+		if (gp.isSimple()) {
+			return SimpleBoardPattern.createSimpleBoardPattern(board, gp, pes);
+		}
+		return ComplexBoardPattern.createComplexBoardPattern(board, pes, gp);
+	}
+
 	protected final Set<PointsEdge> pes;
 
 	public AbstractBoardPattern() {
 		pes = new HashSet<PointsEdge>();
+	}
+
+	public AbstractBoardPattern(Set<PointsEdge> pes) {
+		this.pes = pes;
 	}
 
 	protected void addEdge(Point p1, Point p2) {

@@ -1,5 +1,8 @@
 package pf.board;
 
+import java.io.File;
+import java.io.IOException;
+
 import pf.analytics.Point;
 import pf.graph.Graph;
 import pf.graph.Vertex;
@@ -22,5 +25,7 @@ public interface Board {
 	Vertex getVertex(Point p);
 
 	int getWidth();
+
+	void save(File file, GridPattern pattern) throws IOException;
 
 }

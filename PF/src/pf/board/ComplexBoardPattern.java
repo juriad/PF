@@ -2,6 +2,7 @@ package pf.board;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.Set;
 
 public abstract class ComplexBoardPattern extends AbstractBoardPattern {
 
@@ -17,10 +18,26 @@ public abstract class ComplexBoardPattern extends AbstractBoardPattern {
 		}
 	}
 
+	public static BoardPattern createComplexBoardPattern(Board board,
+			Set<PointsEdge> pes, GridPattern gp) {
+		switch (gp) {
+		case COMPLEX_LIST:
+			return ListBoardPattern.createListBoardPattern(board, pes);
+		case COMPLEX_SCHEMA:
+			return SchemaBoardPattern.createSchemaBoardPattern(board, pes);
+		default:
+			throw new IllegalArgumentException();
+		}
+	}
+
 	protected ComplexBoardPattern(Board board, File f)
 			throws FileNotFoundException {
 		super();
 		readFromFile(f);
+	}
+
+	protected ComplexBoardPattern(Board board, Set<PointsEdge> pes) {
+		super(pes);
 	}
 
 	protected abstract void readFromFile(File f) throws FileNotFoundException;

@@ -2,10 +2,13 @@ package pf.board;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.Writer;
 import java.util.InputMismatchException;
 import java.util.Scanner;
+import java.util.Set;
 
 import pf.analytics.PointImpl;
+import pf.board.BoardPattern.PointsEdge;
 
 public class SchemaBoardPattern {
 
@@ -14,6 +17,10 @@ public class SchemaBoardPattern {
 		protected DiagonalSchemaBoardPattern(Board board, File f)
 				throws FileNotFoundException {
 			super(board, f);
+		}
+
+		protected DiagonalSchemaBoardPattern(Board board, Set<PointsEdge> pes) {
+			super(board, pes);
 		}
 
 		@Override
@@ -74,6 +81,12 @@ public class SchemaBoardPattern {
 				l++;
 			}
 		}
+
+		@Override
+		public void save(Writer w) {
+			// TODO autogen method: save
+
+		}
 	}
 
 	public static class DiagonalXSchemaBoardPattern extends ComplexBoardPattern {
@@ -81,6 +94,10 @@ public class SchemaBoardPattern {
 		protected DiagonalXSchemaBoardPattern(Board board, File f)
 				throws FileNotFoundException {
 			super(board, f);
+		}
+
+		protected DiagonalXSchemaBoardPattern(Board board, Set<PointsEdge> pes) {
+			super(board, pes);
 		}
 
 		@Override
@@ -161,6 +178,12 @@ public class SchemaBoardPattern {
 				l++;
 			}
 		}
+
+		@Override
+		public void save(Writer w) {
+			// TODO autogen method: save
+
+		}
 	}
 
 	public static class SquareSchemaBoardPattern extends ComplexBoardPattern {
@@ -168,6 +191,10 @@ public class SchemaBoardPattern {
 		protected SquareSchemaBoardPattern(Board board, File f)
 				throws FileNotFoundException {
 			super(board, f);
+		}
+
+		protected SquareSchemaBoardPattern(Board board, Set<PointsEdge> pes) {
+			super(board, pes);
 		}
 
 		@Override
@@ -208,6 +235,12 @@ public class SchemaBoardPattern {
 				l++;
 			}
 		}
+
+		@Override
+		public void save(Writer w) {
+			// TODO autogen method: save
+
+		}
 	}
 
 	public static class TriangleSchemaBoardPattern extends ComplexBoardPattern {
@@ -215,6 +248,10 @@ public class SchemaBoardPattern {
 		protected TriangleSchemaBoardPattern(Board board, File f)
 				throws FileNotFoundException {
 			super(board, f);
+		}
+
+		protected TriangleSchemaBoardPattern(Board board, Set<PointsEdge> pes) {
+			super(board, pes);
 		}
 
 		@Override
@@ -285,6 +322,12 @@ public class SchemaBoardPattern {
 				l++;
 			}
 		}
+
+		@Override
+		public void save(Writer w) {
+			// TODO autogen method: save
+
+		}
 	}
 
 	public static BoardPattern createSchemaBoardPattern(Board board, File f) {
@@ -301,9 +344,24 @@ public class SchemaBoardPattern {
 			}
 		} catch (FileNotFoundException ex) {
 			return AbstractBoardPattern.createBoardPattern(board,
-					GridPattern.SIMPLE_EMPTY, null);
+					GridPattern.SIMPLE_EMPTY, (File) null);
 		}
-		return null;
+		throw new IllegalArgumentException();
+	}
+
+	public static BoardPattern createSchemaBoardPattern(Board board,
+			Set<PointsEdge> pes) {
+		switch (board.getGrid().getGridType()) {
+		case TRIANGLE:
+			return new TriangleSchemaBoardPattern(board, pes);
+		case SQUARE:
+			return new SquareSchemaBoardPattern(board, pes);
+		case DIAGONAL:
+			return new DiagonalSchemaBoardPattern(board, pes);
+		case DIAGONALX:
+			return new DiagonalXSchemaBoardPattern(board, pes);
+		}
+		throw new IllegalArgumentException();
 	}
 
 	private SchemaBoardPattern() {
