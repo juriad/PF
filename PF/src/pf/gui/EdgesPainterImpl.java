@@ -3,6 +3,8 @@ package pf.gui;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.Shape;
 import java.awt.Stroke;
 import java.awt.geom.Line2D;
 import java.awt.geom.Line2D.Float;
@@ -46,6 +48,24 @@ public class EdgesPainterImpl implements EdgesPainter {
 		g2d.draw(l);
 	}
 
+	@Override
+	public Rectangle getBounds(GameBoard gameBoard, Edge e) {
+		Float l = getLine(gameBoard, e);
+		Shape s1 = getUnusedStroke().createStrokedShape(l);
+		Rectangle r1 = s1.getBounds();
+		Shape s2 = getUnusedStroke().createStrokedShape(l);
+		Rectangle r2 = s2.getBounds();
+		return r1.union(r2);
+	}
+
+	protected Line2D.Float getLine(GameBoard gameBoard, Edge e) {
+		int x1 = gameBoard.translateXToScreen(e.getV1().getX());
+		int y1 = gameBoard.translateYToScreen(e.getV1().getY());
+		int x2 = gameBoard.translateXToScreen(e.getV2().getX());
+		int y2 = gameBoard.translateYToScreen(e.getV2().getY());
+		return new Line2D.Float(x1, y1, x2, y2);
+	}
+
 	public Color getUnusedColor() {
 		return unusedColor;
 	}
@@ -75,16 +95,10 @@ public class EdgesPainterImpl implements EdgesPainter {
 		Iterator<Edge> ei = gameBoard.getBoard().getGraph()
 				.edgesIterator(false);
 		Edge e;
-		Line2D.Float l;
 		while (ei.hasNext()) {
 			e = ei.next();
-			int x1 = gameBoard.translateXToScreen(e.getV1().getX());
-			int y1 = gameBoard.translateYToScreen(e.getV1().getY());
-			int x2 = gameBoard.translateXToScreen(e.getV2().getX());
-			int y2 = gameBoard.translateYToScreen(e.getV2().getY());
-			l = new Line2D.Float(x1, y1, x2, y2);
-			if (l.intersects(g2d.getClipBounds())) {
-				drawLine(g2d, e, l);
+			if (getBounds(gameBoard, e).intersects(g2d.getClipBounds())) {
+				drawLine(g2d, e, getLine(gameBoard, e));
 			}
 		}
 	}

@@ -25,7 +25,7 @@ public class X {
 		frame.setVisible(true);
 		Container c = frame.getContentPane();
 		c.setLayout(new BorderLayout());
-		File f = new File("/home/adam/srgrid.txt");
+		File f = new File("/home/adam/trgrid.txt");
 		Board b = BoardImpl.createBoard(f);
 		final InteractiveBoard gb = new InteractiveBoard(b);
 		gb.setVerticesPainterAndPaint(new VerticesPainterImpl(gb.getBoard()
@@ -43,36 +43,40 @@ public class X {
 			@Override
 			public void touchCancelled(TouchEvent e) {
 				System.out.println("cancelled:");
+				gb.repaint();
 			}
 
 			@Override
 			public void touchEnded(TouchEvent e) {
 				System.out.println("ended:");
+				gb.repaint();
 			}
 
 			@Override
 			public void touchLonger(TouchEvent e) {
 				System.out.println("longer: " + e.getEdge());
 				e.getEdge().setUsed(!e.getEdge().isUsed());
-				gb.repaint();
+				gb.repaintEdge(e.getEdge());
 			}
 
 			@Override
 			public void touchShorter(TouchEvent e) {
 				System.out.println("shorter: " + e.getEdge());
 				e.getEdge().setUsed(!e.getEdge().isUsed());
-				gb.repaint();
+				gb.repaintEdge(e.getEdge());
 			}
 
 			@Override
 			public void touchStarted(TouchEvent e) {
 				System.out.println("started: " + e.getVertex());
-
+				gb.repaintVertex(e.getVertex());
 			}
 		});
 
-		c.add(new InteractiveBoardControl(gb), BorderLayout.NORTH);
+		InteractiveBoardControl ibc = new InteractiveBoardControl(gb);
+		c.add(ibc, BorderLayout.NORTH);
 		c.add(gb, BorderLayout.CENTER);
+
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.pack();
 	}

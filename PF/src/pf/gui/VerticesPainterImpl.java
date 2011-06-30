@@ -65,7 +65,7 @@ public class VerticesPainterImpl implements VerticesPainter {
 		}
 	}
 
-	private void drawVertex(Graphics2D g2d, GameBoard board, Vertex v) {
+	public void drawVertex(Graphics2D g2d, GameBoard board, Vertex v) {
 		int degree = degreeType.degree(v);
 		g2d.setStroke(new BasicStroke(getOuterRadius(degree)
 				- getInnerRadius(degree)));
@@ -74,6 +74,14 @@ public class VerticesPainterImpl implements VerticesPainter {
 		int cy = board.translateYToScreen(v.getY());
 		g2d.drawOval(cx - getRadius(degree) / 2, cy - getRadius(degree) / 2,
 				getRadius(degree), getRadius(degree));
+	}
+
+	@Override
+	public Rectangle getBounds(GameBoard board, Vertex v) {
+		int r = getRadius(v);
+		int x = board.translateXToScreen(v.getX()) - 2 * r;
+		int y = board.translateYToScreen(v.getY()) - 2 * r;
+		return new Rectangle(x, y, 4 * r, 4 * r);
 	}
 
 	public Color getColor(int degree) {
@@ -100,26 +108,24 @@ public class VerticesPainterImpl implements VerticesPainter {
 		return getOuterRadius(degree);
 	}
 
+	public int getRadius(Vertex v) {
+		return getRadius(getDegreeType().degree(v));
+	}
+
 	@Override
 	public void paintVertices(Graphics2D g2d, GameBoard board) {
 		Iterator<Vertex> vi = board.getBoard().getGraph().verticesIterator();
 		Vertex v;
 		while (vi.hasNext()) {
 			v = vi.next();
-			float dx = board.translateRawXFromScreen(getRadius(degreeType
-					.degree(v)));
-			float dy = board.translateRawYFromScreen(getRadius(degreeType
-					.degree(v)));
-			float d = Math.min(dx, dy);
 
-			int x = board.translateXToScreen(v.getX() - 2 * d);
-			int y = board.translateYToScreen(v.getY() - 2 * d);
-			int w = board.translateRawXToScreen(4 * d);
-			int h = board.translateRawYToScreen(4 * d);
+			int r = getRadius(v);
+			int x = board.translateXToScreen(v.getX() - 2 * r);
+			int y = board.translateYToScreen(v.getY() - 2 * r);
 
-			Rectangle r = new Rectangle(x, y, Math.max(w, h), Math.max(w, h));
+			Rectangle rr = new Rectangle(x, y, 4 * r, 4 * r);
 
-			if (g2d.getClipBounds().intersects(r)) {
+			if (g2d.getClipBounds().intersects(rr)) {
 				drawVertex(g2d, board, v);
 			}
 		}
@@ -165,5 +171,4 @@ public class VerticesPainterImpl implements VerticesPainter {
 			setRadius(i, outer, inner);
 		}
 	}
-
 }

@@ -4,6 +4,7 @@ import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
@@ -15,6 +16,7 @@ import javax.swing.event.EventListenerList;
 
 import pf.board.Board;
 import pf.board.BoardImpl;
+import pf.board.GridType;
 import pf.graph.Edge;
 import pf.graph.Path;
 import pf.graph.PathImpl;
@@ -25,7 +27,10 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 
 		private static final float dist = 0.1f;
 
-		public DefaultSnapPolicy() {
+		private final GridType gt;
+
+		public DefaultSnapPolicy(GridType gt) {
+			this.gt = gt;
 		}
 
 		@Override
@@ -33,7 +38,8 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 			Vertex v = board.getBoard().getNearest(x, y);
 			if (v != null
 					&& (v.getX() - x) * (v.getX() - x) + (v.getY() - y)
-							* (v.getY() - y) < dist) {
+							* (v.getY() - y) < dist * gt.getUnitSize()
+							* gt.getUnitSize()) {
 				return v;
 			}
 			return null;
@@ -45,12 +51,13 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 
 		protected Path path = null;
 
-		protected Vertex nearest;
+		protected Vertex nearest = null;
 
 		protected Vertex last;
 
-		public TouchSupport() {
+		protected int cursor = -2;
 
+		public TouchSupport() {
 		}
 
 		public void cancelTouch() {
@@ -134,15 +141,24 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		}
 
 		private void setCursor() {
+			int setCursor = -1;
 			if (isTouchInProgress()) {
-				InteractiveBoard.this.setCursor(Cursor
-						.getPredefinedCursor(Cursor.MOVE_CURSOR));
+				if (cursor != Cursor.MOVE_CURSOR) {
+					setCursor = Cursor.MOVE_CURSOR;
+				}
 			} else if (nearest != null) {
-				InteractiveBoard.this.setCursor(Cursor
-						.getPredefinedCursor(Cursor.HAND_CURSOR));
+				if (cursor != Cursor.HAND_CURSOR) {
+					setCursor = Cursor.HAND_CURSOR;
+				}
 			} else {
+				if (cursor != Cursor.DEFAULT_CURSOR) {
+					setCursor = Cursor.DEFAULT_CURSOR;
+				}
+			}
+
+			if (setCursor != -1) {
 				InteractiveBoard.this.setCursor(Cursor
-						.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+						.getPredefinedCursor(setCursor));
 			}
 		}
 
@@ -167,6 +183,7 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	protected Map<Path, PathPainter> paths;
 
 	private SnapPolicy snapping;
+	private boolean editable;
 
 	public InteractiveBoard(Board board) {
 		super(board);
@@ -175,7 +192,7 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		ts = new TouchSupport();
 		addMouseListener(ts);
 		addMouseMotionListener(ts);
-		snapping = new DefaultSnapPolicy();
+		snapping = new DefaultSnapPolicy(board.getGrid().getGridType());
 	}
 
 	public synchronized void addGameModeListener(GameModeListener l) {
@@ -209,6 +226,9 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	}
 
 	public boolean canEdit() {
+		if (!isEditable()) {
+			return false;
+		}
 		switch (mode) {
 		case EDIT:
 			return false;
@@ -223,6 +243,9 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	}
 
 	public boolean canPause() {
+		if (animator == null) {
+			return false;
+		}
 		switch (mode) {
 		case EDIT:
 			return false;
@@ -237,6 +260,9 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	}
 
 	public boolean canRun() {
+		if (animator == null) {
+			return false;
+		}
 		switch (mode) {
 		case EDIT:
 			return false;
@@ -274,6 +300,10 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		if (mode.equals(GameMode.SHOW)) {
 			fromShowToEdit();
 		}
+		repaint();
+		GameMode m = mode;
+		mode = GameMode.EDIT;
+		fireModeEdit(new GameModeEvent(this, m, mode));
 	}
 
 	void fireModeEdit(GameModeEvent e) {
@@ -332,38 +362,30 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 
 	private void fromEditToShow() {
 		setBoard(BoardImpl.createShowBoard(getBoard()));
-		mode = GameMode.SHOW;
-		// TODO autogen method: fromEditToShow
 	}
 
 	private void fromPauseToRun() {
-		mode = GameMode.RUN;
+		animator.run();
 	}
 
 	private void fromPauseToShow() {
 		animator.stop();
-		mode = GameMode.SHOW;
 	}
 
 	private void fromRunToPause() {
 		animator.pause();
-		mode = GameMode.PAUSE;
 	}
 
 	private void fromRunToShow() {
 		animator.stop();
-		mode = GameMode.SHOW;
 	}
 
 	private void fromShowToEdit() {
 		setBoard(BoardImpl.createEditBoard(getBoard()));
-		mode = GameMode.EDIT;
-		// TODO fromShowToEdit
 	}
 
 	private void fromShowToRun() {
 		animator.run();
-		mode = GameMode.RUN;
 	}
 
 	public Animator getAnimator() {
@@ -388,6 +410,10 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 
 	public boolean isEdit() {
 		return getMode() == GameMode.EDIT;
+	}
+
+	public boolean isEditable() {
+		return editable;
 	}
 
 	public boolean isPaintPaths() {
@@ -425,8 +451,8 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 
 	@Override
 	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
+		super.paintComponent(g);
 		paintPaths(g2d);
 	}
 
@@ -449,6 +475,9 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		if (mode.equals(GameMode.RUN)) {
 			fromRunToPause();
 		}
+		GameMode m = mode;
+		mode = GameMode.PAUSE;
+		fireModePause(new GameModeEvent(this, m, mode));
 	}
 
 	public synchronized void removeGameModeListener(GameModeListener l) {
@@ -464,15 +493,24 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	}
 
 	public void repaintEdge(Edge e) {
-		// TODO repaintEdge
-	}
-
-	public void repaintEdgeSurrounding(Edge e) {
-		// TODO repaintEdgeSurrounding
+		if (getEdgesPainter() == null) {
+			return;
+		}
+		Rectangle r = getEdgesPainter().getBounds(this, e);
+		if (getVerticesPainter() != null) {
+			Rectangle r1 = getVerticesPainter().getBounds(this, e.getV1());
+			Rectangle r2 = getVerticesPainter().getBounds(this, e.getV2());
+			r = r.union(r1).union(r2);
+		}
+		repaint(r);
 	}
 
 	public void repaintVertex(Vertex v) {
-		// TODO repaintVertex
+		if (getVerticesPainter() == null) {
+			return;
+		}
+		Rectangle r = getVerticesPainter().getBounds(this, v);
+		repaint(r);
 	}
 
 	public void run() {
@@ -487,6 +525,9 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		} else if (mode.equals(GameMode.SHOW)) {
 			fromShowToRun();
 		}
+		GameMode m = mode;
+		mode = GameMode.RUN;
+		fireModeRun(new GameModeEvent(this, m, mode));
 	}
 
 	public void setAnimator(Animator animator) {
@@ -498,11 +539,18 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 
 	protected void setBoard(Board board) {
 		this.board = board;
-		// TODO setBoard
+		paths.clear();
 	}
 
 	public void setDefaultPathPainter(PathPainter pathPainter) {
 		defaultPathPainter = pathPainter;
+	}
+
+	public void setEditable(boolean editable) {
+		if (getMode().equals(GameMode.EDIT)) {
+			throw new IllegalStateException();
+		}
+		this.editable = editable;
 	}
 
 	public void setMode(GameMode m) {
@@ -527,10 +575,16 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	}
 
 	public void setPathPainter(Path path, PathPainter pathPainter) {
+		if (!paths.containsKey(path)) {
+			throw new IllegalArgumentException();
+		}
 		paths.put(path, pathPainter);
 	}
 
 	public void setSnapPolicy(SnapPolicy snapping) {
+		if (snapping == null) {
+			throw new IllegalArgumentException();
+		}
 		this.snapping = snapping;
 	}
 
@@ -560,6 +614,10 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		} else if (mode.equals(GameMode.RUN)) {
 			fromRunToShow();
 		}
+		repaint();
+		GameMode m = mode;
+		mode = GameMode.SHOW;
+		fireModeShow(new GameModeEvent(this, m, mode));
 	}
 
 }
