@@ -75,6 +75,7 @@ public class X {
 
 		InteractiveBoardControl ibc = new InteractiveBoardControl(gb);
 		c.add(ibc, BorderLayout.NORTH);
+		
 		c.add(gb, BorderLayout.CENTER);
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
