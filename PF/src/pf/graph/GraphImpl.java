@@ -5,6 +5,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ * Implementation of {@link Graph}
+ * <p>
+ * Nothing special here.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class GraphImpl implements Graph {
 
 	private class EdgesIterator implements Iterator<Edge> {
@@ -100,6 +108,14 @@ public class GraphImpl implements Graph {
 
 	private Set<Graph> subs;
 
+	/**
+	 * the only constructor
+	 * <p>
+	 * if {@code parent == null} the graph is considered to be root.
+	 * 
+	 * @param parent
+	 *            parent of this graph
+	 */
 	public GraphImpl(Graph parent) {
 		this.parent = parent;
 		subs = new HashSet<Graph>();
@@ -125,6 +141,9 @@ public class GraphImpl implements Graph {
 		return parent;
 	}
 
+	/**
+	 * returns unmodifiable set of subsets
+	 */
 	@Override
 	public Set<Graph> getSubGraphs() {
 		return Collections.unmodifiableSet(subs);

@@ -1,5 +1,16 @@
 package pf.graph;
 
+/**
+ * Default implementation of {@link Edge}.
+ * <p>
+ * Two edges are considered the same if the have the same end vertices, no
+ * matter of order.
+ * <p>
+ * There is nothing special here.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class EdgeImpl implements Edge {
 	private final Direction d;
 	private boolean used;

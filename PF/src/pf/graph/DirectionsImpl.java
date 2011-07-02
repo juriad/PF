@@ -5,6 +5,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
+/**
+ * Default implementation of {@link Direction}
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class DirectionsImpl implements Directions {
 
 	private final Set<Direction> ds;
@@ -17,11 +23,18 @@ public class DirectionsImpl implements Directions {
 		return ds.add(d);
 	}
 
+	/**
+	 * returnes unmodifiable set
+	 */
 	@Override
 	public Set<Direction> getDirections() {
 		return Collections.unmodifiableSet(ds);
 	}
 
+	/**
+	 * finds the nearest point to {@code [dx, dy]} of points [
+	 * {@link Direction#getDx()}, {@link Direction#getDy()} ]
+	 */
 	@Override
 	public Direction getNearestDirection(int dx, int dy) {
 		if (ds.isEmpty()) {

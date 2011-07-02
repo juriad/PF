@@ -1,18 +1,19 @@
 /**
  * Provides classes for graph on a board.
  * <p>
- * {@link Graph} contains subgraphs and {@link Vertex}es.
+ * {@link pf.graph.Graph} contains subgraphs and {@link pf.graph.Vertex}es.
  * It also contains iterators to iterate over subgraphs, vertices, edges
  * <p>
- * {@link Vertex} maps edges between this vertex and another one to {@link Direction}s.
+ * {@link pf.graph.Vertex} maps edges between this vertex and another one to {@link pf.graph.Direction}s.
  * Vertex can iterate over all used or unused edges.
  * <p>
- * {@link Edge} joins two {@link Vertex}es. It has a {@link Direction} and used flag.
+ * {@link pf.graph.Edge} joins two {@link pf.graph.Vertex}es.
+ * It has a {@link pf.graph.Direction} and used flag.
  * Usage change propagates to both vertices.
  * <p>
- * {@link Path} is a chain of {@link Edge}s.
+ * {@link pf.graph.Path} is a chain of {@link pf.graph.Edge}s.
  * <p>
  * This package also contains default implementations of all interfaces.
- * This packege is independent on other packages.  
+ * This package is independent on other packages.  
  */
 package pf.graph;
