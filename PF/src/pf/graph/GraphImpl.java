@@ -24,17 +24,6 @@ public class GraphImpl implements Graph {
 			}
 		}
 
-		private Edge getNext() {
-			if (ie.hasNext()) {
-				return ie.next();
-			} else if (i.hasNext()) {
-				ie = i.next().edgesIterator(root, used);
-				return getNext();
-			} else {
-				return null;
-			}
-		}
-
 		@Override
 		public boolean hasNext() {
 			return next != null;
@@ -52,6 +41,17 @@ public class GraphImpl implements Graph {
 			throw new UnsupportedOperationException();
 		}
 
+		private Edge getNext() {
+			if (ie.hasNext()) {
+				return ie.next();
+			} else if (i.hasNext()) {
+				ie = i.next().edgesIterator(root, used);
+				return getNext();
+			} else {
+				return null;
+			}
+		}
+
 	}
 
 	private class VerticesIterator implements Iterator<Vertex> {
@@ -64,17 +64,6 @@ public class GraphImpl implements Graph {
 			if (i.hasNext()) {
 				iv = i.next().verticesIterator();
 				next = getNext();
-			}
-		}
-
-		private Vertex getNext() {
-			if (iv.hasNext()) {
-				return iv.next();
-			} else if (i.hasNext()) {
-				iv = i.next().verticesIterator();
-				return getNext();
-			} else {
-				return null;
 			}
 		}
 
@@ -93,6 +82,17 @@ public class GraphImpl implements Graph {
 		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
+		}
+
+		private Vertex getNext() {
+			if (iv.hasNext()) {
+				return iv.next();
+			} else if (i.hasNext()) {
+				iv = i.next().verticesIterator();
+				return getNext();
+			} else {
+				return null;
+			}
 		}
 	}
 

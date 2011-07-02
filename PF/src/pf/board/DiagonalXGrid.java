@@ -10,22 +10,22 @@ public class DiagonalXGrid extends DiagonalGrid {
 	}
 
 	@Override
+	public GridType getGridType() {
+		return GridType.DIAGONALX;
+	}
+
+	@Override
 	protected void addLinesAndDirections() {
 		GridLine l;
 		Point p3x = p1.move(p3.vectorTo(p1));
 		addGridLine(l = new GridLineImpl(p1, p2, p3));
-		addDirection(new DirectionImpl(l.getBaseVector()));
+		addDirection(new DirectionImpl(getDx(l), getDy(l)));
 		addGridLine(l = new GridLineImpl(p1, p3, p2));
-		addDirection(new DirectionImpl(l.getBaseVector()));
+		addDirection(new DirectionImpl(getDx(l), getDy(l)));
 		addGridLine(l = new GridLineImpl(p2, p3, p3x));
-		addDirection(new DirectionImpl(l.getBaseVector()));
+		addDirection(new DirectionImpl(getDx(l), getDy(l)));
 		addGridLine(l = new GridLineImpl(p2, p3x, p3));
-		addDirection(new DirectionImpl(l.getBaseVector()));
-	}
-
-	@Override
-	public GridType getGridType() {
-		return GridType.DIAGONALX;
+		addDirection(new DirectionImpl(getDx(l), getDy(l)));
 	}
 
 	@Override

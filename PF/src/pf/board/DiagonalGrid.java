@@ -11,21 +11,21 @@ public class DiagonalGrid extends AbstractGrid {
 	}
 
 	@Override
-	protected void addLinesAndDirections() {
-		GridLine l;
-		addGridLine(l = new GridLineImpl(p1, p2, p3));
-		addDirection(new DirectionImpl(l.getBaseVector()));
-		addGridLine(l = new GridLineImpl(p1, p3, p2));
-		addDirection(new DirectionImpl(l.getBaseVector()));
-		addGridLine(l = new GridLineImpl(p2, p3, p1));
-		addDirection(new DirectionImpl(l.getBaseVector()));
-		addGridLine(l = new GridLineImpl(p1, p2.move(p1.vectorTo(p3)), p2));
-		addDirection(new DirectionImpl(l.getBaseVector()));
+	public GridType getGridType() {
+		return GridType.DIAGONAL;
 	}
 
 	@Override
-	public GridType getGridType() {
-		return GridType.DIAGONAL;
+	protected void addLinesAndDirections() {
+		GridLine l;
+		addGridLine(l = new GridLineImpl(p1, p2, p3));
+		addDirection(new DirectionImpl(getDx(l), getDy(l)));
+		addGridLine(l = new GridLineImpl(p1, p3, p2));
+		addDirection(new DirectionImpl(getDx(l), getDy(l)));
+		addGridLine(l = new GridLineImpl(p2, p3, p1));
+		addDirection(new DirectionImpl(getDx(l), getDy(l)));
+		addGridLine(l = new GridLineImpl(p1, p2.move(p1.vectorTo(p3)), p2));
+		addDirection(new DirectionImpl(getDx(l), getDy(l)));
 	}
 
 	@Override

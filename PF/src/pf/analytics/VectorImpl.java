@@ -5,6 +5,14 @@ public class VectorImpl implements Vector {
 	private final int x;
 	private final int y;
 
+	/**
+	 * The only constructor, requires both x and y.
+	 * <p>
+	 * To create vector between two points, use: {@code p1.vectorTo(p2)}
+	 * 
+	 * @param x
+	 * @param y
+	 */
 	public VectorImpl(int x, int y) {
 		this.x = x;
 		this.y = y;
@@ -65,6 +73,9 @@ public class VectorImpl implements Vector {
 		return x * x + y * y;
 	}
 
+	/**
+	 * Normal vector is as long as this
+	 */
 	@Override
 	public Vector normal() {
 		return new VectorImpl(y, -x);

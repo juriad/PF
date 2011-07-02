@@ -66,12 +66,6 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 			path = null;
 		}
 
-		private Vertex getNearest(Point p) {
-			float x = translateXFromScreen((int) p.getX());
-			float y = translateYFromScreen((int) p.getY());
-			return getSnapPolicy().request(InteractiveBoard.this, x, y);
-		}
-
 		public boolean isTouchInProgress() {
 			return path != null;
 		}
@@ -140,6 +134,12 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 			setCursor();
 		}
 
+		private Vertex getNearest(Point p) {
+			float x = translateXFromScreen((int) p.getX());
+			float y = translateYFromScreen((int) p.getY());
+			return getSnapPolicy().request(InteractiveBoard.this, x, y);
+		}
+
 		private void setCursor() {
 			int setCursor = -1;
 			if (isTouchInProgress()) {
@@ -183,7 +183,7 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	protected Map<Path, PathPainter> paths;
 
 	private SnapPolicy snapping;
-	private boolean editable;
+	private boolean editable = true;
 
 	public InteractiveBoard(Board board) {
 		super(board);
@@ -306,88 +306,6 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		fireModeEdit(new GameModeEvent(this, m, mode));
 	}
 
-	void fireModeEdit(GameModeEvent e) {
-		for (GameModeListener l : ell.getListeners(GameModeListener.class)) {
-			l.modeEdit(e);
-		}
-	}
-
-	void fireModePause(GameModeEvent e) {
-		for (GameModeListener l : ell.getListeners(GameModeListener.class)) {
-			l.modePause(e);
-		}
-	}
-
-	void fireModeRun(GameModeEvent e) {
-		for (GameModeListener l : ell.getListeners(GameModeListener.class)) {
-			l.modeRun(e);
-		}
-	}
-
-	void fireModeShow(GameModeEvent e) {
-		for (GameModeListener l : ell.getListeners(GameModeListener.class)) {
-			l.modeShow(e);
-		}
-	}
-
-	void fireTouchCancelled(TouchEvent e) {
-		for (TouchListener l : ell.getListeners(TouchListener.class)) {
-			l.touchCancelled(e);
-		}
-	}
-
-	void fireTouchEnded(TouchEvent e) {
-		for (TouchListener l : ell.getListeners(TouchListener.class)) {
-			l.touchEnded(e);
-		}
-	}
-
-	void fireTouchLonger(TouchEvent e) {
-		for (TouchListener l : ell.getListeners(TouchListener.class)) {
-			l.touchLonger(e);
-		}
-	}
-
-	void fireTouchShorter(TouchEvent e) {
-		for (TouchListener l : ell.getListeners(TouchListener.class)) {
-			l.touchShorter(e);
-		}
-	}
-
-	void fireTouchStarted(TouchEvent e) {
-		for (TouchListener l : ell.getListeners(TouchListener.class)) {
-			l.touchStarted(e);
-		}
-	}
-
-	private void fromEditToShow() {
-		setBoard(BoardImpl.createShowBoard(getBoard()));
-	}
-
-	private void fromPauseToRun() {
-		animator.run();
-	}
-
-	private void fromPauseToShow() {
-		animator.stop();
-	}
-
-	private void fromRunToPause() {
-		animator.pause();
-	}
-
-	private void fromRunToShow() {
-		animator.stop();
-	}
-
-	private void fromShowToEdit() {
-		setBoard(BoardImpl.createEditBoard(getBoard()));
-	}
-
-	private void fromShowToRun() {
-		animator.run();
-	}
-
 	public Animator getAnimator() {
 		return animator;
 	}
@@ -447,22 +365,6 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	@Override
 	public Iterator<Path> iterator() {
 		return paths.keySet().iterator();
-	}
-
-	@Override
-	protected void paintComponent(Graphics g) {
-		Graphics2D g2d = (Graphics2D) g;
-		super.paintComponent(g);
-		paintPaths(g2d);
-	}
-
-	protected void paintPaths(Graphics2D g2d) {
-		for (Path p : this) {
-			PathPainter pp = paths.get(p);
-			if (pp != null && isPaintPaths()) {
-				pp.paintPath(g2d, this, p);
-			}
-		}
 	}
 
 	public void pause() {
@@ -535,11 +437,6 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 			throw new IllegalStateException();
 		}
 		this.animator = animator;
-	}
-
-	protected void setBoard(Board board) {
-		this.board = board;
-		paths.clear();
 	}
 
 	public void setDefaultPathPainter(PathPainter pathPainter) {
@@ -618,6 +515,109 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		GameMode m = mode;
 		mode = GameMode.SHOW;
 		fireModeShow(new GameModeEvent(this, m, mode));
+	}
+
+	private void fromEditToShow() {
+		setBoard(BoardImpl.createShowBoard(getBoard()));
+	}
+
+	private void fromPauseToRun() {
+		animator.run();
+	}
+
+	private void fromPauseToShow() {
+		animator.stop();
+	}
+
+	private void fromRunToPause() {
+		animator.pause();
+	}
+
+	private void fromRunToShow() {
+		animator.stop();
+	}
+
+	private void fromShowToEdit() {
+		setBoard(BoardImpl.createEditBoard(getBoard()));
+	}
+
+	private void fromShowToRun() {
+		animator.run();
+	}
+
+	@Override
+	protected void paintComponent(Graphics g) {
+		Graphics2D g2d = (Graphics2D) g;
+		super.paintComponent(g);
+		paintPaths(g2d);
+	}
+
+	protected void paintPaths(Graphics2D g2d) {
+		for (Path p : this) {
+			PathPainter pp = paths.get(p);
+			if (pp != null && isPaintPaths()) {
+				pp.paintPath(g2d, this, p);
+			}
+		}
+	}
+
+	protected void setBoard(Board board) {
+		this.board = board;
+		paths.clear();
+	}
+
+	void fireModeEdit(GameModeEvent e) {
+		for (GameModeListener l : ell.getListeners(GameModeListener.class)) {
+			l.modeEdit(e);
+		}
+	}
+
+	void fireModePause(GameModeEvent e) {
+		for (GameModeListener l : ell.getListeners(GameModeListener.class)) {
+			l.modePause(e);
+		}
+	}
+
+	void fireModeRun(GameModeEvent e) {
+		for (GameModeListener l : ell.getListeners(GameModeListener.class)) {
+			l.modeRun(e);
+		}
+	}
+
+	void fireModeShow(GameModeEvent e) {
+		for (GameModeListener l : ell.getListeners(GameModeListener.class)) {
+			l.modeShow(e);
+		}
+	}
+
+	void fireTouchCancelled(TouchEvent e) {
+		for (TouchListener l : ell.getListeners(TouchListener.class)) {
+			l.touchCancelled(e);
+		}
+	}
+
+	void fireTouchEnded(TouchEvent e) {
+		for (TouchListener l : ell.getListeners(TouchListener.class)) {
+			l.touchEnded(e);
+		}
+	}
+
+	void fireTouchLonger(TouchEvent e) {
+		for (TouchListener l : ell.getListeners(TouchListener.class)) {
+			l.touchLonger(e);
+		}
+	}
+
+	void fireTouchShorter(TouchEvent e) {
+		for (TouchListener l : ell.getListeners(TouchListener.class)) {
+			l.touchShorter(e);
+		}
+	}
+
+	void fireTouchStarted(TouchEvent e) {
+		for (TouchListener l : ell.getListeners(TouchListener.class)) {
+			l.touchStarted(e);
+		}
 	}
 
 }

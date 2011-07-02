@@ -1,5 +1,6 @@
 package pf.test;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -26,13 +27,15 @@ public class X {
 		frame.setVisible(true);
 		Container c = frame.getContentPane();
 		c.setLayout(new BorderLayout());
-		File f = new File("/home/adam/save");
+		File f = new File("/home/adam/trgrid.txt");
 		Board b = BoardImpl.createBoard(f);
 		final InteractiveBoard gb = new InteractiveBoard(b);
 		gb.setVerticesPainterAndPaint(new VerticesPainterImpl(gb.getBoard()
 				.getGrid().getGridType(),
 				VerticesPainterImpl.DegreeType.BY_UNUSED));
-		gb.setEdgesPainterAndPaint(new EdgesPainterImpl());
+		EdgesPainterImpl ep = new EdgesPainterImpl();
+		ep.setUsedStroke(new BasicStroke(3));
+		gb.setEdgesPainterAndPaint(ep);
 		gb.setGridPainterAndPaint(new GridPainterImpl(gb.getBoard().getGrid()
 				.getGridType()));
 		gb.setPreferredSize(new Dimension(800, 600));
@@ -83,7 +86,7 @@ public class X {
 		frame.pack();
 
 		gb.getBoard().save(new File("/home/adam/save"),
-				GridPattern.COMPLEX_SCHEMA);
+				GridPattern.COMPLEX_LIST);
 	}
 
 }

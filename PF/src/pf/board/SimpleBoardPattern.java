@@ -21,6 +21,11 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 		}
 
 		@Override
+		public void save(BufferedWriter w) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
 		protected void calculateEdges() {
 			for (PointsEdge ep : new FullBoardPattern(getBoard())) {
 				Vertex v1 = getBoard().getVertex(ep.p1);
@@ -33,11 +38,6 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 				}
 				addEdge(ep.p1, ep.p2, e != null ? true : false);
 			}
-		}
-
-		@Override
-		public void save(BufferedWriter w) {
-			throw new UnsupportedOperationException();
 		}
 	}
 
@@ -52,11 +52,11 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 		}
 
 		@Override
-		protected void calculateEdges() {
+		public void save(BufferedWriter w) {
 		}
 
 		@Override
-		public void save(BufferedWriter w) {
+		protected void calculateEdges() {
 		}
 
 	}
@@ -72,22 +72,22 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 		}
 
 		@Override
+		public void save(BufferedWriter w) {
+		}
+
+		@Override
 		protected void calculateEdges() {
 			Iterator<Vertex> vi = getBoard().getGraph().verticesIterator();
 			while (vi.hasNext()) {
 				Vertex v = vi.next();
 				for (Direction d : getBoard().getGrid().getDirections()) {
-					Vertex vv = getBoard().getVertex(
-							v.toPoint().move(d.getVector()));
+					Vertex vv = getBoard().getVertex(v.getX() + d.getDx(),
+							v.getY() + d.getDy());
 					if (vv != null) {
-						addEdge(v.toPoint(), vv.toPoint());
+						addEdge(v, vv);
 					}
 				}
 			}
-		}
-
-		@Override
-		public void save(BufferedWriter w) {
 		}
 	}
 
@@ -102,19 +102,19 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 		}
 
 		@Override
+		public void save(BufferedWriter w) {
+			throw new UnsupportedOperationException();
+		}
+
+		@Override
 		protected void calculateEdges() {
 			Iterator<Edge> ei = getBoard().getGraph().edgesIterator(false);
 			while (ei.hasNext()) {
 				Edge e = ei.next();
 				if (e.isUsed()) {
-					addEdge(e.getV1().toPoint(), e.getV2().toPoint());
+					addEdge(e.getV1(), e.getV2());
 				}
 			}
-		}
-
-		@Override
-		public void save(BufferedWriter w) {
-			throw new UnsupportedOperationException();
 		}
 	}
 

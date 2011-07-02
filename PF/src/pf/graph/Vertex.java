@@ -3,8 +3,6 @@ package pf.graph;
 import java.util.Iterator;
 import java.util.Set;
 
-import pf.analytics.Point;
-
 public interface Vertex extends Graph, Iterable<Edge> {
 	void add(Edge e);
 
@@ -25,6 +23,4 @@ public interface Vertex extends Graph, Iterable<Edge> {
 	Iterator<Edge> iterator(boolean used);
 
 	void remove(Edge e);
-
-	Point toPoint();
 }

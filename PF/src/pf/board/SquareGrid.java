@@ -11,17 +11,17 @@ public class SquareGrid extends AbstractGrid {
 	}
 
 	@Override
-	protected void addLinesAndDirections() {
-		GridLine l;
-		addGridLine(l = new GridLineImpl(p1, p2, p3));
-		addDirection(new DirectionImpl(l.getBaseVector()));
-		addGridLine(l = new GridLineImpl(p1, p3, p2));
-		addDirection(new DirectionImpl(l.getBaseVector()));
+	public GridType getGridType() {
+		return GridType.SQUARE;
 	}
 
 	@Override
-	public GridType getGridType() {
-		return GridType.SQUARE;
+	protected void addLinesAndDirections() {
+		GridLine l;
+		addGridLine(l = new GridLineImpl(p1, p2, p3));
+		addDirection(new DirectionImpl(getDx(l), getDy(l)));
+		addGridLine(l = new GridLineImpl(p1, p3, p2));
+		addDirection(new DirectionImpl(getDx(l), getDy(l)));
 	}
 
 	@Override

@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import pf.analytics.Point;
+import pf.graph.Vertex;
 
 public abstract class AbstractBoardPattern implements BoardPattern {
 
@@ -37,6 +38,15 @@ public abstract class AbstractBoardPattern implements BoardPattern {
 		this.board = board;
 	}
 
+	public Board getBoard() {
+		return board;
+	}
+
+	@Override
+	public Iterator<PointsEdge> iterator() {
+		return pes.iterator();
+	}
+
 	protected void addEdge(Point p1, Point p2) {
 		addEdge(p1, p2, false);
 	}
@@ -45,12 +55,11 @@ public abstract class AbstractBoardPattern implements BoardPattern {
 		pes.add(new PointsEdge(p1, p2, b));
 	}
 
-	public Board getBoard() {
-		return board;
+	protected void addEdge(Vertex v1, Vertex v2) {
+		addEdge(v1, v2, false);
 	}
 
-	@Override
-	public Iterator<PointsEdge> iterator() {
-		return pes.iterator();
+	protected void addEdge(Vertex v1, Vertex v2, boolean b) {
+		pes.add(new PointsEdge(v1, v2, b));
 	}
 }

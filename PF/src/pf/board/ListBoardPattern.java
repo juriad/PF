@@ -35,6 +35,14 @@ public class ListBoardPattern extends ComplexBoardPattern {
 	}
 
 	@Override
+	public void save(BufferedWriter w) throws IOException {
+		for (PointsEdge pe : this) {
+			w.write(pe.p1 + " " + pe.p2);
+			w.newLine();
+		}
+	}
+
+	@Override
 	protected void readFromFile(File f) throws FileNotFoundException {
 		Scanner s = new Scanner(f);
 		s.nextLine();
@@ -45,14 +53,6 @@ public class ListBoardPattern extends ComplexBoardPattern {
 			p2 = s.findInLine(Point.pattern);
 			s.nextLine();
 			addEdge(PointImpl.fromString(p1), PointImpl.fromString(p2));
-		}
-	}
-
-	@Override
-	public void save(BufferedWriter w) throws IOException {
-		for (PointsEdge pe : this) {
-			w.write(pe.p1 + " " + pe.p2);
-			w.newLine();
 		}
 	}
 

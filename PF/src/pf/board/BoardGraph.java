@@ -19,6 +19,11 @@ public class BoardGraph extends GraphImpl {
 		super(null);
 	}
 
+	@Override
+	public void setParent(Graph parent) {
+		throw new UnsupportedOperationException();
+	}
+
 	private void clear() {
 		Set<Graph> gs = new HashSet<Graph>();
 		for (Graph g : getSubGraphs()) {
@@ -63,11 +68,6 @@ public class BoardGraph extends GraphImpl {
 				}
 			}
 		}
-	}
-
-	@Override
-	public void setParent(Graph parent) {
-		throw new UnsupportedOperationException();
 	}
 
 }

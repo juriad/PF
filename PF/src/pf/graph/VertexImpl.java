@@ -6,9 +6,6 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
-import pf.analytics.Point;
-import pf.analytics.PointImpl;
-
 public class VertexImpl implements Vertex {
 
 	private class EdgesIterator implements Iterator<Edge> {
@@ -22,31 +19,9 @@ public class VertexImpl implements Vertex {
 			getNext();
 		}
 
-		private void getNext() {
-			next = null;
-			while (i.hasNext() && next == null) {
-				Edge e = i.next();
-				if (!isChild(e.getOther(VertexImpl.this))
-						|| e.getDirection(VertexImpl.this).isPrimary()) {
-					next = e;
-				}
-			}
-		}
-
 		@Override
 		public boolean hasNext() {
 			return next != null;
-		}
-
-		private boolean isChild(Vertex v) {
-			Graph g = v;
-			while (g != null) {
-				if (g.equals(root)) {
-					return true;
-				}
-				g = g.getParent();
-			}
-			return false;
 		}
 
 		@Override
@@ -59,6 +34,28 @@ public class VertexImpl implements Vertex {
 		@Override
 		public void remove() {
 			throw new UnsupportedOperationException();
+		}
+
+		private void getNext() {
+			next = null;
+			while (i.hasNext() && next == null) {
+				Edge e = i.next();
+				if (!isChild(e.getOther(VertexImpl.this))
+						|| e.getDirection(VertexImpl.this).isPrimary()) {
+					next = e;
+				}
+			}
+		}
+
+		private boolean isChild(Vertex v) {
+			Graph g = v;
+			while (g != null) {
+				if (g.equals(root)) {
+					return true;
+				}
+				g = g.getParent();
+			}
+			return false;
 		}
 	}
 
@@ -238,11 +235,6 @@ public class VertexImpl implements Vertex {
 	@Override
 	public Iterator<Graph> subGraphsIterator() {
 		return graphSet.iterator();
-	}
-
-	@Override
-	public Point toPoint() {
-		return new PointImpl(getX(), getY());
 	}
 
 	@Override

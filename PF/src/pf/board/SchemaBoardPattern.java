@@ -25,6 +25,51 @@ public class SchemaBoardPattern {
 		}
 
 		@Override
+		public void save(BufferedWriter w) throws IOException {
+			char[][] schema = new char[getBoard().getWidth() * 2 + 1][getBoard()
+					.getHeight() * 2 + 1];
+			for (int i = 0; i < getBoard().getHeight() * 2 + 1; i++) {
+				for (int j = 0; j < getBoard().getWidth() * 2 + 1; j++) {
+					if (i % 2 == 0 && j % 2 == 0) {
+						schema[j][i] = '.';
+					} else {
+						schema[j][i] = ' ';
+					}
+				}
+			}
+			for (PointsEdge pe : this) {
+				int x = pe.p1.getX() + pe.p2.getX();
+				int y = pe.p1.getY() + pe.p2.getY();
+				if (y % 2 == 0) {
+					schema[x][y] = '-';
+				} else if (x % 2 == 0) {
+					schema[x][y] = '|';
+				} else {
+					char c = ' ';
+					if (pe.p1.getX() * 2 > x && pe.p1.getY() * 2 > y
+							|| pe.p1.getX() * 2 < x && pe.p1.getY() * 2 < y) {
+						c = '\\';
+					} else {
+						c = '/';
+					}
+					if (schema[x][y] == '/' && c == '\\'
+							|| schema[x][y] == '\\' && c == '/') {
+						schema[x][y] = 'X';
+					} else {
+						schema[x][y] = c;
+					}
+				}
+			}
+
+			for (int i = 0; i < getBoard().getHeight() * 2 + 1; i++) {
+				for (int j = 0; j < getBoard().getWidth() * 2 + 1; j++) {
+					w.append(schema[j][i]);
+				}
+				w.newLine();
+			}
+		}
+
+		@Override
 		protected void readFromFile(File f) throws FileNotFoundException {
 			Scanner s = new Scanner(f);
 			s.nextLine();
@@ -82,51 +127,6 @@ public class SchemaBoardPattern {
 				l++;
 			}
 		}
-
-		@Override
-		public void save(BufferedWriter w) throws IOException {
-			char[][] schema = new char[getBoard().getWidth() * 2 + 1][getBoard()
-					.getHeight() * 2 + 1];
-			for (int i = 0; i < getBoard().getHeight() * 2 + 1; i++) {
-				for (int j = 0; j < getBoard().getWidth() * 2 + 1; j++) {
-					if (i % 2 == 0 && j % 2 == 0) {
-						schema[j][i] = '.';
-					} else {
-						schema[j][i] = ' ';
-					}
-				}
-			}
-			for (PointsEdge pe : this) {
-				int x = pe.p1.getX() + pe.p2.getX();
-				int y = pe.p1.getY() + pe.p2.getY();
-				if (y % 2 == 0) {
-					schema[x][y] = '-';
-				} else if (x % 2 == 0) {
-					schema[x][y] = '|';
-				} else {
-					char c = ' ';
-					if (pe.p1.getX() * 2 > x && pe.p1.getY() * 2 > y
-							|| pe.p1.getX() * 2 < x && pe.p1.getY() * 2 < y) {
-						c = '\\';
-					} else {
-						c = '/';
-					}
-					if (schema[x][y] == '/' && c == '\\'
-							|| schema[x][y] == '\\' && c == '/') {
-						schema[x][y] = 'X';
-					} else {
-						schema[x][y] = c;
-					}
-				}
-			}
-
-			for (int i = 0; i < getBoard().getHeight() * 2 + 1; i++) {
-				for (int j = 0; j < getBoard().getWidth() * 2 + 1; j++) {
-					w.append(schema[j][i]);
-				}
-				w.newLine();
-			}
-		}
 	}
 
 	public static class DiagonalXSchemaBoardPattern extends ComplexBoardPattern {
@@ -138,6 +138,45 @@ public class SchemaBoardPattern {
 
 		protected DiagonalXSchemaBoardPattern(Board board, Set<PointsEdge> pes) {
 			super(board, pes);
+		}
+
+		@Override
+		public void save(BufferedWriter w) throws IOException {
+			char[][] schema = new char[getBoard().getWidth() * 2 + 1][getBoard()
+					.getHeight() * 2 + 1];
+			for (int i = 0; i < getBoard().getHeight() * 2 + 1; i++) {
+				for (int j = 0; j < getBoard().getWidth() * 2 + 1; j++) {
+					if (i % 2 == 0 && j % 4 == i % 4) {
+						schema[j][i] = '.';
+					} else {
+						schema[j][i] = ' ';
+					}
+				}
+			}
+			for (PointsEdge pe : this) {
+				int x = pe.p1.getX() + pe.p2.getX();
+				int y = pe.p1.getY() + pe.p2.getY();
+				if (y % 4 == 0) {
+					schema[x][y] = '-';
+				} else if (x % 2 == 0) {
+					schema[x][y] = '|';
+				} else {
+					if (pe.p1.getX() * 2 > x && pe.p1.getY() * 2 > y
+							|| pe.p1.getX() * 2 < x && pe.p1.getY() * 2 < y) {
+						schema[x][y] = '\\';
+					} else {
+						schema[x][y] = '/';
+					}
+				}
+			}
+
+			for (int i = 0; i < getBoard().getHeight() * 2 + 1; i++) {
+				for (int j = 0; j < getBoard().getWidth() * 2 + 1; j++) {
+					w.append(schema[j][i]);
+				}
+				w.newLine();
+			}
+
 		}
 
 		@Override
@@ -218,45 +257,6 @@ public class SchemaBoardPattern {
 				l++;
 			}
 		}
-
-		@Override
-		public void save(BufferedWriter w) throws IOException {
-			char[][] schema = new char[getBoard().getWidth() * 2 + 1][getBoard()
-					.getHeight() * 2 + 1];
-			for (int i = 0; i < getBoard().getHeight() * 2 + 1; i++) {
-				for (int j = 0; j < getBoard().getWidth() * 2 + 1; j++) {
-					if (i % 2 == 0 && j % 4 == i % 4) {
-						schema[j][i] = '.';
-					} else {
-						schema[j][i] = ' ';
-					}
-				}
-			}
-			for (PointsEdge pe : this) {
-				int x = pe.p1.getX() + pe.p2.getX();
-				int y = pe.p1.getY() + pe.p2.getY();
-				if (y % 4 == 0) {
-					schema[x][y] = '-';
-				} else if (x % 2 == 0) {
-					schema[x][y] = '|';
-				} else {
-					if (pe.p1.getX() * 2 > x && pe.p1.getY() * 2 > y
-							|| pe.p1.getX() * 2 < x && pe.p1.getY() * 2 < y) {
-						schema[x][y] = '\\';
-					} else {
-						schema[x][y] = '/';
-					}
-				}
-			}
-
-			for (int i = 0; i < getBoard().getHeight() * 2 + 1; i++) {
-				for (int j = 0; j < getBoard().getWidth() * 2 + 1; j++) {
-					w.append(schema[j][i]);
-				}
-				w.newLine();
-			}
-
-		}
 	}
 
 	public static class SquareSchemaBoardPattern extends ComplexBoardPattern {
@@ -268,6 +268,37 @@ public class SchemaBoardPattern {
 
 		protected SquareSchemaBoardPattern(Board board, Set<PointsEdge> pes) {
 			super(board, pes);
+		}
+
+		@Override
+		public void save(BufferedWriter w) throws IOException {
+			char[][] schema = new char[getBoard().getWidth() * 2 + 1][getBoard()
+					.getHeight() * 2 + 1];
+			for (int i = 0; i < getBoard().getHeight() * 2 + 1; i++) {
+				for (int j = 0; j < getBoard().getWidth() * 2 + 1; j++) {
+					if (i % 2 == 0 && j % 2 == 0) {
+						schema[j][i] = '.';
+					} else {
+						schema[j][i] = ' ';
+					}
+				}
+			}
+			for (PointsEdge pe : this) {
+				int x = pe.p1.getX() + pe.p2.getX();
+				int y = pe.p1.getY() + pe.p2.getY();
+				if (y % 2 == 0) {
+					schema[x][y] = '-';
+				} else {
+					schema[x][y] = '|';
+				}
+			}
+
+			for (int i = 0; i < getBoard().getHeight() * 2 + 1; i++) {
+				for (int j = 0; j < getBoard().getWidth() * 2 + 1; j++) {
+					w.append(schema[j][i]);
+				}
+				w.newLine();
+			}
 		}
 
 		@Override
@@ -308,37 +339,6 @@ public class SchemaBoardPattern {
 				l++;
 			}
 		}
-
-		@Override
-		public void save(BufferedWriter w) throws IOException {
-			char[][] schema = new char[getBoard().getWidth() * 2 + 1][getBoard()
-					.getHeight() * 2 + 1];
-			for (int i = 0; i < getBoard().getHeight() * 2 + 1; i++) {
-				for (int j = 0; j < getBoard().getWidth() * 2 + 1; j++) {
-					if (i % 2 == 0 && j % 2 == 0) {
-						schema[j][i] = '.';
-					} else {
-						schema[j][i] = ' ';
-					}
-				}
-			}
-			for (PointsEdge pe : this) {
-				int x = pe.p1.getX() + pe.p2.getX();
-				int y = pe.p1.getY() + pe.p2.getY();
-				if (y % 2 == 0) {
-					schema[x][y] = '-';
-				} else {
-					schema[x][y] = '|';
-				}
-			}
-
-			for (int i = 0; i < getBoard().getHeight() * 2 + 1; i++) {
-				for (int j = 0; j < getBoard().getWidth() * 2 + 1; j++) {
-					w.append(schema[j][i]);
-				}
-				w.newLine();
-			}
-		}
 	}
 
 	public static class TriangleSchemaBoardPattern extends ComplexBoardPattern {
@@ -350,6 +350,53 @@ public class SchemaBoardPattern {
 
 		protected TriangleSchemaBoardPattern(Board board, Set<PointsEdge> pes) {
 			super(board, pes);
+		}
+
+		@Override
+		public void save(BufferedWriter w) throws IOException {
+			char[][] schema = new char[getBoard().getWidth() / 2 + 1][getBoard()
+					.getHeight() / 7 * 2 + 1];
+			for (int i = 0; i < getBoard().getHeight() / 7 * 2 + 1; i++) {
+				for (int j = 0; j < getBoard().getWidth() / 2 + 1; j++) {
+					if (i % 2 == 0 && j % 4 == i % 4) {
+						schema[j][i] = '.';
+					} else {
+						schema[j][i] = ' ';
+					}
+				}
+			}
+
+			for (PointsEdge pe : this) {
+				int x = pe.p1.getX() + pe.p2.getX();
+				int y = pe.p1.getY() + pe.p2.getY();
+				y = y / 7;
+				x = x / 4;
+				if (y % 2 == 0) {
+					schema[x][y] = '-';
+				} else {
+					if (pe.p1.getX() / 2 > x && pe.p1.getY() * 2 > y
+							|| pe.p1.getX() / 2 < x && pe.p1.getY() * 2 < y) {
+						if (y % 4 == 1) {
+							schema[x][y] = '\\';
+						} else {
+							schema[x][y] = '/';
+						}
+					} else {
+						if (y % 4 == 1) {
+							schema[x][y] = '/';
+						} else {
+							schema[x][y] = '\\';
+						}
+					}
+				}
+			}
+
+			for (int i = 0; i < getBoard().getHeight() / 7 * 2 + 1; i++) {
+				for (int j = 0; j < getBoard().getWidth() / 2 + 1; j++) {
+					w.append(schema[j][i]);
+				}
+				w.newLine();
+			}
 		}
 
 		@Override
@@ -419,53 +466,6 @@ public class SchemaBoardPattern {
 				}
 
 				l++;
-			}
-		}
-
-		@Override
-		public void save(BufferedWriter w) throws IOException {
-			char[][] schema = new char[getBoard().getWidth() / 2 + 1][getBoard()
-					.getHeight() / 7 * 2 + 1];
-			for (int i = 0; i < getBoard().getHeight() / 7 * 2 + 1; i++) {
-				for (int j = 0; j < getBoard().getWidth() / 2 + 1; j++) {
-					if (i % 2 == 0 && j % 4 == i % 4) {
-						schema[j][i] = '.';
-					} else {
-						schema[j][i] = ' ';
-					}
-				}
-			}
-
-			for (PointsEdge pe : this) {
-				int x = pe.p1.getX() + pe.p2.getX();
-				int y = pe.p1.getY() + pe.p2.getY();
-				y = y / 7;
-				x = x / 4;
-				if (y % 2 == 0) {
-					schema[x][y] = '-';
-				} else {
-					if (pe.p1.getX() / 2 > x && pe.p1.getY() * 2 > y
-							|| pe.p1.getX() / 2 < x && pe.p1.getY() * 2 < y) {
-						if (y % 4 == 1) {
-							schema[x][y] = '\\';
-						} else {
-							schema[x][y] = '/';
-						}
-					} else {
-						if (y % 4 == 1) {
-							schema[x][y] = '/';
-						} else {
-							schema[x][y] = '\\';
-						}
-					}
-				}
-			}
-
-			for (int i = 0; i < getBoard().getHeight() / 7 * 2 + 1; i++) {
-				for (int j = 0; j < getBoard().getWidth() / 2 + 1; j++) {
-					w.append(schema[j][i]);
-				}
-				w.newLine();
 			}
 		}
 	}

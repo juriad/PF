@@ -81,35 +81,6 @@ public class GameBoard extends JComponent {
 		return paintVertices;
 	}
 
-	@Override
-	protected void paintComponent(Graphics g) {
-		super.paintComponent(g);
-		Graphics2D g2d = (Graphics2D) g;
-
-		// System.out.println("paint");
-		paintGrid(g2d);
-		paintVertices(g2d);
-		paintEdges(g2d);
-	}
-
-	protected void paintEdges(Graphics2D g2d) {
-		if (isPaintEdges() && edgesPainter != null) {
-			edgesPainter.paintEdges(g2d, this);
-		}
-	}
-
-	protected void paintGrid(Graphics2D g2d) {
-		if (isPaintGrid() && gridPainter != null) {
-			gridPainter.paintGrid(g2d, this);
-		}
-	}
-
-	protected void paintVertices(Graphics2D g2d) {
-		if (isPaintVertices() && vp != null) {
-			vp.paintVertices(g2d, this);
-		}
-	}
-
 	public void setEdgesPainter(EdgesPainter painter) {
 		edgesPainter = painter;
 	}
@@ -214,5 +185,34 @@ public class GameBoard extends JComponent {
 
 	public int translateYToScreen(float y) {
 		return translateRawYToScreen(y) + getPaddingTop();
+	}
+
+	@Override
+	protected void paintComponent(Graphics g) {
+		super.paintComponent(g);
+		Graphics2D g2d = (Graphics2D) g;
+
+		// System.out.println("paint");
+		paintGrid(g2d);
+		paintVertices(g2d);
+		paintEdges(g2d);
+	}
+
+	protected void paintEdges(Graphics2D g2d) {
+		if (isPaintEdges() && edgesPainter != null) {
+			edgesPainter.paintEdges(g2d, this);
+		}
+	}
+
+	protected void paintGrid(Graphics2D g2d) {
+		if (isPaintGrid() && gridPainter != null) {
+			gridPainter.paintGrid(g2d, this);
+		}
+	}
+
+	protected void paintVertices(Graphics2D g2d) {
+		if (isPaintVertices() && vp != null) {
+			vp.paintVertices(g2d, this);
+		}
 	}
 }

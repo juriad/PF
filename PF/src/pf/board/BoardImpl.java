@@ -148,17 +148,6 @@ public class BoardImpl implements Board {
 		return b;
 	}
 
-	private static void createEdge(Board b, PointsEdge pe) {
-		Vertex v1 = b.getVertex(pe.p1);
-		Vertex v2 = b.getVertex(pe.p2);
-
-		Edge e = new EdgeImpl(v1, v2, b.getGrid().getDirections()
-				.getNearestDirection(v1, v2));
-		e.setUsed(pe.used);
-		v1.add(e);
-		v2.add(e);
-	}
-
 	public static Board createEditBoard(Board board) {
 		BoardImpl b = new BoardImpl(board.getGrid(), board.getWidth(),
 				board.getHeight());
@@ -187,6 +176,17 @@ public class BoardImpl implements Board {
 		return b;
 	}
 
+	private static void createEdge(Board b, PointsEdge pe) {
+		Vertex v1 = b.getVertex(pe.p1);
+		Vertex v2 = b.getVertex(pe.p2);
+
+		Edge e = new EdgeImpl(v1, v2, b.getGrid().getDirections()
+				.getNearestDirection(v1, v2));
+		e.setUsed(pe.used);
+		v1.add(e);
+		v2.add(e);
+	}
+
 	private static void fillVs(BoardImpl b) {
 		Iterator<Vertex> vi = b.getGraph().verticesIterator();
 		while (vi.hasNext()) {
@@ -207,10 +207,6 @@ public class BoardImpl implements Board {
 		this.width = width;
 		this.height = height;
 		vs = new HashMap<Point, Vertex>();
-	}
-
-	private void addVertex(Vertex v) {
-		vs.put(new PointImpl(v.getX(), v.getY()), v);
 	}
 
 	@Override
@@ -334,13 +330,16 @@ public class BoardImpl implements Board {
 		Iterator<Edge> ei = getGraph().edgesIterator(false);
 		while (ei.hasNext()) {
 			Edge e = ei.next();
-			pes.add(new PointsEdge(e.getV1().toPoint(), e.getV2().toPoint(), e
-					.isUsed()));
+			pes.add(new PointsEdge(e.getV1(), e.getV2(), e.isUsed()));
 		}
 		BoardPattern bp = AbstractBoardPattern.createBoardPattern(this,
 				pattern, pes);
 		bp.save(bw);
 		bw.close();
 		fw.close();
+	}
+
+	private void addVertex(Vertex v) {
+		vs.put(new PointImpl(v.getX(), v.getY()), v);
 	}
 }

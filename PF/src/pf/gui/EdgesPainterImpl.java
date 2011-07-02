@@ -37,17 +37,6 @@ public class EdgesPainterImpl implements EdgesPainter {
 		setUsedStroke(usedStroke);
 	}
 
-	protected void drawLine(Graphics2D g2d, Edge e, Float l) {
-		if (e.isUsed() && isDrawUsed()) {
-			g2d.setColor(usedColor);
-			g2d.setStroke(usedStroke);
-		} else if (!e.isUsed() && isDrawUnused()) {
-			g2d.setColor(unusedColor);
-			g2d.setStroke(unusedStroke);
-		}
-		g2d.draw(l);
-	}
-
 	@Override
 	public Rectangle getBounds(GameBoard gameBoard, Edge e) {
 		Float l = getLine(gameBoard, e);
@@ -56,14 +45,6 @@ public class EdgesPainterImpl implements EdgesPainter {
 		Shape s2 = getUnusedStroke().createStrokedShape(l);
 		Rectangle r2 = s2.getBounds();
 		return r1.union(r2);
-	}
-
-	protected Line2D.Float getLine(GameBoard gameBoard, Edge e) {
-		int x1 = gameBoard.translateXToScreen(e.getV1().getX());
-		int y1 = gameBoard.translateYToScreen(e.getV1().getY());
-		int x2 = gameBoard.translateXToScreen(e.getV2().getX());
-		int y2 = gameBoard.translateYToScreen(e.getV2().getY());
-		return new Line2D.Float(x1, y1, x2, y2);
 	}
 
 	public Color getUnusedColor() {
@@ -137,6 +118,25 @@ public class EdgesPainterImpl implements EdgesPainter {
 			throw new IllegalArgumentException();
 		}
 		this.usedStroke = usedStroke;
+	}
+
+	protected void drawLine(Graphics2D g2d, Edge e, Float l) {
+		if (e.isUsed() && isDrawUsed()) {
+			g2d.setColor(usedColor);
+			g2d.setStroke(usedStroke);
+		} else if (!e.isUsed() && isDrawUnused()) {
+			g2d.setColor(unusedColor);
+			g2d.setStroke(unusedStroke);
+		}
+		g2d.draw(l);
+	}
+
+	protected Line2D.Float getLine(GameBoard gameBoard, Edge e) {
+		int x1 = gameBoard.translateXToScreen(e.getV1().getX());
+		int y1 = gameBoard.translateYToScreen(e.getV1().getY());
+		int x2 = gameBoard.translateXToScreen(e.getV2().getX());
+		int y2 = gameBoard.translateYToScreen(e.getV2().getY());
+		return new Line2D.Float(x1, y1, x2, y2);
 	}
 
 }

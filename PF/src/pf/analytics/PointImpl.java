@@ -3,8 +3,19 @@ package pf.analytics;
 import java.util.InputMismatchException;
 
 public class PointImpl implements Point {
+	/**
+	 * The origin of coordinate system
+	 */
 	public static final Point O = new PointImpl(0, 0);
 
+	/**
+	 * creates a point from String
+	 * <p>
+	 * shall work for all Strings which match {@link Point#pattern}
+	 * 
+	 * @param s
+	 * @return Point
+	 */
 	public static Point fromString(String s) {
 		String ss = s.substring(s.indexOf('[') + 1, s.indexOf(']')).trim();
 		String[] sss = ss.split(",");
@@ -19,6 +30,12 @@ public class PointImpl implements Point {
 
 	private final int y;
 
+	/**
+	 * The only constructor, requires both x and y.
+	 * 
+	 * @param x
+	 * @param y
+	 */
 	public PointImpl(int x, int y) {
 		this.x = x;
 		this.y = y;
@@ -58,6 +75,9 @@ public class PointImpl implements Point {
 		return result;
 	}
 
+	/**
+	 * true even if this point lies on the edge
+	 */
 	@Override
 	public boolean isInside(Point p1, Point p2) {
 		if (p1.getX() <= getX() && p2.getX() >= getX()) {

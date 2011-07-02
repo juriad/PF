@@ -42,50 +42,6 @@ public class GridPainterImpl implements GridPainter {
 		}
 	}
 
-	protected void drawGrid(Graphics2D g2d, GameBoard board, int line, int min,
-			int max) {
-		GridLine gridLine = board.getBoard().getGrid().getGridLine(line);
-		for (int i = min; i <= max; i++) {
-			if (isMainLine(line, i)) {
-				g2d.setColor(getMainColor(line));
-				g2d.setStroke(getMainStroke(line));
-			} else {
-				g2d.setColor(getColor(line));
-				g2d.setStroke(getStroke(line));
-			}
-			drawLine(g2d, board, gridLine.getLine(i));
-		}
-	}
-
-	protected void drawLine(Graphics2D g2d, GameBoard board, Line line) {
-		Rectangle r = g2d.getClipBounds();
-		Point2D.Float p1 = new Point2D.Float(board.translateXToScreen(line
-				.getP1().getX()), board.translateYToScreen(line.getP1().getY()));
-		Point2D.Float p2 = new Point2D.Float(board.translateXToScreen(line
-				.getP2().getX()), board.translateYToScreen(line.getP2().getY()));
-
-		double dx = p1.getX() - p2.getX();
-		double x1 = (r.getMinX() - p1.getX()) / dx;
-		double x2 = (r.getMaxX() - p1.getX()) / dx;
-
-		double dy = p1.getY() - p2.getY();
-		double y1 = (r.getMinY() - p1.getY()) / dy;
-		double y2 = (r.getMaxY() - p1.getY()) / dy;
-
-		int x = (int) Math.ceil(Math.max(Math.abs(x1), Math.abs(x2)));
-		int y = (int) Math.ceil(Math.max(Math.abs(y1), Math.abs(y2)));
-
-		int z = Math.min(x, y) + 2;
-
-		line = line.extend(z);
-		p1 = new Point2D.Float(board.translateXToScreen(line.getP1().getX()),
-				board.translateYToScreen(line.getP1().getY()));
-		p2 = new Point2D.Float(board.translateXToScreen(line.getP2().getX()),
-				board.translateYToScreen(line.getP2().getY()));
-		g2d.drawLine((int) p1.getX(), (int) p1.getY(), (int) p2.getX(),
-				(int) p2.getY());
-	}
-
 	public Color getColor(int line) {
 		return infos.get(line).color;
 	}
@@ -116,10 +72,6 @@ public class GridPainterImpl implements GridPainter {
 
 	public Stroke getStroke(int line) {
 		return infos.get(line).stroke;
-	}
-
-	private boolean isMainLine(int line, int parallel) {
-		return (parallel - getOffset(line)) % getRepetition(line) == 0;
 	}
 
 	@Override
@@ -222,6 +174,54 @@ public class GridPainterImpl implements GridPainter {
 		for (int line = 0; line < getLines(); line++) {
 			setStroke(line, stroke);
 		}
+	}
+
+	private boolean isMainLine(int line, int parallel) {
+		return (parallel - getOffset(line)) % getRepetition(line) == 0;
+	}
+
+	protected void drawGrid(Graphics2D g2d, GameBoard board, int line, int min,
+			int max) {
+		GridLine gridLine = board.getBoard().getGrid().getGridLine(line);
+		for (int i = min; i <= max; i++) {
+			if (isMainLine(line, i)) {
+				g2d.setColor(getMainColor(line));
+				g2d.setStroke(getMainStroke(line));
+			} else {
+				g2d.setColor(getColor(line));
+				g2d.setStroke(getStroke(line));
+			}
+			drawLine(g2d, board, gridLine.getLine(i));
+		}
+	}
+
+	protected void drawLine(Graphics2D g2d, GameBoard board, Line line) {
+		Rectangle r = g2d.getClipBounds();
+		Point2D.Float p1 = new Point2D.Float(board.translateXToScreen(line
+				.getP1().getX()), board.translateYToScreen(line.getP1().getY()));
+		Point2D.Float p2 = new Point2D.Float(board.translateXToScreen(line
+				.getP2().getX()), board.translateYToScreen(line.getP2().getY()));
+
+		double dx = p1.getX() - p2.getX();
+		double x1 = (r.getMinX() - p1.getX()) / dx;
+		double x2 = (r.getMaxX() - p1.getX()) / dx;
+
+		double dy = p1.getY() - p2.getY();
+		double y1 = (r.getMinY() - p1.getY()) / dy;
+		double y2 = (r.getMaxY() - p1.getY()) / dy;
+
+		int x = (int) Math.ceil(Math.max(Math.abs(x1), Math.abs(x2)));
+		int y = (int) Math.ceil(Math.max(Math.abs(y1), Math.abs(y2)));
+
+		int z = Math.min(x, y) + 2;
+
+		line = line.extend(z);
+		p1 = new Point2D.Float(board.translateXToScreen(line.getP1().getX()),
+				board.translateYToScreen(line.getP1().getY()));
+		p2 = new Point2D.Float(board.translateXToScreen(line.getP2().getX()),
+				board.translateYToScreen(line.getP2().getY()));
+		g2d.drawLine((int) p1.getX(), (int) p1.getY(), (int) p2.getX(),
+				(int) p2.getY());
 	}
 
 }

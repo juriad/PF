@@ -1,25 +1,21 @@
 package pf.graph;
 
-import pf.analytics.Vector;
-import pf.analytics.VectorImpl;
-
 public class DirectionImpl implements Direction {
-	private final Vector d;
+	private final int dx;
+	private final int dy;
 	private final Direction opposite;
 	private final boolean primary;
 
 	public DirectionImpl(int dx, int dy) {
-		this(new VectorImpl(dx, dy));
-	}
-
-	public DirectionImpl(Vector d) {
-		this.d = d;
+		this.dx = dx;
+		this.dy = dy;
 		primary = true;
-		opposite = new DirectionImpl(d.opposite(), this);
+		opposite = new DirectionImpl(-dx, -dy, this);
 	}
 
-	protected DirectionImpl(Vector d, Direction opposite) {
-		this.d = d;
+	protected DirectionImpl(int dx, int dy, Direction opposite) {
+		this.dx = dx;
+		this.dy = dy;
 		primary = false;
 		this.opposite = opposite;
 	}
@@ -32,13 +28,12 @@ public class DirectionImpl implements Direction {
 		if (obj == null) {
 			return false;
 		}
-		if (!(obj instanceof DirectionImpl)) {
+		if (!(obj instanceof Direction)) {
 			return false;
 		}
-		DirectionImpl other = (DirectionImpl) obj;
-		if (other.getVector().isLinearDependent(getVector())) {
-			if (getVector().lengthSq() + other.getVector().lengthSq() < getVector()
-					.addVector(other.getVector()).lengthSq()) {
+		Direction other = (Direction) obj;
+		if (getDy() * other.getDx() == other.getDy() * getDx()) {
+			if (other.getDy() / (double) dy > 0) {
 				return true;
 			}
 		}
@@ -47,12 +42,12 @@ public class DirectionImpl implements Direction {
 
 	@Override
 	public int getDx() {
-		return getVector().getX();
+		return dx;
 	}
 
 	@Override
 	public int getDy() {
-		return getVector().getY();
+		return dy;
 	}
 
 	@Override
@@ -61,15 +56,10 @@ public class DirectionImpl implements Direction {
 	}
 
 	@Override
-	public Vector getVector() {
-		return d;
-	}
-
-	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + d.lengthSq();
+		result = prime * result + (int) (100 * dy / (float) dx);
 		return result;
 	}
 

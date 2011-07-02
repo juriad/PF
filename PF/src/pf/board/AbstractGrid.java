@@ -57,72 +57,9 @@ public abstract class AbstractGrid implements Grid {
 		}
 	}
 
-	protected void addDirection(Direction d) {
-		ds.addDirection(d);
-		ds.addDirection(d.getOpposite());
-	}
-
-	protected void addGridLine(GridLine l) {
-		lines.add(l);
-	}
-
-	protected abstract void addLinesAndDirections();
-
 	@Override
 	public BoardGraph createGraph(int width, int height) {
 		return generateVertices(width, height);
-	}
-
-	protected BoardGraph generateVertices(int width, int height) {
-		int[] mins = new int[getGridType().getLines()];
-		int[] maxs = new int[getGridType().getLines()];
-		for (int i = 0; i < mins.length; i++) {
-			mins[i] = getLowerLimit(i, width, height);
-			maxs[i] = getUpperLimit(i, width, height);
-		}
-
-		BoardGraph g = new BoardGraph();
-		Set<Point> ps = new HashSet<Point>();
-
-		Point pp = null;
-		GridLine gl1, gl2;
-		Line l1, l2;
-		for (int i = 0; i < getGridType().getLines(); i++) {
-			gl1 = getGridLine(i);
-			for (int j = i + 1; j < getGridType().getLines(); j++) {
-				gl2 = getGridLine(j);
-				for (int ii = mins[i]; ii <= maxs[i]; ii++) {
-					if (!shouldIntersect(gl1, gl2)) {
-						continue;
-					}
-					l1 = gl1.getLine(ii);
-					for (int jj = mins[j]; jj <= maxs[j]; jj++) {
-						l2 = gl2.getLine(jj);
-						pp = l1.intersection(l2);
-						if (pp != null
-								&& pp.isInside(PointImpl.O, new PointImpl(
-										width, height))) {
-							if (!ps.contains(pp)) {
-								Vertex v = new VertexImpl(g, pp.getX(),
-										pp.getY());
-								g.addSubGraph(v);
-								ps.add(pp);
-							}
-						}
-					}
-				}
-			}
-		}
-		return g;
-	}
-
-	private Set<Point> getCorners(int x, int y, int width, int height) {
-		Set<Point> c = new HashSet<Point>();
-		c.add(new PointImpl(x, y));
-		c.add(new PointImpl(x + width, y));
-		c.add(new PointImpl(x, y + height));
-		c.add(new PointImpl(x + width, y + height));
-		return c;
 	}
 
 	@Override
@@ -168,6 +105,77 @@ public abstract class AbstractGrid implements Grid {
 			max = Math.max(max, gl.getNearest(p));
 		}
 		return (int) Math.ceil(max);
+	}
+
+	private Set<Point> getCorners(int x, int y, int width, int height) {
+		Set<Point> c = new HashSet<Point>();
+		c.add(new PointImpl(x, y));
+		c.add(new PointImpl(x + width, y));
+		c.add(new PointImpl(x, y + height));
+		c.add(new PointImpl(x + width, y + height));
+		return c;
+	}
+
+	protected void addDirection(Direction d) {
+		ds.addDirection(d);
+		ds.addDirection(d.getOpposite());
+	}
+
+	protected void addGridLine(GridLine l) {
+		lines.add(l);
+	}
+
+	protected abstract void addLinesAndDirections();
+
+	protected BoardGraph generateVertices(int width, int height) {
+		int[] mins = new int[getGridType().getLines()];
+		int[] maxs = new int[getGridType().getLines()];
+		for (int i = 0; i < mins.length; i++) {
+			mins[i] = getLowerLimit(i, width, height);
+			maxs[i] = getUpperLimit(i, width, height);
+		}
+
+		BoardGraph g = new BoardGraph();
+		Set<Point> ps = new HashSet<Point>();
+
+		Point pp = null;
+		GridLine gl1, gl2;
+		Line l1, l2;
+		for (int i = 0; i < getGridType().getLines(); i++) {
+			gl1 = getGridLine(i);
+			for (int j = i + 1; j < getGridType().getLines(); j++) {
+				gl2 = getGridLine(j);
+				for (int ii = mins[i]; ii <= maxs[i]; ii++) {
+					if (!shouldIntersect(gl1, gl2)) {
+						continue;
+					}
+					l1 = gl1.getLine(ii);
+					for (int jj = mins[j]; jj <= maxs[j]; jj++) {
+						l2 = gl2.getLine(jj);
+						pp = l1.intersection(l2);
+						if (pp != null
+								&& pp.isInside(PointImpl.O, new PointImpl(
+										width, height))) {
+							if (!ps.contains(pp)) {
+								Vertex v = new VertexImpl(g, pp.getX(),
+										pp.getY());
+								g.addSubGraph(v);
+								ps.add(pp);
+							}
+						}
+					}
+				}
+			}
+		}
+		return g;
+	}
+
+	protected final int getDx(Line l) {
+		return l.getP2().getX() - l.getP1().getX();
+	}
+
+	protected final int getDy(Line l) {
+		return l.getP2().getY() - l.getP1().getY();
 	}
 
 	protected abstract boolean shouldIntersect(GridLine gl1, GridLine gl2);
