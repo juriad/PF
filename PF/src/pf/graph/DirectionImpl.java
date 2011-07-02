@@ -1,11 +1,27 @@
 package pf.graph;
 
+/**
+ * Implementation of {@link Direction}.
+ * <p>
+ * Nothing special here, exept the constructor {@link #DirectionImpl(int, int)}
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class DirectionImpl implements Direction {
 	private final int dx;
 	private final int dy;
 	private final Direction opposite;
 	private final boolean primary;
 
+	/**
+	 * Constructs a new Direction and also an opposite Direction as well. This
+	 * makes {@link #getOpposite()} work well.
+	 * 
+	 * @param dx
+	 * @param dy
+	 * @see #DirectionImpl(int, int, Direction)
+	 */
 	public DirectionImpl(int dx, int dy) {
 		this.dx = dx;
 		this.dy = dy;
@@ -13,6 +29,16 @@ public class DirectionImpl implements Direction {
 		opposite = new DirectionImpl(-dx, -dy, this);
 	}
 
+	/**
+	 * This constructor is used only by the public one. This constructs the
+	 * opposite direction, in analytics: this and opposite direction are
+	 * opposite vectors.
+	 * 
+	 * @param dx
+	 * @param dy
+	 * @param opposite
+	 *            opposite direction crested by public constructor
+	 */
 	protected DirectionImpl(int dx, int dy, Direction opposite) {
 		this.dx = dx;
 		this.dy = dy;

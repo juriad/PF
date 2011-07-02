@@ -69,7 +69,7 @@ public interface Vector {
 	 * 
 	 * @param factor
 	 *            factor of length extension
-	 * @return
+	 * @return scaled vector
 	 */
 	Vector scale(float factor);
 

@@ -2,6 +2,15 @@ package pf.analytics;
 
 import java.util.InputMismatchException;
 
+/**
+ * 
+ * Default implementation of {@link Point}.
+ * <p>
+ * Nothing special on this implementation.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class PointImpl implements Point {
 	/**
 	 * The origin of coordinate system

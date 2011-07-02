@@ -1,5 +1,14 @@
 package pf.analytics;
 
+/**
+ * 
+ * Default implementation of {@link Vector}.
+ * <p>
+ * Nothing special on this implementation.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class VectorImpl implements Vector {
 
 	private final int x;

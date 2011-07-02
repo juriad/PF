@@ -2,7 +2,7 @@ package pf.analytics;
 
 /**
  * 
- * Default implementation of {@link Line}.z
+ * Default implementation of {@link Line}.
  * <p>
  * This suppose line is infinite and two of them are same iff one covers the
  * other.
@@ -14,6 +14,27 @@ public class LineImpl implements Line {
 
 	private final static double eps = 0.5;
 
+	/**
+	 * Calculates determinant of matrix
+	 * <table>
+	 * <tr>
+	 * <td>a</td>
+	 * <td>b</td>
+	 * </tr>
+	 * <tr>
+	 * <td>c</td>
+	 * <td>d</td>
+	 * </tr>
+	 * </table>
+	 * <p>
+	 * this is used by {@link #intersection(Line)}
+	 * 
+	 * @param a
+	 * @param b
+	 * @param c
+	 * @param d
+	 * @return determinant
+	 */
 	private static int det(int a, int b, int c, int d) {
 		return a * d - b * c;
 	}
@@ -117,6 +138,8 @@ public class LineImpl implements Line {
 	/**
 	 * may not return actual intersection because of integer based interface
 	 * {@link Point}
+	 * <p>
+	 * intersection is calculated by Cramer's rule
 	 */
 	@Override
 	public Point intersection(Line l) {
