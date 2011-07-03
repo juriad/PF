@@ -6,6 +6,19 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * Default implementation of Vertex.
+ * <p>
+ * It has two independent maps of edges. One for all edges, the other one for
+ * unused edges only.
+ * <p>
+ * Many methods defined in {@link Graph} are unsupported in context of vertex.
+ * They just throw an UnsupportedOperationException. Others have a trivial
+ * implementation.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class VertexImpl implements Vertex {
 
 	private class EdgesIterator implements Iterator<Edge> {
@@ -59,15 +72,25 @@ public class VertexImpl implements Vertex {
 		}
 	}
 
-	private Map<Direction, Edge> edges;
+	private final Map<Direction, Edge> edges;
 
 	private final Set<Graph> graphSet;
 	private Graph parent;
-	private Map<Direction, Edge> unusedEdges;
+	private final Map<Direction, Edge> unusedEdges;
 	private final Set<Vertex> vertexSet;
 	private final int x;
 	private final int y;
 
+	/**
+	 * The only constructor. Sets location and parent.
+	 * 
+	 * @param parent
+	 *            graph to which this vertex belongs
+	 * @param x
+	 *            location
+	 * @param y
+	 *            location
+	 */
 	public VertexImpl(Graph parent, int x, int y) {
 		this.parent = parent;
 		graphSet = new HashSet<Graph>();

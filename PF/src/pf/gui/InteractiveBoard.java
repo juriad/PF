@@ -82,7 +82,7 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 				if (edge != null) {
 					if (path.length() > 0 && path.getLast().equals(edge)) {
 						if (isTouchReturnAllowed()) {
-							path.shorten(edge);
+							path.shorten();
 							last = nearest;
 							fireTouchShorter(new TouchEvent(
 									InteractiveBoard.this, path, nearest, edge));

@@ -6,12 +6,19 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Default implementation of {@link Path}.
+ * <p>
+ * It stores each edge in two containers to provide both quick iteration and
+ * quick next/previous queries.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class PathImpl implements Path {
 
 	List<Edge> edges;
 	Map<Edge, Integer> pointers;
-
-	private boolean closed = false;
 
 	public PathImpl() {
 		edges = new ArrayList<Edge>();
@@ -22,9 +29,6 @@ public class PathImpl implements Path {
 	public void extend(Edge e) {
 		if (e == null) {
 			throw new IllegalArgumentException();
-		}
-		if (isClosed()) {
-			throw new IllegalStateException();
 		}
 		if (length() == 0) {
 			pointers.put(e, 0);
@@ -47,9 +51,6 @@ public class PathImpl implements Path {
 
 	@Override
 	public void extend(Path p) {
-		if (closed) {
-			throw new IllegalStateException();
-		}
 		if (length() == 0) {
 			int index = 0;
 			for (Edge e : p) {
@@ -153,11 +154,6 @@ public class PathImpl implements Path {
 	}
 
 	@Override
-	public boolean isClosed() {
-		return closed;
-	}
-
-	@Override
 	public Iterator<Edge> iterator() {
 		return new Iterator<Edge>() {
 
@@ -210,29 +206,12 @@ public class PathImpl implements Path {
 	}
 
 	@Override
-	public boolean setClosed(boolean closed) {
-		if (isClosed() && !closed) {
-			this.closed = false;
-		} else if (!isClosed() && closed) {
-			if (length() > 1) {
-				if (getFirstVertex().equals(getLastVertex())) {
-					this.closed = true;
-				}
-			}
-		}
-		return this.closed;
-	}
-
-	@Override
-	public void shorten(Edge e) {
-		if (!pointers.containsKey(e)) {
+	public void shorten() {
+		if (length() <= 0) {
 			throw new IllegalArgumentException();
 		}
-		int index = pointers.get(e);
-		if (index != length() - 1) {
-			throw new IllegalArgumentException();
-		}
-		pointers.remove(e);
+		int index = pointers.get(length() - 1);
+		pointers.remove(getLast());
 		edges.remove(index);
 	}
 
