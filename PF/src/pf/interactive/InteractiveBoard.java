@@ -1,4 +1,4 @@
-package pf.gui;
+package pf.interactive;
 
 import java.awt.Cursor;
 import java.awt.Graphics;
@@ -439,6 +439,12 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		this.animator = animator;
 	}
 
+	@Override
+	public void setBoard(Board board) {
+		this.board = board;
+		paths.clear();
+	}
+
 	public void setDefaultPathPainter(PathPainter pathPainter) {
 		defaultPathPainter = pathPainter;
 	}
@@ -559,11 +565,6 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 				pp.paintPath(g2d, this, p);
 			}
 		}
-	}
-
-	protected void setBoard(Board board) {
-		this.board = board;
-		paths.clear();
 	}
 
 	void fireModeEdit(GameModeEvent e) {

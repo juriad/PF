@@ -1,4 +1,4 @@
-package pf.gui;
+package pf.interactive;
 
 public interface Animator extends Runnable {
 	public long elapsedTime();

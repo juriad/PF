@@ -1,4 +1,4 @@
-package pf.gui;
+package pf.interactive;
 
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -58,6 +58,10 @@ public class GameBoard extends JComponent {
 
 	@Override
 	public Dimension getPreferredSize() {
+		if (getBoard() == null) {
+			return new Dimension(getPaddingLeft() + getPaddingRight(),
+					getPaddingTop() + getPaddingTop());
+		}
 		float unit = unitSize
 				/ getBoard().getGrid().getGridType().getUnitSize();
 		return new Dimension((int) (board.getWidth() * unit) + getPaddingLeft()
@@ -79,6 +83,14 @@ public class GameBoard extends JComponent {
 
 	public boolean isPaintVertices() {
 		return paintVertices;
+	}
+
+	public void setBoard(Board board) {
+		this.board = board;
+		setVerticesPainter(null);
+		setEdgesPainter(null);
+		setGridPainter(null);
+		repaint();
 	}
 
 	public void setEdgesPainter(EdgesPainter painter) {

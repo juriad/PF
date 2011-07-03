@@ -1,4 +1,4 @@
-package pf.gui;
+package pf.interactive;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
@@ -72,6 +72,7 @@ public class VerticesPainterImpl implements VerticesPainter {
 		g2d.setColor(getColor(degree));
 		int cx = board.translateXToScreen(v.getX());
 		int cy = board.translateYToScreen(v.getY());
+
 		g2d.drawOval(cx - getRadius(degree) / 2, cy - getRadius(degree) / 2,
 				getRadius(degree), getRadius(degree));
 	}
@@ -118,10 +119,9 @@ public class VerticesPainterImpl implements VerticesPainter {
 		Vertex v;
 		while (vi.hasNext()) {
 			v = vi.next();
-
 			int r = getRadius(v);
-			int x = board.translateXToScreen(v.getX() - 2 * r);
-			int y = board.translateYToScreen(v.getY() - 2 * r);
+			int x = board.translateXToScreen(v.getX()) - 2 * r;
+			int y = board.translateYToScreen(v.getY()) - 2 * r;
 
 			Rectangle rr = new Rectangle(x, y, 4 * r, 4 * r);
 

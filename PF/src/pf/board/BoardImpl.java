@@ -26,6 +26,30 @@ import pf.graph.Vertex;
 
 public class BoardImpl implements Board {
 
+	public enum GridForm {
+		FREE ("free"),
+		REGULAR ("regular");
+
+		public static GridForm getForm(String desc) {
+			for (GridForm f : values()) {
+				if (f.getDesc().equals(desc)) {
+					return f;
+				}
+			}
+			return null;
+		}
+
+		private final String desc;
+
+		private GridForm(String desc) {
+			this.desc = desc;
+		}
+
+		public String getDesc() {
+			return desc;
+		}
+	}
+
 	private static class FileHeader {
 		final String stype;
 		final GridType type;
@@ -108,30 +132,6 @@ public class BoardImpl implements Board {
 		}
 	}
 
-	private enum GridForm {
-		FREE ("free"),
-		REGULAR ("regular");
-
-		public static GridForm getForm(String desc) {
-			for (GridForm f : values()) {
-				if (f.getDesc().equals(desc)) {
-					return f;
-				}
-			}
-			return null;
-		}
-
-		private final String desc;
-
-		private GridForm(String desc) {
-			this.desc = desc;
-		}
-
-		public String getDesc() {
-			return desc;
-		}
-	}
-
 	public static Board createBoard(File f) throws FileNotFoundException {
 		FileHeader fh = new FileHeader(f);
 		Grid grid = AbstractGrid.createGrid(fh.type, fh.points[0],
@@ -207,6 +207,8 @@ public class BoardImpl implements Board {
 		this.width = width;
 		this.height = height;
 		vs = new HashMap<Point, Vertex>();
+		graph = grid.createGraph(width, height);
+		fillVs(this);
 	}
 
 	@Override

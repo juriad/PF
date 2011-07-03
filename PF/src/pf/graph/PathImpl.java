@@ -137,7 +137,7 @@ public class PathImpl implements Path {
 		}
 
 		int index = pointers.get(edge);
-		Vertex v = next(edge).getCommon(edge);
+		Vertex v = edges.get(index + 1).getCommon(edge);
 		if (!p.getFirstVertex().equals(v) || !p.getLastVertex().equals(v)) {
 			throw new IllegalArgumentException();
 		}
@@ -179,30 +179,6 @@ public class PathImpl implements Path {
 	@Override
 	public int length() {
 		return edges.size();
-	}
-
-	@Override
-	public Edge next(Edge e) {
-		if (!pointers.containsKey(e)) {
-			throw new IllegalArgumentException();
-		}
-		int index = pointers.get(e);
-		if (index <= length() - 2) {
-			return edges.get(index + 1);
-		}
-		return null;
-	}
-
-	@Override
-	public Edge previous(Edge e) {
-		if (!pointers.containsKey(e)) {
-			throw new IllegalArgumentException();
-		}
-		int index = pointers.get(e);
-		if (index >= 1) {
-			return edges.get(0);
-		}
-		return null;
 	}
 
 	@Override

@@ -1,4 +1,4 @@
-package pf.gui;
+package pf.interactive;
 
 public enum GameMode {
 	EDIT ("Edit"),

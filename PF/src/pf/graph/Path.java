@@ -82,26 +82,6 @@ public interface Path extends Iterable<Edge> {
 	int length();
 
 	/**
-	 * Determines which edge follows after specified edge.
-	 * 
-	 * @param edge
-	 *            edge to which is next relative
-	 * @return the edge which follows after edge
-	 * @see #previous(Edge)
-	 */
-	Edge next(Edge edge);
-
-	/**
-	 * Determines which edge precedes before specified edge.
-	 * 
-	 * @param edge
-	 *            edge to which is previous relative
-	 * @return the edge which precedes before edge
-	 * @see #next(Edge)
-	 */
-	Edge previous(Edge edge);
-
-	/**
 	 * Removes the last edge of this path
 	 * 
 	 */

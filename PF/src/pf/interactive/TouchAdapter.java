@@ -1,4 +1,4 @@
-package pf.gui;
+package pf.interactive;
 
 public abstract class TouchAdapter implements TouchListener {
 

@@ -12,13 +12,13 @@ import javax.swing.JFrame;
 import pf.board.Board;
 import pf.board.BoardImpl;
 import pf.board.GridPattern;
-import pf.gui.EdgesPainterImpl;
-import pf.gui.GridPainterImpl;
-import pf.gui.InteractiveBoard;
-import pf.gui.InteractiveBoardControl;
-import pf.gui.TouchEvent;
-import pf.gui.TouchListener;
-import pf.gui.VerticesPainterImpl;
+import pf.interactive.EdgesPainterImpl;
+import pf.interactive.GridPainterImpl;
+import pf.interactive.InteractiveBoard;
+import pf.interactive.InteractiveBoardControl;
+import pf.interactive.TouchEvent;
+import pf.interactive.TouchListener;
+import pf.interactive.VerticesPainterImpl;
 
 public class X {
 
