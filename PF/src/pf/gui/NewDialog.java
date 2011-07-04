@@ -10,6 +10,7 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
@@ -27,7 +28,10 @@ import pf.board.Board;
 import pf.board.BoardImpl;
 import pf.board.BoardImpl.GridForm;
 import pf.board.Grid;
+import pf.board.GridPattern;
 import pf.board.GridType;
+import pf.interactive.AbstractAnimator;
+import pf.interactive.AnimatorFactory;
 import pf.interactive.GameBoard;
 import pf.interactive.GridPainterImpl;
 import pf.interactive.VerticesPainterImpl;
@@ -42,7 +46,7 @@ public class NewDialog extends CardDialog {
 		new NewDialog(null).setVisible(true);
 	}
 
-	private File file = null;
+	private File file = new File("");
 	private BoardImpl.GridForm form;
 	private int type;
 
@@ -58,22 +62,55 @@ public class NewDialog extends CardDialog {
 
 	private JFormattedTextField brptf1y;
 
-	private JFormattedTextField brptf1x;
+	private JFormattedTextField brtpf1x;
 
 	private JRadioButton brrb2;
 
 	private JRadioButton brrb1;
 
+	private JRadioButton patrb2;
+
+	private JRadioButton patrb1;
+
 	private JComboBox blcb;
 
 	private Map<GridType, Integer> types;
 
-	private JFormattedTextField whptfw;
+	private JFormattedTextField whtfw;
 
-	private JFormattedTextField whptfh;
+	private JFormattedTextField whtfh;
+	private JButton brpb;
+	private JButton whb;
+
+	private JComboBox anicb;
+	private JComboBox patcb;
+	private JCheckBox modecb;
+
+	private boolean userInput = false;
 
 	public NewDialog(JFrame owner) {
 		super(owner);
+		userInput = true;
+	}
+
+	public AnimatorFactory getAnimator() {
+		return (AnimatorFactory) anicb.getSelectedItem();
+	}
+
+	public Board getBoard() {
+		return gb.getBoard();
+	}
+
+	public GridPattern getPattern() {
+		return (GridPattern) patcb.getSelectedItem();
+	}
+
+	public boolean isEditAllowed() {
+		return modecb.isSelected();
+	}
+
+	public boolean isFilePattern() {
+		return patrb1.isSelected();
 	}
 
 	private JPanel makeCard1() {
@@ -114,27 +151,27 @@ public class NewDialog extends CardDialog {
 		bl.add(gb, "grow");
 		card.add(bl, "spany 2");
 
-		JPanel whp = new JPanel(new MigLayout("", "[right] [grow,fill]"));
-		whp.setBorder(BorderFactory.createTitledBorder("Size"));
-		JLabel whplw = new JLabel("width");
-		whp.add(whplw);
-		whptfw = new JFormattedTextField(NumberFormat.getIntegerInstance());
-		whptfw.setValue(0);
-		whptfw.setColumns(5);
-		whptfw.setEditable(false);
-		whp.add(whptfw, "wrap");
-		JLabel whplh = new JLabel("height");
-		whp.add(whplh);
-		whptfh = new JFormattedTextField(NumberFormat.getIntegerInstance());
-		whptfh.setValue(0);
-		whptfh.setColumns(5);
-		whptfh.setEditable(false);
-		whp.add(whptfh, "wrap");
-		final JButton whpb = new JButton("Refresh");
-		whp.add(whpb, "span 2");
-		whpb.setEnabled(false);
+		JPanel wh = new JPanel(new MigLayout("", "[right] [grow,fill]"));
+		wh.setBorder(BorderFactory.createTitledBorder("Size"));
+		JLabel whlw = new JLabel("width");
+		wh.add(whlw);
+		whtfw = new JFormattedTextField(NumberFormat.getIntegerInstance());
+		whtfw.setValue(0);
+		whtfw.setColumns(5);
+		whtfw.setEditable(false);
+		wh.add(whtfw, "wrap");
+		JLabel whlh = new JLabel("height");
+		wh.add(whlh);
+		whtfh = new JFormattedTextField(NumberFormat.getIntegerInstance());
+		whtfh.setValue(0);
+		whtfh.setColumns(5);
+		whtfh.setEditable(false);
+		wh.add(whtfh, "wrap");
+		whb = new JButton("Refresh");
+		wh.add(whb, "span 2");
+		whb.setEnabled(false);
 
-		card.add(whp, "wrap");
+		card.add(wh, "wrap");
 
 		JPanel br = new JPanel(new MigLayout("", "grow,fill"));
 		br.setBorder(BorderFactory.createTitledBorder("Grid Form"));
@@ -164,15 +201,15 @@ public class NewDialog extends CardDialog {
 
 		JLabel brplp1 = new JLabel("P1");
 		brp.add(brplp1);
-		brptf1x = new JFormattedTextField(NumberFormat.getIntegerInstance());
-		brptf1x.setValue(0);
-		brptf1x.setColumns(5);
-		brptf1x.setEditable(false);
+		brtpf1x = new JFormattedTextField(NumberFormat.getIntegerInstance());
+		brtpf1x.setValue(0);
+		brtpf1x.setColumns(5);
+		brtpf1x.setEditable(false);
 		brptf1y = new JFormattedTextField(NumberFormat.getIntegerInstance());
 		brptf1y.setValue(0);
 		brptf1y.setColumns(5);
 		brptf1y.setEditable(false);
-		brp.add(brptf1x);
+		brp.add(brtpf1x);
 		brp.add(brptf1y, "wrap");
 
 		JLabel brplp2 = new JLabel("P2");
@@ -201,7 +238,7 @@ public class NewDialog extends CardDialog {
 		brp.add(brptf3x);
 		brp.add(brptf3y, "wrap");
 
-		final JButton brpb = new JButton("Refresh");
+		brpb = new JButton("Refresh");
 		brp.add(brpb, "span 3");
 		brpb.setEnabled(false);
 
@@ -210,110 +247,108 @@ public class NewDialog extends CardDialog {
 
 		// ##############################
 
-		blcb.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				type = blcb.getSelectedIndex();
-				updateGraph();
-				updateButtons();
-			}
-		});
 		toprb1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				gb.setBoard(null);
-				blcb.setEnabled(false);
-				brrb1.setEnabled(false);
-				brrb2.setEnabled(false);
-				brptf1x.setEditable(false);
-				brptf1y.setEditable(false);
-				brptf2x.setEditable(false);
-				brptf2y.setEditable(false);
-				brptf3x.setEditable(false);
-				brptf3y.setEditable(false);
-				brpb.setEnabled(false);
+				System.out.println("toprb1");
+				if (!userInput) {
+					return;
+				}
+				userInput = false;
+				file = new File("");
+				toptf.setText("");
 				topb.setEnabled(true);
-				whptfh.setEditable(false);
-				whptfw.setEditable(false);
-				whpb.setEnabled(false);
+				setBottomEnabled(false);
+
 				updateGraph();
 				updateButtons();
+				userInput = true;
 			}
 		});
 		toprb2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				file = null;
-				blcb.setEnabled(true);
-				brrb1.setEnabled(true);
-				brrb2.setEnabled(true);
-				if (form.equals(GridForm.FREE)) {
-					brptf1x.setEditable(true);
-					brptf1y.setEditable(true);
-					brptf2x.setEditable(true);
-					brptf2y.setEditable(true);
-					brptf3x.setEditable(true);
-					brptf3y.setEditable(true);
-					brpb.setEnabled(true);
+				System.out.println("toprb2");
+				if (!userInput) {
+					return;
 				}
-				whptfh.setEditable(true);
-				whptfw.setEditable(true);
-				whpb.setEnabled(true);
+				userInput = false;
+				file = null;
+				toptf.setText("");
 				topb.setEnabled(false);
+				setBottomEnabled(true);
+				setGridType((GridType) blcb.getSelectedItem());
+
 				updateGraph();
 				updateButtons();
+				userInput = true;
 			}
 		});
 		topb.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				System.out.println("topb");
+				if (!userInput) {
+					return;
+				}
+				userInput = false;
 				JFileChooser fc = new JFileChooser();
 				int status = fc.showOpenDialog(NewDialog.this);
 				if (status == JFileChooser.APPROVE_OPTION) {
 					File f = fc.getSelectedFile();
 					if (f.exists()) {
+
 						file = f;
 						toptf.setText(file.getPath());
 						updateGraph();
 						updateButtons();
 					}
 				}
+				userInput = true;
 			}
 		});
+
+		// ##############################
+
+		blcb.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				System.out.println("blcb");
+				if (!userInput) {
+					return;
+				}
+				userInput = false;
+				setGridType((GridType) blcb.getSelectedItem());
+				updateGraph();
+				updateButtons();
+				userInput = true;
+			}
+		});
+
 		brrb1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				brptf1x.setEditable(false);
-				brptf1y.setEditable(false);
-				brptf2x.setEditable(false);
-				brptf2y.setEditable(false);
-				brptf3x.setEditable(false);
-				brptf3y.setEditable(false);
-				brpb.setEnabled(false);
-
-				Point[] points = ((GridType) blcb.getSelectedItem())
-						.getRegularPoints();
-				brptf1x.setValue(points[0].getX());
-				brptf1y.setValue(points[0].getY());
-				brptf2x.setValue(points[1].getX());
-				brptf2y.setValue(points[1].getY());
-				brptf3x.setValue(points[2].getX());
-				brptf3y.setValue(points[2].getY());
+				System.out.println("brrb1");
+				if (!userInput) {
+					return;
+				}
+				userInput = false;
+				form = GridForm.REGULAR;
+				setPointsEnabled(false);
+				setGridType((GridType) blcb.getSelectedItem());
 
 				updateGraph();
 				updateButtons();
+				userInput = true;
 			}
 		});
 		brrb2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				brptf1x.setEditable(true);
-				brptf1y.setEditable(true);
-				brptf2x.setEditable(true);
-				brptf2y.setEditable(true);
-				brptf3x.setEditable(true);
-				brptf3y.setEditable(true);
-				brpb.setEnabled(true);
+				System.out.println("brrb2");
+				form = GridForm.FREE;
+				setPointsEnabled(true);
+
 				updateGraph();
 				updateButtons();
 			}
@@ -321,32 +356,161 @@ public class NewDialog extends CardDialog {
 		ActionListener update = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				System.out.println("refersh");
+				if (!userInput) {
+					return;
+				}
+				userInput = false;
 				updateGraph();
 				updateButtons();
+				userInput = true;
 			}
 		};
 
-		whpb.addActionListener(update);
+		whb.addActionListener(update);
 		brpb.addActionListener(update);
 		return card;
 	}
 
 	private JPanel makeCard2() {
-		JPanel card = new JPanel();
+		JPanel card = new JPanel(new MigLayout("", "fill, grow"));
+
+		JPanel pat = new JPanel(new MigLayout("", "fill, grow"));
+		pat.setBorder(BorderFactory.createTitledBorder("Pattern"));
+
+		ButtonGroup patbr = new ButtonGroup();
+		patrb1 = new JRadioButton("From file", true);
+		patbr.add(patrb1);
+		patrb1.setEnabled(false);
+		pat.add(patrb1, "wrap,span 2");
+		patrb2 = new JRadioButton("Predefined", false);
+		patbr.add(patrb2);
+		patrb2.setEnabled(false);
+		pat.add(patrb2);
+
+		patcb = new JComboBox();
+		for (GridPattern gp : GridPattern.values()) {
+			if (gp.isSimple() && !gp.isInternal()) {
+				patcb.addItem(gp);
+			}
+		}
+		pat.add(patcb);
+
+		card.add(pat, "grow, wrap");
+
+		JPanel mode = new JPanel(new MigLayout("", "fill, grow"));
+		mode.setBorder(BorderFactory.createTitledBorder("Mode"));
+
+		modecb = new JCheckBox("Allow editing");
+		mode.add(modecb);
+
+		card.add(mode, "grow, wrap");
+
+		JPanel ani = new JPanel(new MigLayout("", "fill, grow"));
+		ani.setBorder(BorderFactory.createTitledBorder("Animator"));
+
+		anicb = new JComboBox();
+		anicb.addItem(null);
+		for (AnimatorFactory aa : AbstractAnimator.getAnimators()) {
+			anicb.addItem(aa);
+		}
+		anicb.setSelectedItem(null);
+		ani.add(anicb, "grow");
+
+		card.add(ani, "grow");
+
+		patrb1.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				patcb.setEnabled(false);
+			}
+		});
+
+		patrb2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				patcb.setEnabled(true);
+			}
+		});
+
 		return card;
 	}
 
-	private void updateGraph() {
-		Board b = null;
-		try {
-			if (file != null) {
+	private void setBottomEnabled(boolean b) {
+		blcb.setEnabled(b);
+		brrb1.setEnabled(b);
+		brrb2.setEnabled(b);
+		whtfh.setEditable(b);
+		whtfw.setEditable(b);
+		whb.setEnabled(b);
+		if (b && form.equals(GridForm.FREE)) {
+			setPointsEnabled(true);
+		} else {
+			setPointsEnabled(false);
+		}
+	}
 
+	private void setGridType(GridType gt) {
+		blcb.setSelectedIndex(types.get(gt));
+		if (form.equals(GridForm.REGULAR)) {
+			Point[] points = gt.getRegularPoints();
+			brtpf1x.setValue(points[0].getX());
+			brptf1y.setValue(points[0].getY());
+			brptf2x.setValue(points[1].getX());
+			brptf2y.setValue(points[1].getY());
+			brptf3x.setValue(points[2].getX());
+			brptf3y.setValue(points[2].getY());
+		}
+	}
+
+	private void setPointsEnabled(boolean b) {
+		brtpf1x.setEditable(b);
+		brptf1y.setEditable(b);
+		brptf2x.setEditable(b);
+		brptf2y.setEditable(b);
+		brptf3x.setEditable(b);
+		brptf3y.setEditable(b);
+		brpb.setEnabled(b);
+	}
+
+	private void updateGraph() {
+		System.out.println("graph");
+
+		Board b = null;
+		if (file != null) {
+			try {
 				b = BoardImpl.createBoard(file);
 				gb.setBoard(b);
-
-			} else {
+			} catch (Exception ex) {
+				b = null;
+				file = new File("");
+			}
+			if (b != null) {
+				Point[] points = b.getGrid().getPoints();
+				brtpf1x.setValue(points[0].getX());
+				brptf1y.setValue(points[0].getY());
+				brptf2x.setValue(points[1].getX());
+				brptf2y.setValue(points[1].getY());
+				brptf3x.setValue(points[2].getX());
+				brptf3y.setValue(points[2].getY());
+				if (b.getGrid().getGridType().isRegular(points)) {
+					form = GridForm.REGULAR;
+					brrb1.setSelected(true);
+					brrb2.setSelected(false);
+				} else {
+					form = GridForm.FREE;
+					brrb1.setSelected(false);
+					brrb2.setSelected(true);
+				}
+				type = types.get(b.getGrid().getGridType());
+				blcb.setSelectedIndex(type);
+				whtfw.setValue(b.getWidth());
+				whtfh.setValue(b.getHeight());
+			}
+		} else {
+			try {
 				Point p1 = new PointImpl(
-						((Number) brptf1x.getValue()).intValue(),
+						((Number) brtpf1x.getValue()).intValue(),
 						((Number) brptf1y.getValue()).intValue());
 				Point p2 = new PointImpl(
 						((Number) brptf2x.getValue()).intValue(),
@@ -356,43 +520,29 @@ public class NewDialog extends CardDialog {
 						((Number) brptf3y.getValue()).intValue());
 				Grid g = AbstractGrid.createGrid(
 						(GridType) blcb.getSelectedItem(), p1, p2, p3);
-				b = new BoardImpl(g, ((Number) whptfw.getValue()).intValue(),
-						((Number) whptfh.getValue()).intValue());
-				gb.setBoard(b);
+				b = new BoardImpl(g, ((Number) whtfw.getValue()).intValue(),
+						((Number) whtfh.getValue()).intValue());
+			} catch (Exception ex) {
+				b = null;
 			}
-		} catch (Exception ex) {
-			file = null;
-			gb.setBoard(null);
-			gb.setGridPainter(null);
-			gb.setVerticesPainter(null);
 		}
-		if (b != null) {
-			Point[] points = b.getGrid().getPoints();
-			brptf1x.setValue(points[0].getX());
-			brptf1y.setValue(points[0].getY());
-			brptf2x.setValue(points[1].getX());
-			brptf2y.setValue(points[1].getY());
-			brptf3x.setValue(points[2].getX());
-			brptf3y.setValue(points[2].getY());
-			if (b.getGrid().getGridType().isRegular(points)) {
-				form = GridForm.REGULAR;
-				brrb1.setSelected(true);
-				brrb2.setSelected(false);
-			} else {
-				form = GridForm.FREE;
-				brrb1.setSelected(false);
-				brrb2.setSelected(true);
-			}
-			type = types.get(b.getGrid().getGridType());
-			blcb.setSelectedIndex(type);
-			whptfw.setValue(b.getWidth());
-			whptfh.setValue(b.getHeight());
 
+		if (b != null) {
+			gb.setBoard(b);
 			gb.setGridPainterAndPaint(new GridPainterImpl((GridType) blcb
 					.getSelectedItem()));
 			gb.setVerticesPainterAndPaint(new VerticesPainterImpl(
 					(GridType) blcb.getSelectedItem(), DegreeType.BY_ALL));
+		} else {
+			gb.setBoard(null);
+			gb.setGridPainter(null);
+			gb.setVerticesPainter(null);
 		}
+	}
+
+	@Override
+	protected boolean canFinish() {
+		return getCurrent() == 1 && canNext();
 	}
 
 	@Override
@@ -403,6 +553,25 @@ public class NewDialog extends CardDialog {
 	@Override
 	protected boolean canPrev() {
 		return true;
+	}
+
+	@Override
+	protected void flipNext() {
+		System.out.println("flip next");
+		if (file == null) {
+			patrb1.setEnabled(false);
+			patrb1.setSelected(false);
+			patrb2.setEnabled(false);
+			patcb.setEnabled(true);
+			patrb2.setSelected(true);
+		} else {
+			patrb1.setEnabled(true);
+			patrb2.setEnabled(true);
+		}
+	}
+
+	@Override
+	protected void flipPrev() {
 	}
 
 	@Override

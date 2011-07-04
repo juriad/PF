@@ -13,5 +13,7 @@ public interface Animator extends Runnable {
 
 	public long remainingTime();
 
+	public void reset();
+
 	public void stop();
 }

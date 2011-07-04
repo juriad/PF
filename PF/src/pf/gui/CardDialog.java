@@ -39,6 +39,7 @@ public abstract class CardDialog extends JDialog {
 				cl.next(content);
 				current++;
 				updateButtons();
+				flipNext();
 			}
 		}
 	}
@@ -50,6 +51,7 @@ public abstract class CardDialog extends JDialog {
 				cl.next(content);
 				current--;
 				updateButtons();
+				flipPrev();
 			}
 		}
 	}
@@ -122,9 +124,15 @@ public abstract class CardDialog extends JDialog {
 		content.add(panel);
 	}
 
+	protected abstract boolean canFinish();
+
 	protected abstract boolean canNext();
 
 	protected abstract boolean canPrev();
+
+	protected abstract void flipNext();
+
+	protected abstract void flipPrev();
 
 	protected int getCurrent() {
 		return current;
@@ -137,7 +145,7 @@ public abstract class CardDialog extends JDialog {
 	protected abstract void makeContent();
 
 	protected void updateButtons() {
-		finish.setEnabled(isLast());
+		finish.setEnabled(isLast() && canFinish());
 		next.setEnabled(!isLast() && canNext());
 		prev.setEnabled(!isFirst() && canPrev());
 		cancel.setEnabled(true);
