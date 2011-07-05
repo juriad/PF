@@ -1,6 +1,7 @@
 package pf.test;
 
-import pf.gui.EdgesPainterDialog;
+import pf.board.GridType;
+import pf.gui.GridPainterDialog;
 
 public class DialogTester {
 
@@ -12,8 +13,10 @@ public class DialogTester {
 		// new VerticesPainterDialog(null, true, null, false, null, true, null,
 		// GridType.TRIANGLE).setVisible(true);
 
-		new EdgesPainterDialog(null, true, null, false, null, true, null)
-				.setVisible(true);
+		// new EdgesPainterDialog(null, true, null, false, null, true, null)
+		// .setVisible(true);
+		new GridPainterDialog(null, true, null, false, null, true, null,
+				GridType.TRIANGLE).setVisible(true);
 	}
 
 }

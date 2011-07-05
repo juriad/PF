@@ -30,7 +30,6 @@ public class ColorEditor extends AbstractCellEditor implements TableCellEditor,
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		System.out.println(e);
 		if (EDIT.equals(e.getActionCommand())) {
 			button.setBackground(currentColor);
 			Color c = JColorChooser.showDialog(dialog, EDIT, currentColor);

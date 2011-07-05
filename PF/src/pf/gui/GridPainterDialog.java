@@ -3,6 +3,7 @@ package pf.gui;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -16,19 +17,24 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
-import pf.interactive.EdgesPainter;
-import pf.interactive.EdgesPainterImpl;
+import pf.board.GridType;
+import pf.interactive.GridPainter;
+import pf.interactive.GridPainterImpl;
 
 import net.miginfocom.swing.MigLayout;
 
-public class EdgesPainterDialog extends CardDialog {
-	class EdgesTableModel extends AbstractTableModel {
+public class GridPainterDialog extends CardDialog {
+	class GridTableModel extends AbstractTableModel {
 		private static final long serialVersionUID = 1L;
-		private String[] columnNames = { "State", "Color", "Stroke" };
+		private String[] columnNames = { "Gridline no.", "Color", "Stroke",
+				"Main color", "Main stroke", "Main repetition", "Main offset" };
 		private ArrayList<Object[]> data = new ArrayList<Object[]>();
 
-		public void addRow(String desc, Color color, BasicStroke stroke) {
-			data.add(new Object[] { desc, color, stroke });
+		public void addRow(int i, Color color, Stroke stroke, Color mainColor,
+				Stroke mainStroke, int repetition, int offset) {
+			data.add(new Object[] { i, color, stroke, mainColor, mainStroke,
+					repetition, offset });
+
 		}
 
 		@Override
@@ -74,7 +80,11 @@ public class EdgesPainterDialog extends CardDialog {
 
 	private JTable runt;
 
-	EdgesPainterImpl editp, showp, runp;
+	GridPainterImpl editp;
+
+	GridPainterImpl showp;
+
+	GridPainterImpl runp;
 
 	private JCheckBox editchb;
 
@@ -94,11 +104,13 @@ public class EdgesPainterDialog extends CardDialog {
 
 	private boolean editMode;
 
-	public static final String title = "Edges painter dialog";
+	private GridType gt;
 
-	public EdgesPainterDialog(JFrame owner, boolean editMode,
-			EdgesPainterImpl editp, boolean showMode, EdgesPainterImpl showp,
-			boolean runMode, EdgesPainterImpl runp) {
+	public static final String title = "Grid painter dialog";
+
+	public GridPainterDialog(JFrame owner, boolean editMode,
+			GridPainterImpl editp, boolean showMode, GridPainterImpl showp,
+			boolean runMode, GridPainterImpl runp, GridType gt) {
 		super(owner, title);
 		this.editMode = editMode;
 		this.editp = editp;
@@ -106,6 +118,7 @@ public class EdgesPainterDialog extends CardDialog {
 		this.showp = showp;
 		this.runMode = runMode;
 		this.runp = runp;
+		this.gt = gt;
 		setBoard();
 		pack();
 	}
@@ -119,40 +132,43 @@ public class EdgesPainterDialog extends CardDialog {
 	public void finished() {
 	}
 
-	public EdgesPainter getEditEdgesPainter() {
+	public GridPainter getGridPainter() {
 		if (!editchb.isSelected() || !editMode) {
 			return null;
 		}
-		EdgesPainterImpl ep = new EdgesPainterImpl();
-		setEp(ep, editt);
-		return ep;
+		GridPainterImpl gp = new GridPainterImpl(gt);
+		setGp(gp, editt);
+		return gp;
 	}
 
-	public EdgesPainter getRunEdgesPainter() {
+	public GridPainter getRunGridPainter() {
 		if (!runchb.isSelected() || !runMode) {
 			return null;
 		}
-		EdgesPainterImpl ep = new EdgesPainterImpl();
-		setEp(ep, runt);
-		return ep;
+		GridPainterImpl gp = new GridPainterImpl(gt);
+		setGp(gp, runt);
+		return gp;
 	}
 
-	public EdgesPainter getShowEdgesPainter() {
+	public GridPainter getShowGridPainter() {
 		if (!showchb.isSelected() || !showMode) {
 			return null;
 		}
-		EdgesPainterImpl ep = new EdgesPainterImpl();
-		setEp(ep, showt);
-		return ep;
+		GridPainterImpl gp = new GridPainterImpl(gt);
+		setGp(gp, showt);
+		return gp;
 	}
 
-	private void fillTable(EdgesPainterImpl vp, JTable t) {
-		EdgesTableModel tm = new EdgesTableModel();
-		if (vp == null) {
-			vp = new EdgesPainterImpl();
+	private void fillTable(GridPainterImpl gp, JTable t) {
+		GridTableModel tm = new GridTableModel();
+		if (gp == null) {
+			gp = new GridPainterImpl(gt);
 		}
-		tm.addRow("unused", vp.getUnusedColor(), vp.getUnusedStroke());
-		tm.addRow("used", vp.getUsedColor(), vp.getUsedStroke());
+		for (int i = 0; i < gt.getLines(); i++) {
+			tm.addRow(i + 1, gp.getColor(i), gp.getStroke(i),
+					gp.getMainColor(i), gp.getMainStroke(i),
+					gp.getRepetition(i), gp.getOffset(i));
+		}
 		t.setModel(tm);
 		t.getColumnModel().getColumn(1)
 				.setCellRenderer(new ColorRenderer(true));
@@ -160,6 +176,19 @@ public class EdgesPainterDialog extends CardDialog {
 		t.getColumnModel().getColumn(2)
 				.setCellRenderer(new BasicStrokeRenderer(true));
 		t.getColumnModel().getColumn(2).setCellEditor(new BasicStrokeEditor());
+		t.getColumnModel().getColumn(3)
+				.setCellRenderer(new ColorRenderer(true));
+		t.getColumnModel().getColumn(3).setCellEditor(new ColorEditor(this));
+		t.getColumnModel().getColumn(4)
+				.setCellRenderer(new BasicStrokeRenderer(true));
+		t.getColumnModel().getColumn(4).setCellEditor(new BasicStrokeEditor());
+		t.getColumnModel().getColumn(5)
+				.setCellEditor(new IntegerRangeEditor(1, Integer.MAX_VALUE));
+		t.getColumnModel()
+				.getColumn(6)
+				.setCellEditor(
+						new IntegerRangeEditor(Integer.MIN_VALUE,
+								Integer.MAX_VALUE));
 		t.setPreferredScrollableViewportSize(new Dimension((int) (t
 				.getPreferredSize().getWidth() * 1.5), (int) t
 				.getPreferredSize().getHeight()));
@@ -204,12 +233,16 @@ public class EdgesPainterDialog extends CardDialog {
 		}
 	}
 
-	private void setEp(EdgesPainterImpl ep, JTable t) {
+	private void setGp(GridPainterImpl gp, JTable t) {
 		TableModel tm = t.getModel();
-		ep.setUnusedColor((Color) tm.getValueAt(0, 1));
-		ep.setUnusedStroke((BasicStroke) tm.getValueAt(0, 2));
-		ep.setUsedColor((Color) tm.getValueAt(1, 1));
-		ep.setUsedStroke((BasicStroke) tm.getValueAt(1, 2));
+		for (int i = 0; i < t.getRowCount(); i++) {
+			gp.setColor(i, (Color) tm.getValueAt(i, 1));
+			gp.setStroke(i, (BasicStroke) tm.getValueAt(i, 2));
+			gp.setMainColor(i, (Color) tm.getValueAt(i, 3));
+			gp.setMainStroke(i, (BasicStroke) tm.getValueAt(i, 4));
+			gp.setRepetition(i, (Integer) tm.getValueAt(i, 5));
+			gp.setOffset(i, (Integer) tm.getValueAt(i, 6));
+		}
 	}
 
 	@Override

@@ -2,6 +2,7 @@ package pf.gui;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
@@ -226,6 +227,9 @@ public class VerticesPainterDialog extends CardDialog {
 		t.getColumnModel().getColumn(1).setCellEditor(new ColorEditor(this));
 		t.getColumnModel().getColumn(2).setCellEditor(new RadiusEditor());
 		t.getColumnModel().getColumn(3).setCellEditor(new RadiusEditor());
+		t.setPreferredScrollableViewportSize(new Dimension((int) (t
+				.getPreferredSize().getWidth() * 1.5), (int) t
+				.getPreferredSize().getHeight()));
 	}
 
 	private void setBoard() {
@@ -245,7 +249,6 @@ public class VerticesPainterDialog extends CardDialog {
 				editt.setEnabled(true);
 			}
 			fillTable(editp, editt);
-			editt.setPreferredScrollableViewportSize(editt.getPreferredSize());
 		}
 		if (!showMode) {
 			getCurrentCard().remove(show);
@@ -263,7 +266,6 @@ public class VerticesPainterDialog extends CardDialog {
 				showt.setEnabled(true);
 			}
 			fillTable(showp, showt);
-			showt.setPreferredScrollableViewportSize(showt.getPreferredSize());
 		}
 		if (!runMode) {
 			getCurrentCard().remove(run);
@@ -281,7 +283,6 @@ public class VerticesPainterDialog extends CardDialog {
 				runt.setEnabled(true);
 			}
 			fillTable(runp, runt);
-			runt.setPreferredScrollableViewportSize(runt.getPreferredSize());
 		}
 	}
 
