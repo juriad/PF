@@ -21,6 +21,7 @@ public abstract class CardDialog extends JDialog {
 		public void actionPerformed(ActionEvent e) {
 			closedProperly = false;
 			dispose();
+			cancelled();
 		}
 	}
 
@@ -29,6 +30,7 @@ public abstract class CardDialog extends JDialog {
 		public void actionPerformed(ActionEvent e) {
 			closedProperly = true;
 			dispose();
+			finished();
 		}
 	}
 
@@ -57,19 +59,39 @@ public abstract class CardDialog extends JDialog {
 	}
 
 	private static final long serialVersionUID = 1L;
-	private final JPanel content;
+	private JPanel content;
 
-	private final CardLayout cl;
+	private CardLayout cl;
 
-	private final List<JPanel> cards;
+	private List<JPanel> cards;
 	private int current;
 
 	private boolean closedProperly = false;
 
-	private final JButton prev, next, cancel, finish;
+	private JButton prev;
+	private JButton next;
+	private JButton cancel;
+	private JButton finish;
 
-	public CardDialog(JFrame owner) {
-		super(owner, "New");
+	public CardDialog(JDialog owner, String title) {
+		super(owner, title);
+		initDialog();
+	}
+
+	public CardDialog(JFrame owner, String title) {
+		super(owner, title);
+		initDialog();
+	}
+
+	public abstract void cancelled();
+
+	public abstract void finished();
+
+	public boolean isClosedProperly() {
+		return closedProperly;
+	}
+
+	private void initDialog() {
 		Container pane = getContentPane();
 		pane.setLayout(new BorderLayout());
 
@@ -105,10 +127,6 @@ public abstract class CardDialog extends JDialog {
 
 		setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 		pack();
-	}
-
-	public boolean isClosedProperly() {
-		return closedProperly;
 	}
 
 	private boolean isFirst() {

@@ -101,7 +101,7 @@ public class BoardImpl implements Board {
 					|| pattern.equals(GridPattern.INTERACTIVE_SHOW)) {
 				throw new IllegalStateException();
 			}
-			if (pattern == null) {
+			if (pattern == null || pattern.isInternal()) {
 				throw new InputMismatchException(spattern);
 			}
 		}
@@ -319,6 +319,13 @@ public class BoardImpl implements Board {
 
 	@Override
 	public void save(File file, GridPattern pattern) throws IOException {
+		if (pattern.isInternal()) {
+			throw new IllegalArgumentException();
+		}
+		if (pattern.equals(GridPattern.COMPLEX_SCHEMA)
+				&& !getGrid().getGridType().isRegular(getGrid().getPoints())) {
+			throw new IllegalStateException();
+		}
 		FileHeader fh = new FileHeader(getGrid().getGridType(), width, height,
 				getGrid().getPoints(), pattern);
 		FileWriter fw = new FileWriter(file);
@@ -334,6 +341,7 @@ public class BoardImpl implements Board {
 			Edge e = ei.next();
 			pes.add(new PointsEdge(e.getV1(), e.getV2(), e.isUsed()));
 		}
+
 		BoardPattern bp = AbstractBoardPattern.createBoardPattern(this,
 				pattern, pes);
 		bp.save(bw);

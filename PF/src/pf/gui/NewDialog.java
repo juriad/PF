@@ -33,6 +33,7 @@ import pf.board.GridType;
 import pf.interactive.AbstractAnimator;
 import pf.interactive.AnimatorFactory;
 import pf.interactive.GameBoard;
+import pf.interactive.GameMode;
 import pf.interactive.GridPainterImpl;
 import pf.interactive.VerticesPainterImpl;
 import pf.interactive.VerticesPainterImpl.DegreeType;
@@ -42,9 +43,7 @@ import net.miginfocom.swing.MigLayout;
 public class NewDialog extends CardDialog {
 	private static final long serialVersionUID = 1L;
 
-	public static void main(String[] args) {
-		new NewDialog(null).setVisible(true);
-	}
+	public static final String title = "New dialog";
 
 	private File file = new File("");
 	private BoardImpl.GridForm form;
@@ -84,13 +83,22 @@ public class NewDialog extends CardDialog {
 
 	private JComboBox anicb;
 	private JComboBox patcb;
-	private JCheckBox modecb;
+	private JCheckBox modechb;
+	private JButton saveb;
 
 	private boolean userInput = false;
 
 	public NewDialog(JFrame owner) {
-		super(owner);
+		super(owner, title);
 		userInput = true;
+	}
+
+	@Override
+	public void cancelled() {
+	}
+
+	@Override
+	public void finished() {
 	}
 
 	public AnimatorFactory getAnimator() {
@@ -106,7 +114,7 @@ public class NewDialog extends CardDialog {
 	}
 
 	public boolean isEditAllowed() {
-		return modecb.isSelected();
+		return modechb.isSelected();
 	}
 
 	public boolean isFilePattern() {
@@ -114,8 +122,8 @@ public class NewDialog extends CardDialog {
 	}
 
 	private JPanel makeCard1() {
-		JPanel card = new JPanel(
-				new MigLayout("", "fill,grow", "[][grow,fill]"));
+		JPanel card = new JPanel(new MigLayout("", "fill,grow",
+				"[][grow,fill][]"));
 
 		JPanel top = new JPanel(new MigLayout("", "[30%] [grow,50%,right] []"));
 		top.setBorder(BorderFactory.createTitledBorder("Source"));
@@ -243,14 +251,28 @@ public class NewDialog extends CardDialog {
 		brpb.setEnabled(false);
 
 		br.add(brp);
-		card.add(br, "grow");
+		card.add(br, "grow, wrap");
+
+		JPanel save = new JPanel(new MigLayout("right"));
+		save.add(new JLabel("Save all options specified above to file"), "grow");
+		saveb = new JButton("Save");
+		saveb.setEnabled(false);
+		saveb.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				SaveDialog s = new SaveDialog(NewDialog.this, gb.getBoard());
+				s.setVisible(true);
+			}
+		});
+		save.add(saveb);
+
+		card.add(save, "grow, span 2");
 
 		// ##############################
 
 		toprb1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("toprb1");
 				if (!userInput) {
 					return;
 				}
@@ -268,7 +290,6 @@ public class NewDialog extends CardDialog {
 		toprb2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("toprb2");
 				if (!userInput) {
 					return;
 				}
@@ -287,7 +308,6 @@ public class NewDialog extends CardDialog {
 		topb.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("topb");
 				if (!userInput) {
 					return;
 				}
@@ -313,7 +333,6 @@ public class NewDialog extends CardDialog {
 		blcb.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("blcb");
 				if (!userInput) {
 					return;
 				}
@@ -328,7 +347,6 @@ public class NewDialog extends CardDialog {
 		brrb1.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("brrb1");
 				if (!userInput) {
 					return;
 				}
@@ -345,7 +363,6 @@ public class NewDialog extends CardDialog {
 		brrb2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("brrb2");
 				form = GridForm.FREE;
 				setPointsEnabled(true);
 
@@ -356,7 +373,6 @@ public class NewDialog extends CardDialog {
 		ActionListener update = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("refersh");
 				if (!userInput) {
 					return;
 				}
@@ -401,7 +417,17 @@ public class NewDialog extends CardDialog {
 		JPanel mode = new JPanel(new MigLayout("", "fill, grow"));
 		mode.setBorder(BorderFactory.createTitledBorder("Mode"));
 
-		modecb = new JCheckBox("Allow editing");
+		modechb = new JCheckBox("Allow editing");
+		modechb.setSelected(true);
+		mode.add(modechb, "wrap, span 2");
+
+		JLabel model = new JLabel("Startup mode");
+		mode.add(model);
+
+		final JComboBox modecb = new JComboBox();
+		modecb.addItem(GameMode.SHOW);
+		modecb.setSelectedItem(GameMode.SHOW);
+		modecb.addItem(GameMode.EDIT);
 		mode.add(modecb);
 
 		card.add(mode, "grow, wrap");
@@ -430,6 +456,36 @@ public class NewDialog extends CardDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				patcb.setEnabled(true);
+			}
+		});
+
+		// ##############################
+
+		modechb.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (!modechb.isSelected()) {
+					if (modecb.getSelectedItem().equals(GameMode.EDIT)) {
+						modecb.setSelectedItem(GameMode.SHOW);
+					}
+					modecb.removeItem(GameMode.EDIT);
+				} else {
+					modecb.addItem(GameMode.EDIT);
+				}
+			}
+		});
+
+		anicb.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (anicb.getSelectedItem() == null) {
+					if (modecb.getSelectedItem().equals(GameMode.RUN)) {
+						modecb.setSelectedItem(GameMode.SHOW);
+					}
+					modecb.removeItem(GameMode.RUN);
+				} else {
+					modecb.addItem(GameMode.RUN);
+				}
 			}
 		});
 
@@ -474,8 +530,6 @@ public class NewDialog extends CardDialog {
 	}
 
 	private void updateGraph() {
-		System.out.println("graph");
-
 		Board b = null;
 		if (file != null) {
 			try {
@@ -557,7 +611,6 @@ public class NewDialog extends CardDialog {
 
 	@Override
 	protected void flipNext() {
-		System.out.println("flip next");
 		if (file == null) {
 			patrb1.setEnabled(false);
 			patrb1.setSelected(false);
@@ -581,5 +634,11 @@ public class NewDialog extends CardDialog {
 		form = GridForm.REGULAR;
 		addCard(makeCard1());
 		addCard(makeCard2());
+	}
+
+	@Override
+	protected void updateButtons() {
+		super.updateButtons();
+		saveb.setEnabled(gb.getBoard() != null);
 	}
 }
