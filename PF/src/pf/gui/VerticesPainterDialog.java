@@ -1,19 +1,24 @@
 package pf.gui;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.text.NumberFormat;
 import java.util.ArrayList;
 
+import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
+import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 
 import pf.board.GridType;
@@ -24,6 +29,53 @@ import pf.interactive.VerticesPainterImpl.DegreeType;
 import net.miginfocom.swing.MigLayout;
 
 public class VerticesPainterDialog extends CardDialog {
+	class RadiusEditor extends AbstractCellEditor implements TableCellEditor {
+		private static final long serialVersionUID = 1L;
+		private int col;
+		private int inner;
+		private int outer;
+		private JFormattedTextField tf;
+
+		@Override
+		public Object getCellEditorValue() {
+			try {
+				int curval = Integer.valueOf(tf.getText());
+				tf.setValue(curval);
+			} catch (NumberFormatException ex) {
+			}
+			int val = ((Number) tf.getValue()).intValue();
+			if (col == 2) {
+				if (val >= inner) {
+					return val;
+				}
+				return outer;
+			} else if (col == 3) {
+				if (val <= outer && val >= 0) {
+					return val;
+				}
+				return inner;
+			} else {
+				throw new IllegalStateException();
+			}
+		}
+
+		@Override
+		public Component getTableCellEditorComponent(JTable table,
+				Object value, boolean isSelected, int row, int column) {
+			col = column;
+			if (col == 2) {
+				outer = (Integer) value;
+				inner = (Integer) table.getValueAt(row, column + 1);
+			} else if (col == 3) {
+				inner = (Integer) value;
+				outer = (Integer) table.getValueAt(row, column - 1);
+			}
+			tf = new JFormattedTextField(NumberFormat.getIntegerInstance());
+			tf.setValue(value);
+			return tf;
+		}
+	}
+
 	class VerticesTableModel extends AbstractTableModel {
 		private static final long serialVersionUID = 1L;
 		private String[] columnNames = { "Degree", "Color", "Outer", "Inner" };
@@ -55,8 +107,6 @@ public class VerticesPainterDialog extends CardDialog {
 
 		@Override
 		public boolean isCellEditable(int row, int col) {
-			// Note that the data/cell address is constant,
-			// no matter where the cell appears onscreen.
 			if (col < 1) {
 				return false;
 			}
@@ -174,6 +224,8 @@ public class VerticesPainterDialog extends CardDialog {
 		t.getColumnModel().getColumn(1)
 				.setCellRenderer(new ColorRenderer(true));
 		t.getColumnModel().getColumn(1).setCellEditor(new ColorEditor(this));
+		t.getColumnModel().getColumn(2).setCellEditor(new RadiusEditor());
+		t.getColumnModel().getColumn(3).setCellEditor(new RadiusEditor());
 	}
 
 	private void setBoard() {

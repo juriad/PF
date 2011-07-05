@@ -153,7 +153,7 @@ public class VerticesPainterImpl implements VerticesPainter {
 	}
 
 	public void setRadius(int degree, int outer, int inner) {
-		if (inner < 0 || outer <= inner) {
+		if (inner < 0 || outer < inner) {
 			throw new IllegalArgumentException();
 		}
 		infos.get(degree).innerR = inner;

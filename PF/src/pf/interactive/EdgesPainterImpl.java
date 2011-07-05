@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Shape;
-import java.awt.Stroke;
 import java.awt.geom.Line2D;
 import java.awt.geom.Line2D.Float;
 import java.util.Iterator;
@@ -15,26 +14,26 @@ import pf.graph.Edge;
 public class EdgesPainterImpl implements EdgesPainter {
 
 	private Color usedColor;
-	private Stroke unusedStroke;
+	private BasicStroke unusedStroke;
 	private boolean drawUnused = true;
 	private Color unusedColor;
-	private Stroke usedStroke;
+	private BasicStroke usedStroke;
 	private boolean drawUsed = true;
 
 	public EdgesPainterImpl() {
 		this(Color.BLACK, Color.RED);
 	}
 
-	public EdgesPainterImpl(Color unusedColor, Color usedColor) {
-		this(unusedColor, new BasicStroke(), usedColor, new BasicStroke());
-	}
-
-	public EdgesPainterImpl(Color unusedColor, Stroke unusedStroke,
-			Color usedColor, Stroke usedStroke) {
+	public EdgesPainterImpl(Color unusedColor, BasicStroke unusedStroke,
+			Color usedColor, BasicStroke usedStroke) {
 		setUnusedColor(unusedColor);
 		setUnusedStroke(unusedStroke);
 		setUsedColor(usedColor);
 		setUsedStroke(usedStroke);
+	}
+
+	public EdgesPainterImpl(Color unusedColor, Color usedColor) {
+		this(unusedColor, new BasicStroke(), usedColor, new BasicStroke());
 	}
 
 	@Override
@@ -51,7 +50,7 @@ public class EdgesPainterImpl implements EdgesPainter {
 		return unusedColor;
 	}
 
-	public Stroke getUnusedStroke() {
+	public BasicStroke getUnusedStroke() {
 		return unusedStroke;
 	}
 
@@ -59,7 +58,7 @@ public class EdgesPainterImpl implements EdgesPainter {
 		return usedColor;
 	}
 
-	public Stroke getUsedStroke() {
+	public BasicStroke getUsedStroke() {
 		return usedStroke;
 	}
 
@@ -99,7 +98,7 @@ public class EdgesPainterImpl implements EdgesPainter {
 		this.unusedColor = unusedColor;
 	}
 
-	public void setUnusedStroke(Stroke unusedStroke) {
+	public void setUnusedStroke(BasicStroke unusedStroke) {
 		if (unusedStroke == null) {
 			throw new IllegalArgumentException();
 		}
@@ -113,7 +112,7 @@ public class EdgesPainterImpl implements EdgesPainter {
 		this.usedColor = usedColor;
 	}
 
-	public void setUsedStroke(Stroke usedStroke) {
+	public void setUsedStroke(BasicStroke usedStroke) {
 		if (usedStroke == null) {
 			throw new IllegalArgumentException();
 		}
