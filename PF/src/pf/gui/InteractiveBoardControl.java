@@ -1,4 +1,4 @@
-package pf.interactive;
+package pf.gui;
 
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
@@ -8,6 +8,11 @@ import java.util.Map;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
+
+import pf.interactive.GameMode;
+import pf.interactive.GameModeEvent;
+import pf.interactive.GameModeListener;
+import pf.interactive.InteractiveBoard;
 
 public class InteractiveBoardControl extends JPanel {
 	public class GML implements GameModeListener {

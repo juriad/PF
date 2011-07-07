@@ -30,8 +30,8 @@ import pf.board.BoardImpl.GridForm;
 import pf.board.Grid;
 import pf.board.GridPattern;
 import pf.board.GridType;
-import pf.interactive.AbstractAnimator;
 import pf.interactive.AnimatorFactory;
+import pf.interactive.Animators;
 import pf.interactive.GameBoard;
 import pf.interactive.GameMode;
 import pf.interactive.GridPainterImpl;
@@ -437,7 +437,7 @@ public class NewDialog extends CardDialog {
 
 		anicb = new JComboBox();
 		anicb.addItem(null);
-		for (AnimatorFactory aa : AbstractAnimator.getAnimators()) {
+		for (AnimatorFactory aa : Animators.getInstance().getAnimators()) {
 			anicb.addItem(aa);
 		}
 		anicb.setSelectedItem(null);

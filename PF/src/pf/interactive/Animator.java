@@ -16,4 +16,6 @@ public interface Animator extends Runnable {
 	public void reset();
 
 	public void stop();
+
+	AnimatorFactory getFactory();
 }
