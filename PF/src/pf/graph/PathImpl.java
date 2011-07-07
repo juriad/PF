@@ -208,13 +208,16 @@ public class PathImpl implements Path {
 
 			@Override
 			public Vertex next() {
+				Vertex n;
 				if (index == 0) {
-					return getFirstVertex();
-				} else if (index == length + 1) {
-					return getLastVertex();
+					n = getFirstVertex();
+				} else if (index == length) {
+					n = getLastVertex();
 				} else {
-					return edges.get(index - 1).getCommon(edges.get(index));
+					n = edges.get(index - 1).getCommon(edges.get(index));
 				}
+				index++;
+				return n;
 			}
 
 			@Override

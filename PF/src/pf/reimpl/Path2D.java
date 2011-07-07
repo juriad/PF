@@ -12,13 +12,99 @@ import java.util.List;
 
 public class Path2D<E extends Number & Comparable<E>> implements Shape {
 
-	private class SelfIterator implements PathIterator {
+	protected class Segment {
+		private final SegmentType type;
+		private final E[] coords;
+
+		public Segment(SegmentType type, E... coords) {
+			this.type = type;
+			this.coords = coords;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			if (obj == null) {
+				return false;
+			}
+			if (getClass() != obj.getClass()) {
+				return false;
+			}
+			@SuppressWarnings("unchecked")
+			Segment other = (Segment) obj;
+			if (!this.getType().equals(other.getType())) {
+				return false;
+			}
+			if (this.getCoords().length != other.getCoords().length) {
+				return false;
+			}
+			for (int i = 0; i < coords.length; i++) {
+				if (!this.getCoords()[i].equals(other.getCoords()[i])) {
+					return false;
+				}
+			}
+			return true;
+		}
+
+		public E[] getCoords() {
+			return coords;
+		}
+
+		public SegmentType getType() {
+			return type;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + type.getType();
+			for (E e : coords) {
+				result = prime * result + e.hashCode();
+			}
+			return result;
+		}
+	}
+
+	protected enum SegmentType {
+		SEG_MOVETO (0, 2),
+		SEG_LINETO (1, 2),
+		SEG_QUADTO (2, 4),
+		SEG_CUBICTO (3, 6),
+		SEG_CLOSE (4, 0);
+
+		private final int type;
+		private final int size;
+
+		private SegmentType(int type, int size) {
+			this.type = type;
+			this.size = size;
+		}
+
+		public int getSize() {
+			return size;
+		}
+
+		public int getType() {
+			return type;
+		}
+	}
+
+	class SelfIterator implements PathIterator {
 		protected Path2D<E> path;
 		protected int index;
+		private final int end;
 
-		public SelfIterator(Path2D<E> path) {
+		public SelfIterator(Path2D<E> path, int start, int end) {
+			end = end < 0 ? Integer.MAX_VALUE : end;
+			if (start > end) {
+				throw new IllegalStateException();
+			}
 			this.path = path;
-			index = 0;
+			index = start;
+			this.end = end;
 		}
 
 		@Override
@@ -46,7 +132,7 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 
 		@Override
 		public boolean isDone() {
-			return index >= path.length();
+			return index >= path.length() || index == end;
 		}
 
 		@Override
@@ -55,13 +141,13 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 		}
 	}
 
-	private class TxIterator implements PathIterator {
+	class TxIterator implements PathIterator {
 		private final AffineTransform affine;
 		private final SelfIterator iterator;
 
-		public TxIterator(Path2D<E> path, AffineTransform at) {
+		public TxIterator(Path2D<E> path, AffineTransform at, int start, int end) {
 			affine = at;
-			iterator = new SelfIterator(path);
+			iterator = new SelfIterator(path, start, end);
 		}
 
 		@Override
@@ -93,48 +179,6 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 		@Override
 		public void next() {
 			iterator.next();
-		}
-	}
-
-	protected class Segment {
-		private final SegmentType type;
-		private final E[] coords;
-
-		public Segment(SegmentType type, E... coords) {
-			this.type = type;
-			this.coords = coords;
-		}
-
-		public E[] getCoords() {
-			return coords;
-		}
-
-		public SegmentType getType() {
-			return type;
-		}
-	}
-
-	protected enum SegmentType {
-		SEG_MOVETO (0, 2),
-		SEG_LINETO (1, 2),
-		SEG_QUADTO (2, 4),
-		SEG_CUBICTO (3, 6),
-		SEG_CLOSE (4, 0);
-
-		private final int type;
-		private final int size;
-
-		private SegmentType(int type, int size) {
-			this.type = type;
-			this.size = size;
-		}
-
-		public int getSize() {
-			return size;
-		}
-
-		public int getType() {
-			return type;
 		}
 	}
 
@@ -345,9 +389,9 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 	@Override
 	public PathIterator getPathIterator(AffineTransform at) {
 		if (at == null) {
-			return new SelfIterator(this);
+			return new SelfIterator(this, 0, -1);
 		}
-		return new TxIterator(this, at);
+		return new TxIterator(this, at, 0, -1);
 	}
 
 	@Override
@@ -446,14 +490,21 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 		segments.clear();
 	}
 
-	private Point2D getPoint(int index) {
+	/**
+	 * Gets end point of segment
+	 * 
+	 * @param index
+	 *            index of segment
+	 * @return end point
+	 */
+	protected Point2D getPoint(int index) {
 		Segment s = segments.get(index);
 		int ss = s.getType().getSize();
 		return new Point2D.Float(s.getCoords()[ss - 2].floatValue(),
 				s.getCoords()[ss - 1].floatValue());
 	}
 
-	private Rectangle2D getRectangle(E x1, E y1, E x2, E y2) {
+	protected Rectangle2D getRectangle(E x1, E y1, E x2, E y2) {
 		float x1f = x1 == null ? 0 : x1.floatValue();
 		float y1f = y1 == null ? 0 : y1.floatValue();
 		float x2f = x2 == null ? 0 : x2.floatValue();
