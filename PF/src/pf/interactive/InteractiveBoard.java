@@ -21,6 +21,7 @@ import pf.graph.Edge;
 import pf.graph.Path;
 import pf.graph.PathImpl;
 import pf.graph.Vertex;
+import pf.reimpl.Path2D;
 
 public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	public static class DefaultSnapPolicy implements SnapPolicy {
@@ -562,7 +563,8 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		for (Path p : this) {
 			PathPainter pp = paths.get(p);
 			if (pp != null && isPaintPaths()) {
-				pp.paintPath(g2d, this, p);
+				Path2D<?> p2d = pp.createPath2D();
+				pp.paintPath(g2d, p2d);
 			}
 		}
 	}

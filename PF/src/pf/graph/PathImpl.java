@@ -25,6 +25,33 @@ public class PathImpl implements Path {
 		pointers = new HashMap<Edge, Integer>();
 	}
 
+	public PathImpl(Path p) {
+		this();
+		this.extend(p);
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		if (getClass() != obj.getClass()) {
+			return false;
+		}
+		PathImpl other = (PathImpl) obj;
+		if (edges == null) {
+			if (other.edges != null) {
+				return false;
+			}
+		} else if (!edges.equals(other.edges)) {
+			return false;
+		}
+		return true;
+	}
+
 	@Override
 	public void extend(Edge e) {
 		if (e == null) {
@@ -122,6 +149,14 @@ public class PathImpl implements Path {
 			return edges.get(length() - 1).getOther(
 					edges.get(length() - 1).getCommon(edges.get(length() - 2)));
 		}
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + edges.hashCode();
+		return result;
 	}
 
 	@Override

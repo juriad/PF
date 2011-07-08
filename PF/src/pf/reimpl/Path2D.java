@@ -12,6 +12,45 @@ import java.util.List;
 
 public class Path2D<E extends Number & Comparable<E>> implements Shape {
 
+	public enum SegmentType {
+		SEG_MOVETO (0, 2),
+		SEG_LINETO (1, 2),
+		SEG_QUADTO (2, 4),
+		SEG_CUBICTO (3, 6),
+		SEG_CLOSE (4, 0);
+
+		private final int type;
+		private final int size;
+
+		private SegmentType(int type, int size) {
+			this.type = type;
+			this.size = size;
+		}
+
+		public int getSize() {
+			return size;
+		}
+
+		public int getType() {
+			return type;
+		}
+	}
+
+	public enum WindingRule {
+		WIND_EVEN_ODD (0),
+		WIND_NON_ZERO (1);
+
+		private final int rule;
+
+		private WindingRule(int rule) {
+			this.rule = rule;
+		}
+
+		public int getRule() {
+			return rule;
+		}
+	}
+
 	protected class Segment {
 		private final SegmentType type;
 		private final E[] coords;
@@ -68,48 +107,38 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 		}
 	}
 
-	protected enum SegmentType {
-		SEG_MOVETO (0, 2),
-		SEG_LINETO (1, 2),
-		SEG_QUADTO (2, 4),
-		SEG_CUBICTO (3, 6),
-		SEG_CLOSE (4, 0);
-
-		private final int type;
-		private final int size;
-
-		private SegmentType(int type, int size) {
-			this.type = type;
-			this.size = size;
-		}
-
-		public int getSize() {
-			return size;
-		}
-
-		public int getType() {
-			return type;
-		}
-	}
-
 	class SelfIterator implements PathIterator {
 		protected Path2D<E> path;
 		protected int index;
 		private final int end;
+		private Segment moveTo = null;
 
 		public SelfIterator(Path2D<E> path, int start, int end) {
 			end = end < 0 ? Integer.MAX_VALUE : end;
 			if (start > end) {
 				throw new IllegalStateException();
 			}
+
 			this.path = path;
 			index = start;
 			this.end = end;
+			if (start < length()
+					&& !segments.get(start).getType()
+							.equals(SegmentType.SEG_MOVETO)) {
+				moveTo = getCurrentPoint(start - 1);
+				index--;
+			}
 		}
 
 		@Override
 		public int currentSegment(double[] coords) {
-			Segment current = path.segments.get(index);
+			Segment current;
+			if (moveTo != null) {
+				current = moveTo;
+				moveTo = null;
+			} else {
+				current = path.segments.get(index);
+			}
 			for (int i = 0; i < current.getType().getSize(); i++) {
 				coords[i] = current.coords[i].doubleValue();
 			}
@@ -118,7 +147,13 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 
 		@Override
 		public int currentSegment(float[] coords) {
-			Segment current = path.segments.get(index);
+			Segment current;
+			if (moveTo != null) {
+				current = moveTo;
+				moveTo = null;
+			} else {
+				current = path.segments.get(index);
+			}
 			for (int i = 0; i < current.getType().getSize(); i++) {
 				coords[i] = current.coords[i].floatValue();
 			}
@@ -127,7 +162,7 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 
 		@Override
 		public int getWindingRule() {
-			throw new UnsupportedOperationException();
+			return path.getWindingRule().getRule();
 		}
 
 		@Override
@@ -184,6 +219,8 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 
 	protected final List<Segment> segments;
 
+	private WindingRule windingRule;
+
 	protected static final int INIT_SIZE = 20;
 	protected static final int EXPAND_MAX = 500;
 
@@ -194,7 +231,7 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 	 * @since 1.6
 	 */
 	public Path2D() {
-		this(INIT_SIZE);
+		this(WindingRule.WIND_NON_ZERO, INIT_SIZE);
 	}
 
 	/**
@@ -209,7 +246,7 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 	 * @since 1.6
 	 */
 	public Path2D(int initialCapacity) {
-		segments = new ArrayList<Path2D<E>.Segment>(initialCapacity);
+		this(WindingRule.WIND_NON_ZERO, initialCapacity);
 	}
 
 	/**
@@ -223,6 +260,11 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 	 */
 	public Path2D(Path2D<E> gp) {
 		segments = new ArrayList<Path2D<E>.Segment>(gp.segments);
+	}
+
+	public Path2D(WindingRule windingRule, int initialCapacity) {
+		segments = new ArrayList<Path2D<E>.Segment>(initialCapacity);
+		setWindingRule(windingRule);
 	}
 
 	/**
@@ -357,11 +399,11 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 	 *         path or {@code null} if there are no points in the path.
 	 * @since 1.6
 	 */
-	public synchronized Point2D getCurrentPoint() {
+	public synchronized Segment getCurrentPoint(int curIndex) {
 		if (length() < 1) {
 			return null;
 		}
-		int index = length() - 1;
+		int index = curIndex;
 		Segment s = segments.get(index);
 		if (!s.getType().equals(SegmentType.SEG_CLOSE)) {
 			return getPoint(index);
@@ -397,6 +439,10 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 	@Override
 	public PathIterator getPathIterator(AffineTransform at, double flatness) {
 		return new FlatteningPathIterator(getPathIterator(at), flatness);
+	}
+
+	public WindingRule getWindingRule() {
+		return windingRule;
 	}
 
 	@Override
@@ -490,6 +536,10 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 		segments.clear();
 	}
 
+	public void setWindingRule(WindingRule windingRule) {
+		this.windingRule = windingRule;
+	}
+
 	/**
 	 * Gets end point of segment
 	 * 
@@ -497,11 +547,12 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 	 *            index of segment
 	 * @return end point
 	 */
-	protected Point2D getPoint(int index) {
+	@SuppressWarnings("unchecked")
+	protected Segment getPoint(int index) {
 		Segment s = segments.get(index);
 		int ss = s.getType().getSize();
-		return new Point2D.Float(s.getCoords()[ss - 2].floatValue(),
-				s.getCoords()[ss - 1].floatValue());
+		return new Segment(SegmentType.SEG_MOVETO, s.getCoords()[ss - 2],
+				s.getCoords()[ss - 1]);
 	}
 
 	protected Rectangle2D getRectangle(E x1, E y1, E x2, E y2) {

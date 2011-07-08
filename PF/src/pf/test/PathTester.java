@@ -46,7 +46,7 @@ public class PathTester {
 		p.extend(e3);
 		System.out.println("before ib");
 		InteractiveBoard ib = new InteractiveBoard(b);
-		ib.setPadding(0);
+		ib.setPadding(100);
 		ib.setVerticesPainterAndPaint(new VerticesPainterImpl(b.getGrid()
 				.getGridType(), DegreeType.BY_UNUSED));
 		ib.setGridPainterAndPaint(new GridPainterImpl(b.getGrid().getGridType()));
