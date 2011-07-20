@@ -64,17 +64,6 @@ public interface Path extends Iterable<Edge> {
 	Vertex getLastVertex();
 
 	/**
-	 * Inserts whole path in the middle of this path. Position where to insert
-	 * is determined by edge.
-	 * 
-	 * @param edge
-	 *            after this edge is path inserted
-	 * @param path
-	 *            path to insert
-	 */
-	void insert(Edge edge, Path path);
-
-	/**
 	 * Length is number of edges it contains.
 	 * 
 	 * @return length of this path
@@ -84,8 +73,10 @@ public interface Path extends Iterable<Edge> {
 	/**
 	 * Removes the last edge of this path
 	 * 
+	 * @return
+	 * 
 	 */
-	void shorten();
+	Edge shorten();
 
 	/**
 	 * Provides an iterator over vertices of this path. They are in the right

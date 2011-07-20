@@ -1,4 +1,4 @@
-package pf.test;
+package pf.main;
 
 import java.awt.BasicStroke;
 import java.awt.BorderLayout;
@@ -29,7 +29,9 @@ public class X {
 		c.setLayout(new BorderLayout());
 		File f = new File("/home/adam/trgrid.txt");
 		Board b = BoardImpl.createBoard(f);
-		final InteractiveBoard gb = new InteractiveBoard(b);
+		final InteractiveBoard gb = new InteractiveBoard();
+		gb.setBoard(b);
+		gb.setEditable(true);
 		gb.setVerticesPainterAndPaint(new VerticesPainterImpl(gb.getBoard()
 				.getGrid().getGridType(),
 				VerticesPainterImpl.DegreeType.BY_UNUSED));

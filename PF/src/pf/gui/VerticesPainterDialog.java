@@ -23,7 +23,6 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableModel;
 
 import pf.board.GridType;
-import pf.interactive.VerticesPainter;
 import pf.interactive.VerticesPainterImpl;
 import pf.interactive.VerticesPainterImpl.DegreeType;
 
@@ -182,7 +181,7 @@ public class VerticesPainterDialog extends CardDialog {
 	public void finished() {
 	}
 
-	public VerticesPainter getEditVerticesPainter() {
+	public VerticesPainterImpl getEditVerticesPainter() {
 		if (!editchb.isSelected() || !editMode) {
 			return null;
 		}
@@ -192,7 +191,7 @@ public class VerticesPainterDialog extends CardDialog {
 		return vp;
 	}
 
-	public VerticesPainter getRunVerticesPainter() {
+	public VerticesPainterImpl getRunVerticesPainter() {
 		if (!runchb.isSelected() || !runMode) {
 			return null;
 		}
@@ -202,7 +201,7 @@ public class VerticesPainterDialog extends CardDialog {
 		return vp;
 	}
 
-	public VerticesPainter getShowVerticesPainter() {
+	public VerticesPainterImpl getShowVerticesPainter() {
 		if (!showchb.isSelected() || !showMode) {
 			return null;
 		}

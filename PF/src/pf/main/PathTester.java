@@ -1,4 +1,4 @@
-package pf.test;
+package pf.main;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -45,7 +45,8 @@ public class PathTester {
 		Edge e3 = v3.edgeToVertex(v4);
 		p.extend(e3);
 		System.out.println("before ib");
-		InteractiveBoard ib = new InteractiveBoard(b);
+		InteractiveBoard ib = new InteractiveBoard();
+		ib.setBoard(b);
 		ib.setPadding(100);
 		ib.setVerticesPainterAndPaint(new VerticesPainterImpl(b.getGrid()
 				.getGridType(), DegreeType.BY_UNUSED));

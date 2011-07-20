@@ -16,7 +16,6 @@ import javax.swing.JTable;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
-import pf.interactive.EdgesPainter;
 import pf.interactive.EdgesPainterImpl;
 
 import net.miginfocom.swing.MigLayout;
@@ -119,7 +118,7 @@ public class EdgesPainterDialog extends CardDialog {
 	public void finished() {
 	}
 
-	public EdgesPainter getEditEdgesPainter() {
+	public EdgesPainterImpl getEditEdgesPainter() {
 		if (!editchb.isSelected() || !editMode) {
 			return null;
 		}
@@ -128,7 +127,7 @@ public class EdgesPainterDialog extends CardDialog {
 		return ep;
 	}
 
-	public EdgesPainter getRunEdgesPainter() {
+	public EdgesPainterImpl getRunEdgesPainter() {
 		if (!runchb.isSelected() || !runMode) {
 			return null;
 		}
@@ -137,7 +136,7 @@ public class EdgesPainterDialog extends CardDialog {
 		return ep;
 	}
 
-	public EdgesPainter getShowEdgesPainter() {
+	public EdgesPainterImpl getShowEdgesPainter() {
 		if (!showchb.isSelected() || !showMode) {
 			return null;
 		}

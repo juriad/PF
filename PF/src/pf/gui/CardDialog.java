@@ -74,12 +74,12 @@ public abstract class CardDialog extends JDialog {
 	private JButton finish;
 
 	public CardDialog(JDialog owner, String title) {
-		super(owner, title);
+		super(owner, title, true);
 		initDialog();
 	}
 
 	public CardDialog(JFrame owner, String title) {
-		super(owner, title);
+		super(owner, title, true);
 		initDialog();
 	}
 

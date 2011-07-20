@@ -88,6 +88,8 @@ public class NewDialog extends CardDialog {
 
 	private boolean userInput = false;
 
+	private JComboBox modecb;
+
 	public NewDialog(JFrame owner) {
 		super(owner, title);
 		userInput = true;
@@ -107,6 +109,10 @@ public class NewDialog extends CardDialog {
 
 	public Board getBoard() {
 		return gb.getBoard();
+	}
+
+	public GameMode getMode() {
+		return (GameMode) modecb.getSelectedItem();
 	}
 
 	public GridPattern getPattern() {
@@ -155,7 +161,7 @@ public class NewDialog extends CardDialog {
 		blcb.setSelectedIndex(type);
 		bl.add(blcb, "wrap");
 
-		gb = new GameBoard(null);
+		gb = new GameBoard();
 		bl.add(gb, "grow");
 		card.add(bl, "spany 2");
 
@@ -424,7 +430,7 @@ public class NewDialog extends CardDialog {
 		JLabel model = new JLabel("Startup mode");
 		mode.add(model);
 
-		final JComboBox modecb = new JComboBox();
+		modecb = new JComboBox();
 		modecb.addItem(GameMode.SHOW);
 		modecb.setSelectedItem(GameMode.SHOW);
 		modecb.addItem(GameMode.EDIT);

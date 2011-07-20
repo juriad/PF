@@ -18,7 +18,6 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 
 import pf.board.GridType;
-import pf.interactive.GridPainter;
 import pf.interactive.GridPainterImpl;
 
 import net.miginfocom.swing.MigLayout;
@@ -132,7 +131,7 @@ public class GridPainterDialog extends CardDialog {
 	public void finished() {
 	}
 
-	public GridPainter getGridPainter() {
+	public GridPainterImpl getEditGridPainter() {
 		if (!editchb.isSelected() || !editMode) {
 			return null;
 		}
@@ -141,7 +140,7 @@ public class GridPainterDialog extends CardDialog {
 		return gp;
 	}
 
-	public GridPainter getRunGridPainter() {
+	public GridPainterImpl getRunGridPainter() {
 		if (!runchb.isSelected() || !runMode) {
 			return null;
 		}
@@ -150,7 +149,7 @@ public class GridPainterDialog extends CardDialog {
 		return gp;
 	}
 
-	public GridPainter getShowGridPainter() {
+	public GridPainterImpl getShowGridPainter() {
 		if (!showchb.isSelected() || !showMode) {
 			return null;
 		}

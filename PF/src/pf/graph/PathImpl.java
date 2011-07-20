@@ -1,10 +1,8 @@
 package pf.graph;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Default implementation of {@link Path}.
@@ -18,11 +16,9 @@ import java.util.Map;
 public class PathImpl implements Path {
 
 	List<Edge> edges;
-	Map<Edge, Integer> pointers;
 
 	public PathImpl() {
 		edges = new ArrayList<Edge>();
-		pointers = new HashMap<Edge, Integer>();
 	}
 
 	public PathImpl(Path p) {
@@ -58,18 +54,15 @@ public class PathImpl implements Path {
 			throw new IllegalArgumentException();
 		}
 		if (length() == 0) {
-			pointers.put(e, 0);
 			edges.add(e);
 		} else if (length() == 1) {
 			if (getFirst().getCommon(e) != null) {
-				pointers.put(e, 1);
 				edges.add(e);
 			} else {
 				throw new IllegalArgumentException();
 			}
 		} else if (getLastVertex().equals(e.getV1())
 				|| getLastVertex().equals(e.getV2())) {
-			pointers.put(e, length());
 			edges.add(e);
 		} else {
 			throw new IllegalArgumentException();
@@ -79,11 +72,8 @@ public class PathImpl implements Path {
 	@Override
 	public void extend(Path p) {
 		if (length() == 0) {
-			int index = 0;
 			for (Edge e : p) {
 				edges.add(e);
-				pointers.put(e, index);
-				index++;
 			}
 		} else if (p.length() == 0) {
 			;
@@ -91,21 +81,15 @@ public class PathImpl implements Path {
 			extend(p.getFirst());
 		} else if (length() == 1) {
 			if (getFirst().getCommon(p.getFirst()) != null) {
-				int index = 1;
 				for (Edge e : p) {
 					edges.add(e);
-					pointers.put(e, index);
-					index++;
 				}
 			} else {
 				throw new IllegalArgumentException();
 			}
 		} else if (getLastVertex().equals(p.getFirstVertex())) {
-			int index = length();
 			for (Edge e : p) {
 				edges.add(e);
-				pointers.put(e, index);
-				index++;
 			}
 		} else {
 			throw new IllegalArgumentException();
@@ -160,35 +144,6 @@ public class PathImpl implements Path {
 	}
 
 	@Override
-	public void insert(Edge edge, Path p) {
-		if (edge == null) {
-			throw new IllegalArgumentException();
-		}
-		if (getLast().equals(edge)) {
-			extend(p);
-			return;
-		} else if (p.length() == 0) {
-			return;
-		}
-
-		int index = pointers.get(edge);
-		Vertex v = edges.get(index + 1).getCommon(edge);
-		if (!p.getFirstVertex().equals(v) || !p.getLastVertex().equals(v)) {
-			throw new IllegalArgumentException();
-		}
-		for (Edge e : p) {
-			edges.add(index++, e);
-		}
-
-		pointers = new HashMap<Edge, Integer>();
-		index = 0;
-		for (Edge e : this) {
-			pointers.put(e, index);
-			index++;
-		}
-	}
-
-	@Override
 	public Iterator<Edge> iterator() {
 		return new Iterator<Edge>() {
 
@@ -213,17 +168,17 @@ public class PathImpl implements Path {
 
 	@Override
 	public int length() {
+		System.out.println(edges.size());
 		return edges.size();
 	}
 
 	@Override
-	public void shorten() {
+	public Edge shorten() {
 		if (length() <= 0) {
 			throw new IllegalArgumentException();
 		}
-		int index = pointers.get(length() - 1);
-		pointers.remove(getLast());
-		edges.remove(index);
+		int index = length() - 1;
+		return edges.remove(index);
 	}
 
 	@Override

@@ -24,12 +24,24 @@ public class GameBoard extends JComponent {
 
 	protected static final int unitSize = 100;
 
-	public GameBoard(Board board) {
-		this.board = board;
+	public GameBoard() {
+		board = null;
 	}
 
 	public Board getBoard() {
 		return board;
+	}
+
+	public Dimension getCountedSize() {
+		if (getBoard() == null) {
+			return new Dimension(getPaddingLeft() + getPaddingRight(),
+					getPaddingTop() + getPaddingTop());
+		}
+		float unit = unitSize
+				/ getBoard().getGrid().getGridType().getUnitSize();
+		return new Dimension((int) (board.getWidth() * unit) + getPaddingLeft()
+				+ getPaddingRight(), (int) (board.getHeight() * unit)
+				+ getPaddingTop() + getPaddingBottom());
 	}
 
 	public EdgesPainter getEdgesPainter() {
@@ -56,19 +68,6 @@ public class GameBoard extends JComponent {
 		return paddingTop;
 	}
 
-	@Override
-	public Dimension getPreferredSize() {
-		if (getBoard() == null) {
-			return new Dimension(getPaddingLeft() + getPaddingRight(),
-					getPaddingTop() + getPaddingTop());
-		}
-		float unit = unitSize
-				/ getBoard().getGrid().getGridType().getUnitSize();
-		return new Dimension((int) (board.getWidth() * unit) + getPaddingLeft()
-				+ getPaddingRight(), (int) (board.getHeight() * unit)
-				+ getPaddingTop() + getPaddingBottom());
-	}
-
 	public VerticesPainter getVerticesPainter() {
 		return vp;
 	}
@@ -88,8 +87,11 @@ public class GameBoard extends JComponent {
 	public void setBoard(Board board) {
 		this.board = board;
 		setVerticesPainter(null);
+		setPaintVertices(false);
 		setEdgesPainter(null);
+		setPaintEdges(false);
 		setGridPainter(null);
+		setPaintGrid(false);
 		repaint();
 	}
 
@@ -121,19 +123,31 @@ public class GameBoard extends JComponent {
 		setVerticalPadding(padding);
 	}
 
-	public void setPaddingBottom(int paddingBottom) {
-		this.paddingBottom = paddingBottom;
+	public void setPaddingBottom(int padding) {
+		if (padding < 0) {
+			throw new IllegalArgumentException();
+		}
+		paddingBottom = padding;
 	}
 
 	public void setPaddingLeft(int padding) {
+		if (padding < 0) {
+			throw new IllegalArgumentException();
+		}
 		paddingLeft = padding;
 	}
 
-	public void setPaddingRight(int paddingRight) {
-		this.paddingRight = paddingRight;
+	public void setPaddingRight(int padding) {
+		if (padding < 0) {
+			throw new IllegalArgumentException();
+		}
+		paddingRight = padding;
 	}
 
 	public void setPaddingTop(int padding) {
+		if (padding < 0) {
+			throw new IllegalArgumentException();
+		}
 		paddingTop = padding;
 	}
 
@@ -204,7 +218,6 @@ public class GameBoard extends JComponent {
 		super.paintComponent(g);
 		Graphics2D g2d = (Graphics2D) g;
 
-		// System.out.println("paint");
 		paintGrid(g2d);
 		paintVertices(g2d);
 		paintEdges(g2d);

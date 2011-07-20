@@ -26,12 +26,28 @@ public class PathPainterImpl implements PathPainter {
 			return instance;
 		}
 
+		private PathPainterImpl template;
+
 		private PathPainterImplFactory() {
+			template = null;
 		}
 
 		@Override
 		public PathPainter newInstance(InteractiveBoard board, Path path) {
-			return new PathPainterImpl(board, path);
+			PathPainterImpl ret = new PathPainterImpl(board, path);
+			if (template != null) {
+				ret.setColor(template.getColor());
+				ret.setCornerRadius(template.getCornerRadius());
+				ret.setStroke(template.getStroke());
+			}
+			return ret;
+		}
+
+		@Override
+		public void setTemplate(PathPainter pp) {
+			if (pp != null && pp instanceof PathPainterImpl) {
+				template = (PathPainterImpl) pp;
+			}
 		}
 	}
 
