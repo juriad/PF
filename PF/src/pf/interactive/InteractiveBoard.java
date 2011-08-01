@@ -177,8 +177,6 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 
 	protected Animator animator = null;
 
-	private PathPainter defaultPathPainter = null;
-
 	private boolean paintPaths = false;
 
 	private TouchSupport ts;
@@ -202,7 +200,7 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		if (board == null) {
 			throw new IllegalStateException();
 		}
-		paths.put(path, getDefaultPathPainter());
+		paths.put(path, null);
 	}
 
 	public synchronized void addTouchListener(TouchListener l) {
@@ -310,10 +308,6 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 
 	public Animator getAnimator() {
 		return animator;
-	}
-
-	public PathPainter getDefaultPathPainter() {
-		return defaultPathPainter;
 	}
 
 	public GameMode getMode() {
@@ -451,8 +445,6 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		setMode(GameMode.SHOW);
 		setEditable(false);
 
-		setDefaultPathPainter(null);
-
 		paths.clear();
 
 		if (board != null) {
@@ -462,10 +454,6 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 			setSnapPolicy(new DefaultSnapPolicy(board.getGrid().getGridType()));
 		}
 		repaint();
-	}
-
-	public void setDefaultPathPainter(PathPainter pathPainter) {
-		defaultPathPainter = pathPainter;
 	}
 
 	public void setEditable(boolean editable) {

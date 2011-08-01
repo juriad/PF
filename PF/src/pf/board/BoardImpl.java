@@ -211,6 +211,16 @@ public class BoardImpl implements Board {
 		fillVs(this);
 	}
 
+	public BoardImpl(Grid grid, int width, int height, GridPattern gp) {
+		this(grid, width, height);
+		BoardPattern bp = AbstractBoardPattern.createBoardPattern(this, gp,
+				(File) null);
+		for (PointsEdge pe : bp) {
+			createEdge(this, pe);
+		}
+		graph.makeComponents();
+	}
+
 	@Override
 	public Graph getGraph() {
 		return graph;

@@ -26,19 +26,78 @@ import pf.gui.NewDialog;
 import pf.gui.SaveDialog;
 import pf.gui.VerticesPainterDialog;
 import pf.interactive.EdgesPainterImpl;
+import pf.interactive.GameMode;
 import pf.interactive.GameModeEvent;
 import pf.interactive.GameModeListener;
 import pf.interactive.GridPainterImpl;
 import pf.interactive.InteractiveBoard;
+import pf.interactive.TouchEvent;
+import pf.interactive.TouchListener;
 import pf.interactive.VerticesPainterImpl;
 import pf.interactive.VerticesPainterImpl.DegreeType;
 
 public class PF extends JFrame {
+	public class TListener implements TouchListener {
+
+		@Override
+		public void touchCancelled(TouchEvent e) {
+			if (!board.getMode().equals(GameMode.EDIT)) {
+				return;
+			}
+			System.out.println("t cancelled");
+			// do nothing
+
+		}
+
+		@Override
+		public void touchEnded(TouchEvent e) {
+			if (!board.getMode().equals(GameMode.EDIT)) {
+				return;
+			}
+			System.out.println("t ended");
+			// do nothing
+		}
+
+		@Override
+		public void touchLonger(TouchEvent e) {
+			if (!board.getMode().equals(GameMode.EDIT)) {
+				return;
+			}
+			System.out.println("t longer");
+			// toggle used
+			e.getEdge().setUsed(!e.getEdge().isUsed());
+			board.repaintEdge(e.getEdge());
+		}
+
+		@Override
+		public void touchShorter(TouchEvent e) {
+			if (!board.getMode().equals(GameMode.EDIT)) {
+				return;
+			}
+			System.out.println("t shorter");
+			// toggle used
+			e.getEdge().setUsed(!e.getEdge().isUsed());
+			board.repaintEdge(e.getEdge());
+		}
+
+		@Override
+		public void touchStarted(TouchEvent e) {
+			if (!board.getMode().equals(GameMode.EDIT)) {
+				return;
+			}
+			System.out.println("t started");
+			// do nothing
+		}
+
+	}
+
 	protected class ModeListener implements GameModeListener {
 
 		@Override
 		public void modeEdit(GameModeEvent e) {
 			updatePainters();
+			board.setTouchActive(true);
+			board.setTouchReturnAllowed(true);
 		}
 
 		@Override
@@ -55,7 +114,6 @@ public class PF extends JFrame {
 		public void modeShow(GameModeEvent e) {
 			updatePainters();
 		}
-
 	}
 
 	protected class Painters {
@@ -96,7 +154,6 @@ public class PF extends JFrame {
 				updatePainters();
 			}
 		}
-
 	}
 
 	class GridAction extends AbstractAction {
@@ -124,7 +181,6 @@ public class PF extends JFrame {
 				updatePainters();
 			}
 		}
-
 	}
 
 	class NewAction extends AbstractAction {
@@ -143,43 +199,36 @@ public class PF extends JFrame {
 			NewDialog nd = new NewDialog(PF.this);
 			nd.setVisible(true);
 			if (nd.isClosedProperly() && nd.getBoard() != null) {
-				System.out.println("new");
 				board.setBoard(nd.getBoard());
 				board.setEditable(nd.isEditAllowed());
 				if (nd.getAnimator() != null) {
 					board.setAnimator(nd.getAnimator().newInstance(board));
+					setAnimatorControl(board.getAnimator().getAnimatorControl());
 				}
-				board.setMode(nd.getMode());
 				ibc.setButtons();
 				painters = new Painters(board.getBoard().getGrid()
 						.getGridType(), DegreeType.BY_UNUSED);
+				board.setMode(nd.getMode());
 				updatePainters();
 				updateMenu();
 			}
 		}
-
 	}
 
-	class PathAction extends AbstractAction {
-
-		private static final long serialVersionUID = 1L;
-
-		public PathAction() {
-			super("Path painters");
-			putValue(Action.MNEMONIC_KEY, KeyEvent.VK_P);
-			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(
-					KeyEvent.VK_P, ActionEvent.CTRL_MASK));
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			// SaveDialog sd = new SaveDialog(PF.this, board);
-			// sd.setVisible(true);
-			// TODO save action
-		}
-
-	}
-
+	/*
+	 * class PathAction extends AbstractAction {
+	 * 
+	 * private static final long serialVersionUID = 1L;
+	 * 
+	 * public PathAction() { super("Path painters");
+	 * putValue(Action.MNEMONIC_KEY, KeyEvent.VK_P);
+	 * putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke( KeyEvent.VK_P,
+	 * ActionEvent.CTRL_MASK)); }
+	 * 
+	 * @Override public void actionPerformed(ActionEvent e) { // SaveDialog sd =
+	 * new SaveDialog(PF.this, board); // sd.setVisible(true); // TODO save
+	 * action } }
+	 */
 	class QuitAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
@@ -195,7 +244,6 @@ public class PF extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			quit();
 		}
-
 	}
 
 	class SaveAction extends AbstractAction {
@@ -214,7 +262,6 @@ public class PF extends JFrame {
 			SaveDialog sd = new SaveDialog(PF.this, board.getBoard());
 			sd.setVisible(true);
 		}
-
 	}
 
 	class VertexAction extends AbstractAction {
@@ -263,8 +310,9 @@ public class PF extends JFrame {
 	private JMenuItem pmg;
 	private JMenuItem pme;
 	private JMenuItem pmv;
-	private JMenuItem pmp;
 	private InteractiveBoardControl ibc;
+
+	private JMenu amenu;
 
 	public PF() {
 		super(title);
@@ -276,7 +324,7 @@ public class PF extends JFrame {
 		bar.add(bmenu);
 		JMenu pmenu = new JMenu("Painters");
 		bar.add(pmenu);
-		JMenu amenu = new JMenu("Animator");
+		amenu = new JMenu("Animator");
 		bar.add(amenu);
 		JMenu hmenu = new JMenu("Help");
 		bar.add(hmenu);
@@ -296,8 +344,10 @@ public class PF extends JFrame {
 		pmenu.add(pme);
 		pmv = new JMenuItem(new VertexAction());
 		pmenu.add(pmv);
-		pmp = new JMenuItem(new PathAction());
-		pmenu.add(pmp);
+		// pmp = new JMenuItem(new PathAction());
+		// pmenu.add(pmp);
+
+		amenu.setMnemonic(KeyEvent.VK_A);
 
 		Container pane = getContentPane();
 		pane.setLayout(layout = new BorderLayout());
@@ -305,6 +355,7 @@ public class PF extends JFrame {
 		board = new InteractiveBoard();
 		board.setPreferredSize(new Dimension(200, 200));
 		board.addGameModeListener(new ModeListener());
+		board.addTouchListener(new TListener());
 		pane.add(board, BorderLayout.CENTER);
 
 		pane.add(ibc = new InteractiveBoardControl(board), BorderLayout.NORTH);
@@ -327,7 +378,7 @@ public class PF extends JFrame {
 		pmg.setEnabled(b);
 		pme.setEnabled(b);
 		pmv.setEnabled(b);
-		pmp.setEnabled(b);
+		setAnimatorMenu();
 	}
 
 	private void quit() {
@@ -341,6 +392,12 @@ public class PF extends JFrame {
 		}
 		if (ac != null) {
 			getContentPane().add(ac, BorderLayout.SOUTH);
+		}
+	}
+
+	private void setAnimatorMenu() {
+		if (board.getAnimator() != null) {
+			board.getAnimator().setMenu();
 		}
 	}
 
@@ -365,5 +422,4 @@ public class PF extends JFrame {
 		}
 		board.repaint();
 	}
-
 }

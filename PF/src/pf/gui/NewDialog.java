@@ -108,7 +108,8 @@ public class NewDialog extends CardDialog {
 	}
 
 	public Board getBoard() {
-		return gb.getBoard();
+		return new BoardImpl(gb.getBoard().getGrid(), gb.getBoard().getWidth(),
+				gb.getBoard().getHeight(), getPattern());
 	}
 
 	public GameMode getMode() {
