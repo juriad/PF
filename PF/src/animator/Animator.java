@@ -1,6 +1,8 @@
-package pf.interactive;
+package animator;
 
 import java.awt.Component;
+
+import javax.swing.JMenu;
 
 public interface Animator extends Runnable {
 	public boolean canPause();
@@ -15,9 +17,7 @@ public interface Animator extends Runnable {
 
 	public void pause();
 
-	public void reset();
-
-	public void setMenu();
+	public void setMenu(JMenu menu);
 
 	public void start();
 

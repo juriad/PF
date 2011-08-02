@@ -19,22 +19,7 @@ public class BoardGraph extends GraphImpl {
 		super(null);
 	}
 
-	@Override
-	public void setParent(Graph parent) {
-		throw new UnsupportedOperationException();
-	}
-
-	private void clear() {
-		Set<Graph> gs = new HashSet<Graph>();
-		for (Graph g : getSubGraphs()) {
-			gs.add(g);
-		}
-		for (Graph g : gs) {
-			removeSubGraph(g);
-		}
-	}
-
-	void makeComponents() {
+	public void makeComponents() {
 		Map<Vertex, Integer> vs = new HashMap<Vertex, Integer>();
 		Queue<Vertex> fifo = new LinkedList<Vertex>();
 		Iterator<Vertex> vi = verticesIterator();
@@ -67,6 +52,21 @@ public class BoardGraph extends GraphImpl {
 					}
 				}
 			}
+		}
+	}
+
+	@Override
+	public void setParent(Graph parent) {
+		throw new UnsupportedOperationException();
+	}
+
+	private void clear() {
+		Set<Graph> gs = new HashSet<Graph>();
+		for (Graph g : getSubGraphs()) {
+			gs.add(g);
+		}
+		for (Graph g : gs) {
+			removeSubGraph(g);
 		}
 	}
 

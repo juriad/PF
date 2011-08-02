@@ -3,8 +3,7 @@ package pf.interactive;
 public enum GameMode {
 	EDIT ("Edit"),
 	SHOW ("Show"),
-	RUN ("Run"),
-	PAUSE ("Pause");
+	RUN ("Run");
 
 	private final String desc;
 

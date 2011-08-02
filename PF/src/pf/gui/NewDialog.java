@@ -30,13 +30,13 @@ import pf.board.BoardImpl.GridForm;
 import pf.board.Grid;
 import pf.board.GridPattern;
 import pf.board.GridType;
-import pf.interactive.AnimatorFactory;
-import pf.interactive.Animators;
 import pf.interactive.GameBoard;
 import pf.interactive.GameMode;
 import pf.interactive.GridPainterImpl;
 import pf.interactive.VerticesPainterImpl;
 import pf.interactive.VerticesPainterImpl.DegreeType;
+import animator.AnimatorFactory;
+import animator.Animators;
 
 import net.miginfocom.swing.MigLayout;
 

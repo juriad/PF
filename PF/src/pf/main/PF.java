@@ -18,7 +18,10 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
+import pf.board.BoardGraph;
 import pf.board.GridType;
+import pf.graph.Edge;
+import pf.graph.Path;
 import pf.gui.EdgesPainterDialog;
 import pf.gui.GridPainterDialog;
 import pf.gui.InteractiveBoardControl;
@@ -35,6 +38,7 @@ import pf.interactive.TouchEvent;
 import pf.interactive.TouchListener;
 import pf.interactive.VerticesPainterImpl;
 import pf.interactive.VerticesPainterImpl.DegreeType;
+import animator.EulerPaths;
 
 public class PF extends JFrame {
 	public class TListener implements TouchListener {
@@ -98,21 +102,25 @@ public class PF extends JFrame {
 			updatePainters();
 			board.setTouchActive(true);
 			board.setTouchReturnAllowed(true);
+			setAnimatorControlEnabled(false);
 		}
 
 		@Override
 		public void modePause(GameModeEvent e) {
 			updatePainters();
+			setAnimatorControlEnabled(false);
 		}
 
 		@Override
 		public void modeRun(GameModeEvent e) {
 			updatePainters();
+			setAnimatorControlEnabled(true);
 		}
 
 		@Override
 		public void modeShow(GameModeEvent e) {
 			updatePainters();
+			setAnimatorControlEnabled(false);
 		}
 	}
 
@@ -215,20 +223,6 @@ public class PF extends JFrame {
 		}
 	}
 
-	/*
-	 * class PathAction extends AbstractAction {
-	 * 
-	 * private static final long serialVersionUID = 1L;
-	 * 
-	 * public PathAction() { super("Path painters");
-	 * putValue(Action.MNEMONIC_KEY, KeyEvent.VK_P);
-	 * putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke( KeyEvent.VK_P,
-	 * ActionEvent.CTRL_MASK)); }
-	 * 
-	 * @Override public void actionPerformed(ActionEvent e) { // SaveDialog sd =
-	 * new SaveDialog(PF.this, board); // sd.setVisible(true); // TODO save
-	 * action } }
-	 */
 	class QuitAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
@@ -261,6 +255,30 @@ public class PF extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			SaveDialog sd = new SaveDialog(PF.this, board.getBoard());
 			sd.setVisible(true);
+		}
+	}
+
+	class TestAction extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		public TestAction() {
+			super("Test");
+			putValue(Action.MNEMONIC_KEY, KeyEvent.VK_T);
+			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(
+					KeyEvent.VK_T, ActionEvent.CTRL_MASK));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			Path p = EulerPaths.getEulerPaths((BoardGraph) board.getBoard()
+					.getGraph());
+			for (Edge ee : p) {
+				System.out
+						.println(ee
+								+ ": "
+								+ !(ee.getDirection(ee.getV1()).getDx() == Integer.MAX_VALUE));
+			}
 		}
 	}
 
@@ -334,6 +352,11 @@ public class PF extends JFrame {
 		bmenu.add(bmn);
 		bms = new JMenuItem(new SaveAction());
 		bmenu.add(bms);
+
+		// NOTE jen pro testovani
+		JMenuItem tms = new JMenuItem(new TestAction());
+		bmenu.add(tms);
+
 		JMenuItem bmq = new JMenuItem(new QuitAction());
 		bmenu.add(bmq);
 
@@ -344,8 +367,6 @@ public class PF extends JFrame {
 		pmenu.add(pme);
 		pmv = new JMenuItem(new VertexAction());
 		pmenu.add(pmv);
-		// pmp = new JMenuItem(new PathAction());
-		// pmenu.add(pmp);
 
 		amenu.setMnemonic(KeyEvent.VK_A);
 
@@ -395,9 +416,16 @@ public class PF extends JFrame {
 		}
 	}
 
+	private void setAnimatorControlEnabled(boolean b) {
+		Component c = layout.getLayoutComponent(BorderLayout.SOUTH);
+		if (c != null) {
+			c.setEnabled(b);
+		}
+	}
+
 	private void setAnimatorMenu() {
 		if (board.getAnimator() != null) {
-			board.getAnimator().setMenu();
+			board.getAnimator().setMenu(amenu);
 		}
 	}
 
@@ -414,10 +442,6 @@ public class PF extends JFrame {
 			board.setVerticesPainterAndPaint(painters.vps);
 			break;
 		case RUN:
-		case PAUSE:
-			board.setGridPainterAndPaint(painters.gpr);
-			board.setEdgesPainterAndPaint(painters.epr);
-			board.setVerticesPainterAndPaint(painters.vpr);
 			break;
 		}
 		board.repaint();

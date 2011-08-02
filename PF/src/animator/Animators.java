@@ -1,4 +1,4 @@
-package pf.interactive;
+package animator;
 
 import java.util.ArrayList;
 import java.util.Collections;

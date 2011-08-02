@@ -168,7 +168,7 @@ public class PathImpl implements Path {
 
 	@Override
 	public int length() {
-		System.out.println(edges.size());
+		// System.out.println(edges.size());
 		return edges.size();
 	}
 
