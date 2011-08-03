@@ -18,7 +18,7 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
-import pf.board.BoardGraph;
+import pf.animator.EulerPaths;
 import pf.board.GridType;
 import pf.graph.Edge;
 import pf.graph.Path;
@@ -38,7 +38,6 @@ import pf.interactive.TouchEvent;
 import pf.interactive.TouchListener;
 import pf.interactive.VerticesPainterImpl;
 import pf.interactive.VerticesPainterImpl.DegreeType;
-import animator.EulerPaths;
 
 public class PF extends JFrame {
 	public class TListener implements TouchListener {
@@ -271,8 +270,7 @@ public class PF extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			Path p = EulerPaths.getEulerPaths((BoardGraph) board.getBoard()
-					.getGraph());
+			Path p = EulerPaths.getEulerPaths(board.getBoard().getGraph());
 			for (Edge ee : p) {
 				System.out
 						.println(ee

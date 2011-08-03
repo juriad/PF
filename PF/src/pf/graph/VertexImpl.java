@@ -72,6 +72,8 @@ public class VertexImpl implements Vertex {
 		}
 	}
 
+	public static final Vertex DUMMY = new VertexImpl(null, 0, 0);
+
 	private final Map<Direction, Edge> edges;
 
 	private final Set<Graph> graphSet;

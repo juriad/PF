@@ -14,6 +14,7 @@ import java.util.Map;
 import javax.swing.event.EventListenerList;
 
 import pf.analytics.Point;
+import pf.animator.Animator;
 import pf.board.Board;
 import pf.board.BoardImpl;
 import pf.board.GridType;
@@ -22,7 +23,6 @@ import pf.graph.Path;
 import pf.graph.PathImpl;
 import pf.graph.Vertex;
 import pf.reimpl.Path2D;
-import animator.Animator;
 
 public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	public static class DefaultSnapPolicy implements SnapPolicy {
@@ -119,7 +119,7 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		@Override
 		public void mousePressed(MouseEvent e) {
 			if (nearest != null && isTouchActive()) {
-				path = new PathImpl();
+				path = new PathImpl(nearest);
 				last = nearest;
 				fireTouchStarted(new TouchEvent(InteractiveBoard.this, path,
 						last, null));

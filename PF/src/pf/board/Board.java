@@ -4,11 +4,10 @@ import java.io.File;
 import java.io.IOException;
 
 import pf.analytics.Point;
-import pf.graph.Graph;
 import pf.graph.Vertex;
 
 public interface Board {
-	Graph getGraph();
+	BoardGraph getGraph();
 
 	Grid getGrid();
 

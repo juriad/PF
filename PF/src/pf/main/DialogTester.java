@@ -21,7 +21,7 @@ public class DialogTester {
 		// new GridPainterDialog(null, true, null, false, null, true, null,
 		// GridType.TRIANGLE).setVisible(true);
 		List<PathPainterImpl> list = new ArrayList<PathPainterImpl>();
-		list.add(new PathPainterImpl(null, null));
+		list.add(new PathPainterImpl(null));
 		new PathPainterDialog(null, list).setVisible(true);
 	}
 

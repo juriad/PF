@@ -21,7 +21,6 @@ import pf.analytics.PointImpl;
 import pf.board.BoardPattern.PointsEdge;
 import pf.graph.Edge;
 import pf.graph.EdgeImpl;
-import pf.graph.Graph;
 import pf.graph.Vertex;
 
 public class BoardImpl implements Board {
@@ -222,7 +221,7 @@ public class BoardImpl implements Board {
 	}
 
 	@Override
-	public Graph getGraph() {
+	public BoardGraph getGraph() {
 		return graph;
 	}
 

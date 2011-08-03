@@ -16,14 +16,20 @@ import java.util.List;
 public class PathImpl implements Path {
 
 	List<Edge> edges;
-
-	public PathImpl() {
-		edges = new ArrayList<Edge>();
-	}
+	List<Vertex> vertices;
 
 	public PathImpl(Path p) {
-		this();
+		this(p.getFirstVertex());
 		this.extend(p);
+	}
+
+	public PathImpl(Vertex start) {
+		if (start == null) {
+			throw new IllegalArgumentException();
+		}
+		edges = new ArrayList<Edge>();
+		vertices = new ArrayList<Vertex>();
+		vertices.add(start);
 	}
 
 	@Override
@@ -53,17 +59,10 @@ public class PathImpl implements Path {
 		if (e == null) {
 			throw new IllegalArgumentException();
 		}
-		if (length() == 0) {
-			edges.add(e);
-		} else if (length() == 1) {
-			if (getFirst().getCommon(e) != null) {
-				edges.add(e);
-			} else {
-				throw new IllegalArgumentException();
-			}
-		} else if (getLastVertex().equals(e.getV1())
+		if (getLastVertex().equals(e.getV1())
 				|| getLastVertex().equals(e.getV2())) {
 			edges.add(e);
+			vertices.add(e.getOther(getLastVertex()));
 		} else {
 			throw new IllegalArgumentException();
 		}
@@ -71,28 +70,14 @@ public class PathImpl implements Path {
 
 	@Override
 	public void extend(Path p) {
-		if (length() == 0) {
-			for (Edge e : p) {
-				edges.add(e);
-			}
-		} else if (p.length() == 0) {
-			;
-		} else if (p.length() == 1) {
-			extend(p.getFirst());
-		} else if (length() == 1) {
-			if (getFirst().getCommon(p.getFirst()) != null) {
-				for (Edge e : p) {
-					edges.add(e);
-				}
-			} else {
-				throw new IllegalArgumentException();
-			}
-		} else if (getLastVertex().equals(p.getFirstVertex())) {
-			for (Edge e : p) {
-				edges.add(e);
-			}
-		} else {
+		if (p == null) {
 			throw new IllegalArgumentException();
+		}
+		if (!getLastVertex().equals(p.getFirstVertex())) {
+			throw new IllegalArgumentException();
+		}
+		for (Edge e : p) {
+			extend(e);
 		}
 	}
 
@@ -106,13 +91,7 @@ public class PathImpl implements Path {
 
 	@Override
 	public Vertex getFirstVertex() {
-		if (length() == 0) {
-			return null;
-		} else if (length() == 1) {
-			return edges.get(0).getV1();
-		} else {
-			return edges.get(0).getOther(edges.get(0).getCommon(edges.get(1)));
-		}
+		return vertices.get(0);
 	}
 
 	@Override
@@ -125,14 +104,7 @@ public class PathImpl implements Path {
 
 	@Override
 	public Vertex getLastVertex() {
-		if (length() == 0) {
-			return null;
-		} else if (length() == 1) {
-			return edges.get(0).getV2();
-		} else {
-			return edges.get(length() - 1).getOther(
-					edges.get(length() - 1).getCommon(edges.get(length() - 2)));
-		}
+		return vertices.get(vertices.size() - 1);
 	}
 
 	@Override
@@ -168,7 +140,6 @@ public class PathImpl implements Path {
 
 	@Override
 	public int length() {
-		// System.out.println(edges.size());
 		return edges.size();
 	}
 
@@ -178,6 +149,7 @@ public class PathImpl implements Path {
 			throw new IllegalArgumentException();
 		}
 		int index = length() - 1;
+		vertices.remove(index + 1);
 		return edges.remove(index);
 	}
 
@@ -185,29 +157,16 @@ public class PathImpl implements Path {
 	public Iterator<Vertex> verticesIterator() {
 		return new Iterator<Vertex>() {
 
-			int index = 0;
-			int length = length();
+			Iterator<Vertex> i = vertices.iterator();
 
 			@Override
 			public boolean hasNext() {
-				if (length == 0) {
-					return false;
-				}
-				return index <= length;
+				return i.hasNext();
 			}
 
 			@Override
 			public Vertex next() {
-				Vertex n;
-				if (index == 0) {
-					n = getFirstVertex();
-				} else if (index == length) {
-					n = getLastVertex();
-				} else {
-					n = edges.get(index - 1).getCommon(edges.get(index));
-				}
-				index++;
-				return n;
+				return i.next();
 			}
 
 			@Override

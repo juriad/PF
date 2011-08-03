@@ -8,8 +8,6 @@ public interface PathPainter {
 
 	Path2D<?> createPath2D();
 
-	PathPainterFactory getFactory();
-
 	void paintPath(Graphics2D g2d, Path2D<?> p2d);
 
 }

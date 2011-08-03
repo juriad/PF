@@ -33,8 +33,8 @@ public class PathTester {
 			System.out.println(vi.next());
 		}
 
-		Path p = new PathImpl();
 		Vertex v1 = b.getVertex(1, 2);
+		Path p = new PathImpl(v1);
 		Vertex v2 = b.getVertex(1, 4);
 		Edge e1 = v1.edgeToVertex(v2);
 		p.extend(e1);
@@ -53,7 +53,8 @@ public class PathTester {
 		ib.setGridPainterAndPaint(new GridPainterImpl(b.getGrid().getGridType()));
 		ib.addPath(p);
 		System.out.println("before pp");
-		PathPainterImpl pp = new PathPainterImpl(ib, p);
+		PathPainterImpl pp = new PathPainterImpl(ib);
+		pp.setPath(p);
 		ib.setPathPainter(p, pp);
 		ib.setPaintPaths(true);
 

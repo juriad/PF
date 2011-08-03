@@ -1,4 +1,4 @@
-package animator;
+package pf.animator;
 
 import pf.interactive.InteractiveBoard;
 

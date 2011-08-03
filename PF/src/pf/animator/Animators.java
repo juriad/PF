@@ -1,4 +1,4 @@
-package animator;
+package pf.animator;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,7 +24,7 @@ public class Animators {
 		animators = new ArrayList<AnimatorFactory>();
 	}
 
-	public void addAnimtor(AnimatorFactory animator) {
+	public void addAnimator(AnimatorFactory animator) {
 		animators.add(animator);
 	}
 

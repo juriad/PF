@@ -12,59 +12,24 @@ import pf.graph.Vertex;
 import pf.reimpl.Path2D;
 
 public class PathPainterImpl implements PathPainter {
-	public static class PathPainterImplFactory implements PathPainterFactory {
-		private static volatile PathPainterImplFactory instance = null;
-
-		public static PathPainterImplFactory getInstance() {
-			if (instance == null) {
-				synchronized (PathPainterImplFactory.class) {
-					if (instance == null) {
-						instance = new PathPainterImplFactory();
-					}
-				}
-			}
-			return instance;
-		}
-
-		private PathPainterImpl template;
-
-		private PathPainterImplFactory() {
-			template = null;
-		}
-
-		@Override
-		public PathPainter newInstance(InteractiveBoard board, Path path) {
-			PathPainterImpl ret = new PathPainterImpl(board, path);
-			if (template != null) {
-				ret.setColor(template.getColor());
-				ret.setCornerRadius(template.getCornerRadius());
-				ret.setStroke(template.getStroke());
-			}
-			return ret;
-		}
-
-		@Override
-		public void setTemplate(PathPainter pp) {
-			if (pp != null && pp instanceof PathPainterImpl) {
-				template = (PathPainterImpl) pp;
-			}
-		}
-	}
 
 	protected final InteractiveBoard board;
-	private final Path path;
+	private Path path;
 
 	private Color color = Color.BLACK;
 	private BasicStroke stroke = new BasicStroke();
 	private float radius = 0.25f;
 
-	public PathPainterImpl(InteractiveBoard board, Path path) {
+	public PathPainterImpl(InteractiveBoard board) {
 		this.board = board;
-		this.path = path;
+		path = null;
 	}
 
 	@Override
 	public Path2D<?> createPath2D() {
+		if (path == null) {
+			throw new IllegalStateException();
+		}
 		Iterator<Vertex> vi = path.verticesIterator();
 		Path2D<Integer> gp = new Path2D<Integer>();
 		Vertex vv = null;
@@ -106,11 +71,6 @@ public class PathPainterImpl implements PathPainter {
 		return radius;
 	}
 
-	@Override
-	public PathPainterFactory getFactory() {
-		return PathPainterImplFactory.getInstance();
-	}
-
 	public BasicStroke getStroke() {
 		return stroke;
 	}
@@ -131,6 +91,12 @@ public class PathPainterImpl implements PathPainter {
 
 	}
 
+	public void set(PathPainterImpl ppi) {
+		setColor(ppi.getColor());
+		setCornerRadius(ppi.getCornerRadius());
+		setStroke(ppi.getStroke());
+	}
+
 	public void setColor(Color color) {
 		if (color == null) {
 			throw new IllegalArgumentException();
@@ -143,6 +109,10 @@ public class PathPainterImpl implements PathPainter {
 			throw new IllegalArgumentException();
 		}
 		this.radius = radius;
+	}
+
+	public void setPath(Path path) {
+		this.path = path;
 	}
 
 	public void setStroke(BasicStroke stroke) {

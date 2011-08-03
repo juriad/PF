@@ -23,6 +23,8 @@ import javax.swing.JTextField;
 
 import pf.analytics.Point;
 import pf.analytics.PointImpl;
+import pf.animator.AnimatorFactory;
+import pf.animator.Animators;
 import pf.board.AbstractGrid;
 import pf.board.Board;
 import pf.board.BoardImpl;
@@ -35,8 +37,6 @@ import pf.interactive.GameMode;
 import pf.interactive.GridPainterImpl;
 import pf.interactive.VerticesPainterImpl;
 import pf.interactive.VerticesPainterImpl.DegreeType;
-import animator.AnimatorFactory;
-import animator.Animators;
 
 import net.miginfocom.swing.MigLayout;
 

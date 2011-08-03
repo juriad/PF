@@ -1,4 +1,4 @@
-package animator;
+package pf.animator;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -16,7 +16,16 @@ import pf.graph.PathImpl;
 import pf.graph.Vertex;
 
 public class EulerPaths {
+
 	public static Path getEulerPaths(BoardGraph bg) {
+		Iterator<Edge> ei = bg.edgesIterator(false);
+		while (ei.hasNext()) {
+			Edge e = ei.next();
+			System.out
+					.println(e
+							+ " "
+							+ (Math.abs(e.getDirection(e.getV1()).getDx()) == Integer.MAX_VALUE));
+		}
 		System.out.println("get euler path");
 		bg.makeComponents();
 		System.out.println("conponents made");
@@ -34,7 +43,19 @@ public class EulerPaths {
 
 		Path p = onePath(bg.verticesIterator().next());
 		System.out.println("one path");
+
+		for (Edge e : odds) {
+			e.getV1().remove(e);
+			e.getV2().remove(e);
+		}
+
+		// TODO split path
 		return p;
+	}
+
+	public static int getPathsCount(BoardGraph bg) {
+		// TODO getPathsCount
+		return 0;
 	}
 
 	private static Collection<? extends Iterator<Edge>> createCircuits(Vertex v) {
@@ -99,18 +120,9 @@ public class EulerPaths {
 	}
 
 	private static Path makePath(Vertex v) {
-		Path path = new PathImpl();
-		Edge start = null;
-		for (Edge e : v) {
-			if (!e.isUsed()) {
-				start = e;
-			}
-		}
-		path.extend(start);
-		start.setUsed(true);
+		Path path = new PathImpl(v);
 		Edge e = null;
-		while ((v = (e == null ? start.getOther(v) : path.getLastVertex()))
-				.getDegree(true) > 0) {
+		while ((v = path.getLastVertex()).getDegree(true) > 0) {
 			Iterator<Edge> eei = v.edgesIterator(true);
 			e = eei.next();
 			path.extend(e);
@@ -120,7 +132,7 @@ public class EulerPaths {
 	}
 
 	private static Path onePath(Vertex v) {
-		Path p = new PathImpl();
+		Path p = new PathImpl(v);
 		List<Iterator<Edge>> ps = new ArrayList<Iterator<Edge>>();
 
 		Collection<? extends Iterator<Edge>> c = createCircuits(v);
@@ -135,8 +147,6 @@ public class EulerPaths {
 				c = createCircuits(v);
 				ps.addAll(c);
 				System.out.println("new circuits: " + c.size());
-				// while (ps.peekLast().hasNext())
-				// System.out.println(ps.peekLast().next());
 			}
 			ps.remove(ps.size() - 1);
 			System.out.println("circuit removed");
@@ -150,6 +160,9 @@ public class EulerPaths {
 			Edge e = ei.next();
 			e.setUsed(false);
 		}
+	}
+
+	private EulerPaths() {
 	}
 
 }
