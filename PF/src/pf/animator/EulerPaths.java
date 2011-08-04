@@ -6,7 +6,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import pf.board.BoardGraph;
-import pf.graph.Direction;
 import pf.graph.DirectionImpl;
 import pf.graph.Edge;
 import pf.graph.EdgeImpl;
@@ -17,19 +16,15 @@ import pf.graph.Vertex;
 
 public class EulerPaths {
 
-	public static Path getEulerPaths(BoardGraph bg) {
-		Iterator<Edge> ei = bg.edgesIterator(false);
-		while (ei.hasNext()) {
-			Edge e = ei.next();
-			System.out
-					.println(e
-							+ " "
-							+ (Math.abs(e.getDirection(e.getV1()).getDx()) == Integer.MAX_VALUE));
-		}
+	public static List<Path> getEulerPaths(BoardGraph bg) {
 		System.out.println("get euler path");
-		bg.makeComponents();
-		System.out.println("conponents made");
-		System.out.println(bg.getSubGraphs().size());
+		int pc = getPathsCount(bg);
+		System.out.println("paths: " + pc);
+		if (pc == 0) {
+			System.out.println("return");
+			return new ArrayList<Path>();
+		}
+
 		List<Edge> odds = makeEuler(bg);
 		System.out.println("odds:");
 		for (Edge e : odds) {
@@ -39,8 +34,6 @@ public class EulerPaths {
 		setUnused(bg);
 		System.out.println("set unused");
 
-		// FIXME check empty
-
 		Path p = onePath(bg.verticesIterator().next());
 		System.out.println("one path");
 
@@ -49,13 +42,33 @@ public class EulerPaths {
 			e.getV2().remove(e);
 		}
 
-		// TODO split path
-		return p;
+		System.out.println("odds removed");
+
+		return splitPath(p);
 	}
 
 	public static int getPathsCount(BoardGraph bg) {
-		// TODO getPathsCount
-		return 0;
+		bg.makeComponents();
+
+		Iterator<Graph> gi = bg.subGraphsIterator();
+		int paths = 0;
+		while (gi.hasNext()) {
+			Graph g = gi.next();
+			Iterator<Vertex> vi = g.verticesIterator();
+			int odds = 0;
+			while (vi.hasNext()) {
+				Vertex v = vi.next();
+				if (v.getDegree(false) % 2 == 1) {
+					odds++;
+				}
+			}
+			if (odds == 0) {
+				paths++;
+			} else {
+				paths += odds / 2;
+			}
+		}
+		return paths;
 	}
 
 	private static Collection<? extends Iterator<Edge>> createCircuits(Vertex v) {
@@ -66,18 +79,24 @@ public class EulerPaths {
 		return ps;
 	}
 
+	private static boolean isOdd(Edge e) {
+		int dx = e.getDirection(e.getV1()).getDx();
+		return dx == Integer.MAX_VALUE || dx == -Integer.MAX_VALUE;
+	}
+
 	private static List<Edge> makeEuler(BoardGraph bg) {
-		Direction wh = new DirectionImpl(Integer.MAX_VALUE, Integer.MAX_VALUE);
 		List<Edge> set = new ArrayList<Edge>();
 		if (bg.getSubGraphs().size() == 0) {
 			return set;
 		}
 		List<Vertex> odds = new ArrayList<Vertex>();
-		Iterator<Graph> gi = bg.subGraphsIterator();
+		Iterator<Graph> gi = new RandomizedIterator<Graph>(
+				bg.subGraphsIterator());
 		while (gi.hasNext()) {
 			Graph g = gi.next();
 			List<Vertex> vs = new ArrayList<Vertex>();
-			Iterator<Vertex> vi = g.verticesIterator();
+			Iterator<Vertex> vi = new RandomizedIterator<Vertex>(
+					g.verticesIterator());
 
 			Vertex v = null;
 			while (vi.hasNext()) {
@@ -96,7 +115,8 @@ public class EulerPaths {
 			for (int i = 0; i < vs.size() - 2; i += 2) {
 				Vertex v1 = vs.get(i);
 				Vertex v2 = vs.get(i + 1);
-				Edge e = new EdgeImpl(v1, v2, wh);
+				Edge e = new EdgeImpl(v1, v2, new DirectionImpl(
+						Integer.MAX_VALUE, set.size()));
 				v1.add(e);
 				v2.add(e);
 				set.add(e);
@@ -111,7 +131,8 @@ public class EulerPaths {
 		for (int i = 0; i < odds.size(); i += 2) {
 			Vertex v1 = odds.get(i + 1);
 			Vertex v2 = odds.get((i + 2) % odds.size());
-			Edge e = new EdgeImpl(v1, v2, wh);
+			Edge e = new EdgeImpl(v1, v2, new DirectionImpl(Integer.MAX_VALUE,
+					set.size()));
 			v1.add(e);
 			v2.add(e);
 			set.add(e);
@@ -123,7 +144,8 @@ public class EulerPaths {
 		Path path = new PathImpl(v);
 		Edge e = null;
 		while ((v = path.getLastVertex()).getDegree(true) > 0) {
-			Iterator<Edge> eei = v.edgesIterator(true);
+			Iterator<Edge> eei = new RandomizedIterator<Edge>(
+					v.edgesIterator(true));
 			e = eei.next();
 			path.extend(e);
 			e.setUsed(true);
@@ -137,6 +159,7 @@ public class EulerPaths {
 
 		Collection<? extends Iterator<Edge>> c = createCircuits(v);
 		ps.addAll(c);
+		System.out.println(v);
 		System.out.println("initial circuits: " + c.size());
 		while (ps.size() > 0) {
 			while (ps.get(ps.size() - 1).hasNext()) {
@@ -144,6 +167,7 @@ public class EulerPaths {
 				System.out.println(e);
 				p.extend(e);
 				v = e.getOther(v);
+				System.out.println(v);
 				c = createCircuits(v);
 				ps.addAll(c);
 				System.out.println("new circuits: " + c.size());
@@ -160,6 +184,43 @@ public class EulerPaths {
 			Edge e = ei.next();
 			e.setUsed(false);
 		}
+	}
+
+	private static List<Path> splitPath(Path p) {
+		List<Path> paths = new ArrayList<Path>();
+		Iterator<Edge> ei = p.iterator();
+		Iterator<Vertex> vi = p.verticesIterator();
+		Vertex v = vi.next();
+		boolean oddUnseen = true;
+		Path untilOdd = new PathImpl(v);
+		Path current = null;
+		while (ei.hasNext()) {
+			Edge e = ei.next();
+			v = vi.next();
+			if (oddUnseen) {
+				if (isOdd(e)) {
+					oddUnseen = false;
+				} else {
+					untilOdd.extend(e);
+				}
+			} else {
+				if (isOdd(e)) {
+					if (current.length() > 0) {
+						paths.add(current);
+					}
+				} else {
+					current.extend(e);
+				}
+			}
+			if (isOdd(e)) {
+				current = new PathImpl(v);
+			}
+		}
+		current.extend(untilOdd);
+		if (current.length() > 0) {
+			paths.add(current);
+		}
+		return paths;
 	}
 
 	private EulerPaths() {

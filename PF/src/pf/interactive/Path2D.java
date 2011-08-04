@@ -1,4 +1,4 @@
-package pf.reimpl;
+package pf.interactive;
 
 import java.awt.Rectangle;
 import java.awt.Shape;

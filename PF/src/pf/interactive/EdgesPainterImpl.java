@@ -78,7 +78,10 @@ public class EdgesPainterImpl implements EdgesPainter {
 		while (ei.hasNext()) {
 			e = ei.next();
 			if (getBounds(gameBoard, e).intersects(g2d.getClipBounds())) {
-				drawLine(g2d, e, getLine(gameBoard, e));
+				if (e.getDirection(e.getV1()).getDx() != Integer.MAX_VALUE
+						&& e.getDirection(e.getV2()).getDx() != -Integer.MAX_VALUE) {
+					drawLine(g2d, e, getLine(gameBoard, e));
+				}
 			}
 		}
 	}

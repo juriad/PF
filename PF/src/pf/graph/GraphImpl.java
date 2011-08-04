@@ -17,7 +17,7 @@ public class GraphImpl implements Graph {
 
 	private class EdgesIterator implements Iterator<Edge> {
 		private Iterator<Graph> i;
-		private Iterator<Edge> ie;
+		private Iterator<Edge> ie = null;
 		private Edge next = null;
 		private final Graph root;
 		private final boolean used;
@@ -50,6 +50,9 @@ public class GraphImpl implements Graph {
 		}
 
 		private Edge getNext() {
+			if (ie == null) {
+				return null;
+			}
 			if (ie.hasNext()) {
 				return ie.next();
 			} else if (i.hasNext()) {
@@ -64,7 +67,7 @@ public class GraphImpl implements Graph {
 
 	private class VerticesIterator implements Iterator<Vertex> {
 		private Iterator<Graph> i;
-		private Iterator<Vertex> iv;
+		private Iterator<Vertex> iv = null;
 		private Vertex next = null;
 
 		public VerticesIterator() {
@@ -93,6 +96,9 @@ public class GraphImpl implements Graph {
 		}
 
 		private Vertex getNext() {
+			if (iv == null) {
+				return null;
+			}
 			if (iv.hasNext()) {
 				return iv.next();
 			} else if (i.hasNext()) {

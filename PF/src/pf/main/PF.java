@@ -1,5 +1,6 @@
 package pf.main;
 
+import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -8,6 +9,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.FileNotFoundException;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -15,13 +19,15 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
 import pf.animator.EulerPaths;
+import pf.board.Board;
 import pf.board.GridType;
-import pf.graph.Edge;
 import pf.graph.Path;
+import pf.graph.Vertex;
 import pf.gui.EdgesPainterDialog;
 import pf.gui.GridPainterDialog;
 import pf.gui.InteractiveBoardControl;
@@ -34,6 +40,7 @@ import pf.interactive.GameModeEvent;
 import pf.interactive.GameModeListener;
 import pf.interactive.GridPainterImpl;
 import pf.interactive.InteractiveBoard;
+import pf.interactive.PathPainterImpl;
 import pf.interactive.TouchEvent;
 import pf.interactive.TouchListener;
 import pf.interactive.VerticesPainterImpl;
@@ -128,12 +135,10 @@ public class PF extends JFrame {
 		EdgesPainterImpl epe, eps, epr;
 		VerticesPainterImpl vpe, vps, vpr;
 
-		// PathPainterImpl ppe;
 		public Painters(GridType gt, DegreeType degreeType) {
 			gpe = gps = gpr = new GridPainterImpl(gt);
 			epe = eps = epr = new EdgesPainterImpl();
 			vpe = vps = vpr = new VerticesPainterImpl(gt, degreeType);
-			// ppe = new PathPainterImpl()
 		}
 	}
 
@@ -205,19 +210,27 @@ public class PF extends JFrame {
 		public void actionPerformed(ActionEvent e) {
 			NewDialog nd = new NewDialog(PF.this);
 			nd.setVisible(true);
-			if (nd.isClosedProperly() && nd.getBoard() != null) {
-				board.setBoard(nd.getBoard());
-				board.setEditable(nd.isEditAllowed());
-				if (nd.getAnimator() != null) {
-					board.setAnimator(nd.getAnimator().newInstance(board));
-					setAnimatorControl(board.getAnimator().getAnimatorControl());
+			Board b;
+			try {
+				if (nd.isClosedProperly() && (b = nd.getBoard()) != null) {
+					board.setBoard(b);
+					board.setEditable(nd.isEditAllowed());
+					if (nd.getAnimator() != null) {
+						board.setAnimator(nd.getAnimator().newInstance(board));
+						setAnimatorControl(board.getAnimator()
+								.getAnimatorControl());
+					}
+					ibc.setButtons();
+					painters = new Painters(board.getBoard().getGrid()
+							.getGridType(), DegreeType.BY_UNUSED);
+					board.setMode(nd.getMode());
+					updatePainters();
+					updateMenu();
 				}
-				ibc.setButtons();
-				painters = new Painters(board.getBoard().getGrid()
-						.getGridType(), DegreeType.BY_UNUSED);
-				board.setMode(nd.getMode());
-				updatePainters();
-				updateMenu();
+			} catch (FileNotFoundException ex) {
+				JOptionPane.showMessageDialog(getOwner(),
+						"A problem occured during opening board from file",
+						"Error", JOptionPane.ERROR_MESSAGE);
 			}
 		}
 	}
@@ -270,13 +283,26 @@ public class PF extends JFrame {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			Path p = EulerPaths.getEulerPaths(board.getBoard().getGraph());
-			for (Edge ee : p) {
-				System.out
-						.println(ee
-								+ ": "
-								+ !(ee.getDirection(ee.getV1()).getDx() == Integer.MAX_VALUE));
+			List<Path> paths = EulerPaths.getEulerPaths(board.getBoard()
+					.getGraph());
+			board.removePaths();
+			for (int i = 0; i < paths.size(); i++) {
+				System.out.println("path no. " + i + ": ");
+				Path p = paths.get(i);
+				board.addPath(paths.get(i));
+				PathPainterImpl pp = new PathPainterImpl(board);
+				pp.setStroke(new BasicStroke(3));
+				pp.setPath(p);
+				board.setPathPainter(p, pp);
+				Iterator<Vertex> vi = p.verticesIterator();
+				while (vi.hasNext()) {
+					Vertex v = vi.next();
+					System.out.print(v + " -- ");
+				}
+				System.out.println();
 			}
+			board.setPaintPaths(true);
+			board.repaint();
 		}
 	}
 

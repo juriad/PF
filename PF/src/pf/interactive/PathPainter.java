@@ -2,8 +2,6 @@ package pf.interactive;
 
 import java.awt.Graphics2D;
 
-import pf.reimpl.Path2D;
-
 public interface PathPainter {
 
 	Path2D<?> createPath2D();

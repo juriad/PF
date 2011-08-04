@@ -22,7 +22,6 @@ import pf.graph.Edge;
 import pf.graph.Path;
 import pf.graph.PathImpl;
 import pf.graph.Vertex;
-import pf.reimpl.Path2D;
 
 public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	public static class DefaultSnapPolicy implements SnapPolicy {

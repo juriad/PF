@@ -3,7 +3,7 @@ package pf.gui;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.text.NumberFormat;
+import java.io.FileNotFoundException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,13 +13,14 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
-import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSeparator;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 
 import pf.analytics.Point;
 import pf.analytics.PointImpl;
@@ -51,17 +52,17 @@ public class NewDialog extends CardDialog {
 
 	private GameBoard gb;
 
-	private JFormattedTextField brptf3y;
+	private JSpinner brptf3y;
 
-	private JFormattedTextField brptf3x;
+	private JSpinner brptf3x;
 
-	private JFormattedTextField brptf2y;
+	private JSpinner brptf2y;
 
-	private JFormattedTextField brptf2x;
+	private JSpinner brptf2x;
 
-	private JFormattedTextField brptf1y;
+	private JSpinner brptf1y;
 
-	private JFormattedTextField brtpf1x;
+	private JSpinner brptf1x;
 
 	private JRadioButton brrb2;
 
@@ -75,9 +76,9 @@ public class NewDialog extends CardDialog {
 
 	private Map<GridType, Integer> types;
 
-	private JFormattedTextField whtfw;
+	private JSpinner whtfw;
 
-	private JFormattedTextField whtfh;
+	private JSpinner whtfh;
 	private JButton brpb;
 	private JButton whb;
 
@@ -89,6 +90,8 @@ public class NewDialog extends CardDialog {
 	private boolean userInput = false;
 
 	private JComboBox modecb;
+
+	private JLabel patl;
 
 	public NewDialog(JFrame owner) {
 		super(owner, title);
@@ -107,9 +110,20 @@ public class NewDialog extends CardDialog {
 		return (AnimatorFactory) anicb.getSelectedItem();
 	}
 
-	public Board getBoard() {
-		return new BoardImpl(gb.getBoard().getGrid(), gb.getBoard().getWidth(),
-				gb.getBoard().getHeight(), getPattern());
+	public Board getBoard() throws FileNotFoundException {
+		Board b;
+		if (file != null) {
+			if (patrb1.isSelected()) {
+				b = BoardImpl.createBoard(file, null);
+			} else {
+				b = BoardImpl.createBoard(file, getPattern());
+			}
+		} else {
+			b = new BoardImpl(gb.getBoard().getGrid(),
+					gb.getBoard().getWidth(), gb.getBoard().getHeight(),
+					getPattern());
+		}
+		return b;
 	}
 
 	public GameMode getMode() {
@@ -117,6 +131,9 @@ public class NewDialog extends CardDialog {
 	}
 
 	public GridPattern getPattern() {
+		if (patrb1.isSelected()) {
+			return null;
+		}
 		return (GridPattern) patcb.getSelectedItem();
 	}
 
@@ -170,17 +187,13 @@ public class NewDialog extends CardDialog {
 		wh.setBorder(BorderFactory.createTitledBorder("Size"));
 		JLabel whlw = new JLabel("width");
 		wh.add(whlw);
-		whtfw = new JFormattedTextField(NumberFormat.getIntegerInstance());
-		whtfw.setValue(0);
-		whtfw.setColumns(5);
-		whtfw.setEditable(false);
+		whtfw = new JSpinner(new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
+		whtfw.setEnabled(false);
 		wh.add(whtfw, "wrap");
 		JLabel whlh = new JLabel("height");
 		wh.add(whlh);
-		whtfh = new JFormattedTextField(NumberFormat.getIntegerInstance());
-		whtfh.setValue(0);
-		whtfh.setColumns(5);
-		whtfh.setEditable(false);
+		whtfh = new JSpinner(new SpinnerNumberModel(1, 1, Integer.MAX_VALUE, 1));
+		whtfh.setEnabled(false);
 		wh.add(whtfh, "wrap");
 		whb = new JButton("Refresh");
 		wh.add(whb, "span 2");
@@ -216,40 +229,34 @@ public class NewDialog extends CardDialog {
 
 		JLabel brplp1 = new JLabel("P1");
 		brp.add(brplp1);
-		brtpf1x = new JFormattedTextField(NumberFormat.getIntegerInstance());
-		brtpf1x.setValue(0);
-		brtpf1x.setColumns(5);
-		brtpf1x.setEditable(false);
-		brptf1y = new JFormattedTextField(NumberFormat.getIntegerInstance());
-		brptf1y.setValue(0);
-		brptf1y.setColumns(5);
-		brptf1y.setEditable(false);
-		brp.add(brtpf1x);
+		brptf1x = new JSpinner(new SpinnerNumberModel(0, Integer.MIN_VALUE,
+				Integer.MAX_VALUE, 1));
+		brptf1x.setEnabled(false);
+		brptf1y = new JSpinner(new SpinnerNumberModel(0, Integer.MIN_VALUE,
+				Integer.MAX_VALUE, 1));
+		brptf1y.setEnabled(false);
+		brp.add(brptf1x);
 		brp.add(brptf1y, "wrap");
 
 		JLabel brplp2 = new JLabel("P2");
 		brp.add(brplp2);
-		brptf2x = new JFormattedTextField(NumberFormat.getIntegerInstance());
-		brptf2x.setValue(0);
-		brptf2x.setColumns(5);
-		brptf2x.setEditable(false);
-		brptf2y = new JFormattedTextField(NumberFormat.getIntegerInstance());
-		brptf2y.setValue(0);
-		brptf2y.setColumns(5);
-		brptf2y.setEditable(false);
+		brptf2x = new JSpinner(new SpinnerNumberModel(0, Integer.MIN_VALUE,
+				Integer.MAX_VALUE, 1));
+		brptf2x.setEnabled(false);
+		brptf2y = new JSpinner(new SpinnerNumberModel(0, Integer.MIN_VALUE,
+				Integer.MAX_VALUE, 1));
+		brptf2y.setEnabled(false);
 		brp.add(brptf2x);
 		brp.add(brptf2y, "wrap");
 
 		JLabel brplp3 = new JLabel("P3");
 		brp.add(brplp3);
-		brptf3x = new JFormattedTextField(NumberFormat.getIntegerInstance());
-		brptf3x.setValue(0);
-		brptf3x.setColumns(5);
-		brptf3x.setEditable(false);
-		brptf3y = new JFormattedTextField(NumberFormat.getIntegerInstance());
-		brptf3y.setValue(0);
-		brptf3y.setColumns(5);
-		brptf3y.setEditable(false);
+		brptf3x = new JSpinner(new SpinnerNumberModel(0, Integer.MIN_VALUE,
+				Integer.MAX_VALUE, 1));
+		brptf3x.setEnabled(false);
+		brptf3y = new JSpinner(new SpinnerNumberModel(0, Integer.MIN_VALUE,
+				Integer.MAX_VALUE, 1));
+		brptf3y.setEnabled(false);
 		brp.add(brptf3x);
 		brp.add(brptf3y, "wrap");
 
@@ -405,7 +412,9 @@ public class NewDialog extends CardDialog {
 		patrb1 = new JRadioButton("From file", true);
 		patbr.add(patrb1);
 		patrb1.setEnabled(false);
-		pat.add(patrb1, "wrap,span 2");
+		pat.add(patrb1);
+		patl = new JLabel();
+		pat.add(patl, "wrap");
 		patrb2 = new JRadioButton("Predefined", false);
 		patbr.add(patrb2);
 		patrb2.setEnabled(false);
@@ -456,6 +465,8 @@ public class NewDialog extends CardDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				patcb.setEnabled(false);
+				setPatLabel();
+				patl.setEnabled(true);
 			}
 		});
 
@@ -463,6 +474,8 @@ public class NewDialog extends CardDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				patcb.setEnabled(true);
+				setPatLabel();
+				patl.setEnabled(false);
 			}
 		});
 
@@ -503,8 +516,8 @@ public class NewDialog extends CardDialog {
 		blcb.setEnabled(b);
 		brrb1.setEnabled(b);
 		brrb2.setEnabled(b);
-		whtfh.setEditable(b);
-		whtfw.setEditable(b);
+		whtfh.setEnabled(b);
+		whtfw.setEnabled(b);
 		whb.setEnabled(b);
 		if (b && form.equals(GridForm.FREE)) {
 			setPointsEnabled(true);
@@ -517,7 +530,7 @@ public class NewDialog extends CardDialog {
 		blcb.setSelectedIndex(types.get(gt));
 		if (form.equals(GridForm.REGULAR)) {
 			Point[] points = gt.getRegularPoints();
-			brtpf1x.setValue(points[0].getX());
+			brptf1x.setValue(points[0].getX());
 			brptf1y.setValue(points[0].getY());
 			brptf2x.setValue(points[1].getX());
 			brptf2y.setValue(points[1].getY());
@@ -526,13 +539,28 @@ public class NewDialog extends CardDialog {
 		}
 	}
 
+	private void setPatLabel() {
+		System.out.println("setPatLabe;");
+		if (file == null) {
+			patl.setText("");
+		} else {
+			try {
+				BoardImpl.FileHeader fh = new BoardImpl.FileHeader(file);
+				GridPattern gp = fh.pattern;
+				patl.setText(gp.toString());
+			} catch (Exception ex) {
+				patl.setText("Error");
+			}
+		}
+	}
+
 	private void setPointsEnabled(boolean b) {
-		brtpf1x.setEditable(b);
-		brptf1y.setEditable(b);
-		brptf2x.setEditable(b);
-		brptf2y.setEditable(b);
-		brptf3x.setEditable(b);
-		brptf3y.setEditable(b);
+		brptf1x.setEnabled(b);
+		brptf1y.setEnabled(b);
+		brptf2x.setEnabled(b);
+		brptf2y.setEnabled(b);
+		brptf3x.setEnabled(b);
+		brptf3y.setEnabled(b);
 		brpb.setEnabled(b);
 	}
 
@@ -548,7 +576,7 @@ public class NewDialog extends CardDialog {
 			}
 			if (b != null) {
 				Point[] points = b.getGrid().getPoints();
-				brtpf1x.setValue(points[0].getX());
+				brptf1x.setValue(points[0].getX());
 				brptf1y.setValue(points[0].getY());
 				brptf2x.setValue(points[1].getX());
 				brptf2y.setValue(points[1].getY());
@@ -571,7 +599,7 @@ public class NewDialog extends CardDialog {
 		} else {
 			try {
 				Point p1 = new PointImpl(
-						((Number) brtpf1x.getValue()).intValue(),
+						((Number) brptf1x.getValue()).intValue(),
 						((Number) brptf1y.getValue()).intValue());
 				Point p2 = new PointImpl(
 						((Number) brptf2x.getValue()).intValue(),
@@ -624,9 +652,19 @@ public class NewDialog extends CardDialog {
 			patrb2.setEnabled(false);
 			patcb.setEnabled(true);
 			patrb2.setSelected(true);
+			patl.setEnabled(false);
+			patl.setText("");
 		} else {
 			patrb1.setEnabled(true);
 			patrb2.setEnabled(true);
+			setPatLabel();
+			if (patrb1.isSelected()) {
+				patcb.setEnabled(false);
+				patl.setEnabled(true);
+			} else {
+				patcb.setEnabled(true);
+				patl.setEnabled(false);
+			}
 		}
 	}
 

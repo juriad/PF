@@ -25,43 +25,19 @@ import pf.graph.Vertex;
 
 public class BoardImpl implements Board {
 
-	public enum GridForm {
-		FREE ("free"),
-		REGULAR ("regular");
+	public static class FileHeader {
+		public final String stype;
+		public final GridType type;
+		public final int width;
+		public final int height;
+		public final String sform;
+		public final GridForm form;
+		public final Point[] points;
+		public final String spattern;
+		public final GridPattern pattern;
 
-		public static GridForm getForm(String desc) {
-			for (GridForm f : values()) {
-				if (f.getDesc().equals(desc)) {
-					return f;
-				}
-			}
-			return null;
-		}
-
-		private final String desc;
-
-		private GridForm(String desc) {
-			this.desc = desc;
-		}
-
-		public String getDesc() {
-			return desc;
-		}
-	}
-
-	private static class FileHeader {
-		final String stype;
-		final GridType type;
-		final int width;
-		final int height;
-		final String sform;
-		final GridForm form;
-		final Point[] points;
-		final String spattern;
-		final GridPattern pattern;
-
-		final String line1;
-		final String line2;
+		public final String line1;
+		public final String line2;
 
 		public FileHeader(File f) throws FileNotFoundException {
 			Scanner s = new Scanner(f);
@@ -131,7 +107,36 @@ public class BoardImpl implements Board {
 		}
 	}
 
+	public enum GridForm {
+		FREE ("free"),
+		REGULAR ("regular");
+
+		public static GridForm getForm(String desc) {
+			for (GridForm f : values()) {
+				if (f.getDesc().equals(desc)) {
+					return f;
+				}
+			}
+			return null;
+		}
+
+		private final String desc;
+
+		private GridForm(String desc) {
+			this.desc = desc;
+		}
+
+		public String getDesc() {
+			return desc;
+		}
+	}
+
 	public static Board createBoard(File f) throws FileNotFoundException {
+		return createBoard(f, null);
+	}
+
+	public static Board createBoard(File f, GridPattern gp)
+			throws FileNotFoundException {
 		FileHeader fh = new FileHeader(f);
 		Grid grid = AbstractGrid.createGrid(fh.type, fh.points[0],
 				fh.points[1], fh.points[2]);
@@ -139,7 +144,7 @@ public class BoardImpl implements Board {
 		b.graph = grid.createGraph(fh.width, fh.height);
 		fillVs(b);
 		BoardPattern bp = AbstractBoardPattern.createBoardPattern(b,
-				fh.pattern, f);
+				gp == null ? fh.pattern : gp, f);
 		for (PointsEdge pe : bp) {
 			createEdge(b, pe);
 		}

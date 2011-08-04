@@ -9,7 +9,6 @@ import java.util.Iterator;
 
 import pf.graph.Path;
 import pf.graph.Vertex;
-import pf.reimpl.Path2D;
 
 public class PathPainterImpl implements PathPainter {
 
@@ -34,6 +33,7 @@ public class PathPainterImpl implements PathPainter {
 		Path2D<Integer> gp = new Path2D<Integer>();
 		Vertex vv = null;
 		boolean corner = false;
+		boolean first = true;
 		while (vi.hasNext()) {
 			Vertex v = vi.next();
 			System.out.println(v);
@@ -45,7 +45,8 @@ public class PathPainterImpl implements PathPainter {
 						board.translateYToScreen(getCornerY(v, vv)));
 			}
 
-			if (path.getFirstVertex().equals(v)) {
+			if (first) {
+				first = false;
 				gp.moveTo(board.translateXToScreen(v.getX()),
 						board.translateYToScreen(v.getY()));
 			} else if (path.getLastVertex().equals(v)) {

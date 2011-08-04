@@ -11,6 +11,7 @@ import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
+import pf.graph.Path;
 import pf.gui.PathPainterDialog;
 import pf.interactive.InteractiveBoard;
 import pf.interactive.PathPainterImpl;
@@ -62,6 +63,7 @@ public abstract class EulerAnimator extends StepAnimator {
 	public EulerAnimator(InteractiveBoard board) {
 		super();
 		this.board = board;
+		paths = new ArrayList<PartialPath>();
 		pathPaintes = new ArrayList<PathPainterImpl>();
 	}
 
@@ -70,13 +72,19 @@ public abstract class EulerAnimator extends StepAnimator {
 		super.setMenu(menu);
 		pathMenuItem = new JMenuItem(new PathAction());
 		menu.add(pathMenuItem);
-
 	}
 
 	@Override
 	protected void init() {
 		board.removePaths();
+		makePaths();
 		board.repaint();
+	}
+
+	protected void makePaths() {
+		for (Path p : EulerPaths.getEulerPaths(board.getBoard().getGraph())) {
+			paths.add(new PartialPath(p));
+		}
 	}
 
 	@Override
