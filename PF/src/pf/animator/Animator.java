@@ -26,4 +26,6 @@ public interface Animator extends Runnable {
 	Component getAnimatorControl();
 
 	AnimatorFactory getFactory();
+
+	boolean isFinished();
 }

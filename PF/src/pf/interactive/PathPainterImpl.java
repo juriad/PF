@@ -3,8 +3,6 @@ package pf.interactive;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.geom.PathIterator;
-import java.util.Arrays;
 import java.util.Iterator;
 
 import pf.graph.Path;
@@ -34,10 +32,10 @@ public class PathPainterImpl implements PathPainter {
 		Vertex vv = null;
 		boolean corner = false;
 		boolean first = true;
-		while (vi.hasNext()) {
-			Vertex v = vi.next();
-			System.out.println(v);
 
+		Vertex v = null;
+		while (vi.hasNext()) {
+			v = vi.next();
 			if (corner) {
 				gp.quadTo(board.translateXToScreen(vv.getX()),
 						board.translateYToScreen(vv.getY()),
@@ -46,20 +44,19 @@ public class PathPainterImpl implements PathPainter {
 			}
 
 			if (first) {
-				first = false;
 				gp.moveTo(board.translateXToScreen(v.getX()),
 						board.translateYToScreen(v.getY()));
-			} else if (path.getLastVertex().equals(v)) {
-				gp.lineTo(board.translateXToScreen(v.getX()),
-						board.translateYToScreen(v.getY()));
+				first = false;
 			} else {
+
 				gp.lineTo(board.translateXToScreen(getCornerX(vv, v)),
 						board.translateYToScreen(getCornerY(vv, v)));
 				corner = true;
 			}
-
 			vv = v;
 		}
+		gp.lineTo(board.translateXToScreen(v.getX()),
+				board.translateYToScreen(v.getY()));
 		return gp;
 
 	}
@@ -81,15 +78,6 @@ public class PathPainterImpl implements PathPainter {
 		g2d.setColor(getColor());
 		g2d.setStroke(getStroke());
 		g2d.draw(p2d);
-
-		PathIterator pi = p2d.getPathIterator(null);
-		float[] coords = new float[6];
-		while (!pi.isDone()) {
-			System.out.println(pi.currentSegment(coords) + "  "
-					+ Arrays.toString(coords));
-			pi.next();
-		}
-
 	}
 
 	public void set(PathPainterImpl ppi) {

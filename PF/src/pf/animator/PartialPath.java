@@ -68,7 +68,7 @@ public class PartialPath implements Path {
 
 			@Override
 			public boolean hasNext() {
-				return ie.hasNext() && index < len - 1;
+				return ie.hasNext() && index < len;
 			}
 
 			@Override
@@ -115,7 +115,7 @@ public class PartialPath implements Path {
 
 			@Override
 			public boolean hasNext() {
-				return iv.hasNext() && index < len;
+				return iv.hasNext() && index < len + 1;
 			}
 
 			@Override

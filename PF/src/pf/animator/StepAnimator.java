@@ -34,15 +34,18 @@ public abstract class StepAnimator implements Animator {
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			setLoop((Boolean) getValue(SELECTED_KEY));
+			setLoop(loopMenuItem.isSelected());
 		}
 	}
 
 	protected enum State {
 		RUNNING,
 		PAUSED,
-		STOPPED
+		STOPPED,
+		FINISHED
 	}
+
+	private final Object lock = new Object();
 
 	protected static String playText = "Play";
 	protected static String pauseText = "Pause";
@@ -63,6 +66,7 @@ public abstract class StepAnimator implements Animator {
 	protected JButton stopButton;
 
 	private boolean loop;
+	private JCheckBoxMenuItem loopMenuItem;
 
 	public StepAnimator() {
 		state = State.STOPPED;
@@ -88,6 +92,11 @@ public abstract class StepAnimator implements Animator {
 
 	@Override
 	public abstract AnimatorFactory getFactory();
+
+	@Override
+	public boolean isFinished() {
+		return state.equals(State.FINISHED);
+	}
 
 	public boolean isLoop() {
 		return loop;
@@ -117,10 +126,12 @@ public abstract class StepAnimator implements Animator {
 	@Override
 	public void run() {
 		boolean finished = false;
-		while (!state.equals(State.STOPPED)) {
+		while (!state.equals(State.STOPPED) || state.equals(State.FINISHED)) {
 			if (state.equals(State.PAUSED)) {
 				try {
-					wait();
+					synchronized (lock) {
+						lock.wait();
+					}
 				} catch (InterruptedException ex) {
 				}
 			} else {
@@ -136,9 +147,11 @@ public abstract class StepAnimator implements Animator {
 			}
 		}
 		if (finished) {
-			stop();
 			if (isLoop()) {
 				start();
+			} else {
+				state = State.FINISHED;
+				updateControl();
 			}
 		}
 	}
@@ -149,14 +162,17 @@ public abstract class StepAnimator implements Animator {
 
 	@Override
 	public void setMenu(JMenu menu) {
-		menu.add(new JCheckBoxMenuItem(new LoopAction()));
+		loopMenuItem = new JCheckBoxMenuItem(new LoopAction());
+		menu.add(loopMenuItem);
 	}
 
 	@Override
 	public void start() {
 		if (isPaused()) {
 			state = State.RUNNING;
-			notify();
+			synchronized (lock) {
+				lock.notify();
+			}
 		} else {
 			state = State.RUNNING;
 			init();
@@ -170,7 +186,10 @@ public abstract class StepAnimator implements Animator {
 		state = State.STOPPED;
 		stepSlider.setValue(step);
 		updateControl();
+		clean();
 	}
+
+	protected abstract void clean();
 
 	protected abstract void init();
 
@@ -202,7 +221,9 @@ public abstract class StepAnimator implements Animator {
 					pause();
 					break;
 				case STOPPED:
-					stop();
+					start();
+					break;
+				case FINISHED:
 					break;
 				}
 			}
@@ -240,6 +261,12 @@ public abstract class StepAnimator implements Animator {
 			playPauseButton.setEnabled(true);
 			stopButton.setText(stopText);
 			stopButton.setEnabled(false);
+			break;
+		case FINISHED:
+			playPauseButton.setText(playText);
+			playPauseButton.setEnabled(false);
+			stopButton.setText(stopText);
+			stopButton.setEnabled(true);
 			break;
 		}
 	}

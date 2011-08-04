@@ -17,33 +17,19 @@ import pf.graph.Vertex;
 public class EulerPaths {
 
 	public static List<Path> getEulerPaths(BoardGraph bg) {
-		System.out.println("get euler path");
 		int pc = getPathsCount(bg);
-		System.out.println("paths: " + pc);
 		if (pc == 0) {
-			System.out.println("return");
 			return new ArrayList<Path>();
 		}
 
 		List<Edge> odds = makeEuler(bg);
-		System.out.println("odds:");
-		for (Edge e : odds) {
-			System.out.println("odd " + e);
-		}
-		System.out.println("euler made");
 		setUnused(bg);
-		System.out.println("set unused");
-
 		Path p = onePath(bg.verticesIterator().next());
-		System.out.println("one path");
 
 		for (Edge e : odds) {
 			e.getV1().remove(e);
 			e.getV2().remove(e);
 		}
-
-		System.out.println("odds removed");
-
 		return splitPath(p);
 	}
 
@@ -69,6 +55,14 @@ public class EulerPaths {
 			}
 		}
 		return paths;
+	}
+
+	public static void setUnused(BoardGraph bg) {
+		Iterator<Edge> ei = bg.edgesIterator(false);
+		while (ei.hasNext()) {
+			Edge e = ei.next();
+			e.setUsed(false);
+		}
 	}
 
 	private static Collection<? extends Iterator<Edge>> createCircuits(Vertex v) {
@@ -102,14 +96,12 @@ public class EulerPaths {
 			while (vi.hasNext()) {
 				v = vi.next();
 				if (v.getDegree(false) % 2 == 1) {
-					System.out.println("odd found: " + v);
 					vs.add(v);
 				}
 			}
 			if (vs.size() == 0) {
 				vs.add(v);
 				vs.add(v);
-				System.out.println("added fake odds: " + v);
 			}
 
 			for (int i = 0; i < vs.size() - 2; i += 2) {
@@ -120,7 +112,6 @@ public class EulerPaths {
 				v1.add(e);
 				v2.add(e);
 				set.add(e);
-				System.out.println("made odd edge: " + e);
 			}
 			odds.add(vs.get(vs.size() - 2));
 			odds.add(vs.get(vs.size() - 1));
@@ -159,31 +150,17 @@ public class EulerPaths {
 
 		Collection<? extends Iterator<Edge>> c = createCircuits(v);
 		ps.addAll(c);
-		System.out.println(v);
-		System.out.println("initial circuits: " + c.size());
 		while (ps.size() > 0) {
 			while (ps.get(ps.size() - 1).hasNext()) {
 				Edge e = ps.get(ps.size() - 1).next();
-				System.out.println(e);
 				p.extend(e);
 				v = e.getOther(v);
-				System.out.println(v);
 				c = createCircuits(v);
 				ps.addAll(c);
-				System.out.println("new circuits: " + c.size());
 			}
 			ps.remove(ps.size() - 1);
-			System.out.println("circuit removed");
 		}
 		return p;
-	}
-
-	private static void setUnused(BoardGraph bg) {
-		Iterator<Edge> ei = bg.edgesIterator(false);
-		while (ei.hasNext()) {
-			Edge e = ei.next();
-			e.setUsed(false);
-		}
 	}
 
 	private static List<Path> splitPath(Path p) {

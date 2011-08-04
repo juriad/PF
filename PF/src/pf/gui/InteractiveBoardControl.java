@@ -23,11 +23,6 @@ public class InteractiveBoardControl extends JPanel {
 		}
 
 		@Override
-		public void modePause(GameModeEvent e) {
-			setButtons();
-		}
-
-		@Override
 		public void modeRun(GameModeEvent e) {
 			setButtons();
 		}

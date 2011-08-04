@@ -1,6 +1,5 @@
 package pf.main;
 
-import java.awt.BasicStroke;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
@@ -10,8 +9,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
-import java.util.Iterator;
-import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -23,11 +20,10 @@ import javax.swing.JOptionPane;
 import javax.swing.KeyStroke;
 import javax.swing.WindowConstants;
 
-import pf.animator.EulerPaths;
+import pf.animator.AnimatorFactory;
 import pf.board.Board;
 import pf.board.GridType;
-import pf.graph.Path;
-import pf.graph.Vertex;
+import pf.gui.AnimatorDialog;
 import pf.gui.EdgesPainterDialog;
 import pf.gui.GridPainterDialog;
 import pf.gui.InteractiveBoardControl;
@@ -40,7 +36,6 @@ import pf.interactive.GameModeEvent;
 import pf.interactive.GameModeListener;
 import pf.interactive.GridPainterImpl;
 import pf.interactive.InteractiveBoard;
-import pf.interactive.PathPainterImpl;
 import pf.interactive.TouchEvent;
 import pf.interactive.TouchListener;
 import pf.interactive.VerticesPainterImpl;
@@ -112,12 +107,6 @@ public class PF extends JFrame {
 		}
 
 		@Override
-		public void modePause(GameModeEvent e) {
-			updatePainters();
-			setAnimatorControlEnabled(false);
-		}
-
-		@Override
 		public void modeRun(GameModeEvent e) {
 			updatePainters();
 			setAnimatorControlEnabled(true);
@@ -139,6 +128,32 @@ public class PF extends JFrame {
 			gpe = gps = gpr = new GridPainterImpl(gt);
 			epe = eps = epr = new EdgesPainterImpl();
 			vpe = vps = vpr = new VerticesPainterImpl(gt, degreeType);
+		}
+	}
+
+	class AnimatorAction extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		public AnimatorAction() {
+			super("Animators");
+			putValue(Action.MNEMONIC_KEY, KeyEvent.VK_A);
+			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(
+					KeyEvent.VK_A, ActionEvent.CTRL_MASK));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			AnimatorDialog ad = new AnimatorDialog(PF.this);
+			ad.setVisible(true);
+			if (ad.isClosedProperly()) {
+				if (ad.getAnimator() == null
+						&& board.getMode().equals(GameMode.RUN)) {
+					board.setMode(GameMode.SHOW);
+				}
+				setAnimator(ad.getAnimator());
+				ibc.setButtons();
+			}
 		}
 	}
 
@@ -216,9 +231,7 @@ public class PF extends JFrame {
 					board.setBoard(b);
 					board.setEditable(nd.isEditAllowed());
 					if (nd.getAnimator() != null) {
-						board.setAnimator(nd.getAnimator().newInstance(board));
-						setAnimatorControl(board.getAnimator()
-								.getAnimatorControl());
+						setAnimator(nd.getAnimator());
 					}
 					ibc.setButtons();
 					painters = new Painters(board.getBoard().getGrid()
@@ -270,42 +283,6 @@ public class PF extends JFrame {
 		}
 	}
 
-	class TestAction extends AbstractAction {
-
-		private static final long serialVersionUID = 1L;
-
-		public TestAction() {
-			super("Test");
-			putValue(Action.MNEMONIC_KEY, KeyEvent.VK_T);
-			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(
-					KeyEvent.VK_T, ActionEvent.CTRL_MASK));
-		}
-
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			List<Path> paths = EulerPaths.getEulerPaths(board.getBoard()
-					.getGraph());
-			board.removePaths();
-			for (int i = 0; i < paths.size(); i++) {
-				System.out.println("path no. " + i + ": ");
-				Path p = paths.get(i);
-				board.addPath(paths.get(i));
-				PathPainterImpl pp = new PathPainterImpl(board);
-				pp.setStroke(new BasicStroke(3));
-				pp.setPath(p);
-				board.setPathPainter(p, pp);
-				Iterator<Vertex> vi = p.verticesIterator();
-				while (vi.hasNext()) {
-					Vertex v = vi.next();
-					System.out.print(v + " -- ");
-				}
-				System.out.println();
-			}
-			board.setPaintPaths(true);
-			board.repaint();
-		}
-	}
-
 	class VertexAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
@@ -350,10 +327,10 @@ public class PF extends JFrame {
 	private JMenuItem bms;
 
 	private JMenuItem pmg;
+
 	private JMenuItem pme;
 	private JMenuItem pmv;
 	private InteractiveBoardControl ibc;
-
 	private JMenu amenu;
 
 	public PF() {
@@ -376,10 +353,6 @@ public class PF extends JFrame {
 		bmenu.add(bmn);
 		bms = new JMenuItem(new SaveAction());
 		bmenu.add(bms);
-
-		// NOTE jen pro testovani
-		JMenuItem tms = new JMenuItem(new TestAction());
-		bmenu.add(tms);
 
 		JMenuItem bmq = new JMenuItem(new QuitAction());
 		bmenu.add(bmq);
@@ -414,7 +387,19 @@ public class PF extends JFrame {
 		});
 
 		updateMenu();
+
+		addons();
 		pack();
+	}
+
+	public void setAnimator(AnimatorFactory af) {
+		board.setAnimator(af != null ? af.newInstance(board) : null);
+		if (board.getAnimator() != null) {
+			setAnimatorControl(board.getAnimator().getAnimatorControl());
+		} else {
+			setAnimatorControl(null);
+		}
+		setAnimatorMenu();
 	}
 
 	public void updateMenu() {
@@ -424,6 +409,14 @@ public class PF extends JFrame {
 		pme.setEnabled(b);
 		pmv.setEnabled(b);
 		setAnimatorMenu();
+	}
+
+	private void addons() {
+		try {
+			Class.forName("pf.animator.EulerAnimator");
+		} catch (ClassNotFoundException ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	private void quit() {
@@ -438,6 +431,8 @@ public class PF extends JFrame {
 		if (ac != null) {
 			getContentPane().add(ac, BorderLayout.SOUTH);
 		}
+		validate();
+		repaint();
 	}
 
 	private void setAnimatorControlEnabled(boolean b) {
@@ -448,7 +443,12 @@ public class PF extends JFrame {
 	}
 
 	private void setAnimatorMenu() {
+		amenu.removeAll();
+		if (board.getBoard() != null) {
+			amenu.add(new AnimatorAction());
+		}
 		if (board.getAnimator() != null) {
+			amenu.addSeparator();
 			board.getAnimator().setMenu(amenu);
 		}
 	}
@@ -466,6 +466,9 @@ public class PF extends JFrame {
 			board.setVerticesPainterAndPaint(painters.vps);
 			break;
 		case RUN:
+			board.setGridPainterAndPaint(painters.gpr);
+			board.setEdgesPainterAndPaint(painters.epr);
+			board.setVerticesPainterAndPaint(painters.vpr);
 			break;
 		}
 		board.repaint();

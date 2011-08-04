@@ -404,8 +404,8 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	}
 
 	public void setAnimator(Animator animator) {
-		if (isRun()) {
-			throw new IllegalStateException();
+		if (this.animator != null) {
+			this.animator.stop();
 		}
 		this.animator = animator;
 	}
@@ -509,7 +509,9 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	}
 
 	private void fromRunToShow() {
-		animator.stop();
+		if (animator != null) {
+			animator.stop();
+		}
 	}
 
 	private void fromShowToEdit() {
@@ -517,7 +519,6 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	}
 
 	private void fromShowToRun() {
-		animator.run();
 	}
 
 	@Override
@@ -540,12 +541,6 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	void fireModeEdit(GameModeEvent e) {
 		for (GameModeListener l : ell.getListeners(GameModeListener.class)) {
 			l.modeEdit(e);
-		}
-	}
-
-	void fireModePause(GameModeEvent e) {
-		for (GameModeListener l : ell.getListeners(GameModeListener.class)) {
-			l.modePause(e);
 		}
 	}
 
