@@ -8,7 +8,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.swing.event.EventListenerList;
@@ -23,7 +22,7 @@ import pf.graph.Path;
 import pf.graph.PathImpl;
 import pf.graph.Vertex;
 
-public class InteractiveBoard extends GameBoard implements Iterable<Path> {
+public class InteractiveBoard extends GameBoard {
 	public static class DefaultSnapPolicy implements SnapPolicy {
 
 		private static final float dist = 0.1f;
@@ -202,7 +201,9 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		if (board == null) {
 			throw new IllegalStateException();
 		}
-		paths.put(path, null);
+		synchronized (paths) {
+			paths.put(path, null);
+		}
 	}
 
 	public synchronized void addTouchListener(TouchListener l) {
@@ -346,21 +347,20 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 		return touchReturnAllowed;
 	}
 
-	@Override
-	public Iterator<Path> iterator() {
-		return paths.keySet().iterator();
-	}
-
 	public synchronized void removeGameModeListener(GameModeListener l) {
 		ell.remove(GameModeListener.class, l);
 	}
 
 	public void removePath(Path path) {
-		paths.remove(path);
+		synchronized (paths) {
+			paths.remove(path);
+		}
 	}
 
 	public void removePaths() {
-		paths.clear();
+		synchronized (paths) {
+			paths.clear();
+		}
 	}
 
 	public synchronized void removeTouchListener(TouchListener l) {
@@ -461,10 +461,12 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	}
 
 	public void setPathPainter(Path path, PathPainter pathPainter) {
-		if (!paths.containsKey(path)) {
-			throw new IllegalArgumentException();
+		synchronized (paths) {
+			if (!paths.containsKey(path)) {
+				throw new IllegalArgumentException();
+			}
+			paths.put(path, pathPainter);
 		}
-		paths.put(path, pathPainter);
 	}
 
 	public void setSnapPolicy(SnapPolicy snapping) {
@@ -529,11 +531,13 @@ public class InteractiveBoard extends GameBoard implements Iterable<Path> {
 	}
 
 	protected void paintPaths(Graphics2D g2d) {
-		for (Path p : this) {
-			PathPainter pp = paths.get(p);
-			if (pp != null && isPaintPaths()) {
-				Path2D<?> p2d = pp.createPath2D();
-				pp.paintPath(g2d, p2d);
+		synchronized (paths) {
+			for (Path p : paths.keySet()) {
+				PathPainter pp = paths.get(p);
+				if (pp != null && isPaintPaths()) {
+					Path2D<?> p2d = pp.createPath2D();
+					pp.paintPath(g2d, p2d);
+				}
 			}
 		}
 	}

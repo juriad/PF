@@ -8,7 +8,19 @@ import pf.analytics.PointImpl;
 import pf.board.BoardPattern.PointsEdge;
 import pf.graph.Vertex;
 
+/**
+ * Allows saving current board to file
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public interface BoardPattern extends Iterable<PointsEdge> {
+	/**
+	 * Represents edge in an analytics manner
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	static class PointsEdge {
 		private static Point toPoint(Vertex v) {
 			return new PointImpl(v.getX(), v.getY());

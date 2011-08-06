@@ -23,7 +23,7 @@ public class EulerPaths {
 		}
 
 		List<Edge> odds = makeEuler(bg);
-		setUnused(bg);
+		bg.unuseAll();
 		Path p = onePath(bg.verticesIterator().next());
 
 		for (Edge e : odds) {
@@ -55,14 +55,6 @@ public class EulerPaths {
 			}
 		}
 		return paths;
-	}
-
-	public static void setUnused(BoardGraph bg) {
-		Iterator<Edge> ei = bg.edgesIterator(false);
-		while (ei.hasNext()) {
-			Edge e = ei.next();
-			e.setUsed(false);
-		}
 	}
 
 	private static Collection<? extends Iterator<Edge>> createCircuits(Vertex v) {

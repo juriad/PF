@@ -12,7 +12,10 @@ package pf.analytics;
  */
 public class LineImpl implements Line {
 
-	private final static double eps = 0.5;
+	/**
+	 * distance of point to line to be considered as lying on
+	 */
+	protected static double eps = 0.5;
 
 	/**
 	 * Calculates determinant of matrix
@@ -65,7 +68,9 @@ public class LineImpl implements Line {
 	}
 
 	/**
-	 * Tests if point is very near: ({@code distanceSq(point) <0.5}
+	 * Tests if point is very near: ({@code distanceSq(point) < eps}
+	 * 
+	 * @see eps
 	 */
 	@Override
 	public boolean contains(Point point) {

@@ -11,6 +11,12 @@ import java.util.Set;
 import pf.analytics.PointImpl;
 import pf.board.BoardPattern.PointsEdge;
 
+/**
+ * Complex board pattern which represents pattern as graphic schema in a file.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class SchemaBoardPattern {
 
 	public static class DiagonalSchemaBoardPattern extends ComplexBoardPattern {

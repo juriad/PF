@@ -8,8 +8,22 @@ import pf.graph.Direction;
 import pf.graph.Edge;
 import pf.graph.Vertex;
 
+/**
+ * Groups all simple patterns, they are not rich enough to store something more
+ * complex.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 
+	/**
+	 * Simple board pattern which transforms show mode board into an edit mode
+	 * board
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	public static class EditBoardPattern extends SimpleBoardPattern {
 
 		public EditBoardPattern(Board board) {
@@ -41,6 +55,12 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 		}
 	}
 
+	/**
+	 * Simple board pattern which represents an empty board
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	public static class EmptyBoardPattern extends SimpleBoardPattern {
 
 		public EmptyBoardPattern(Board board) {
@@ -61,6 +81,12 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 
 	}
 
+	/**
+	 * Simple board pattern which represents a full board
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	public static class FullBoardPattern extends SimpleBoardPattern {
 
 		public FullBoardPattern(Board board) {
@@ -91,6 +117,13 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 		}
 	}
 
+	/**
+	 * Simple board pattern which transforms edit mode board into show mode
+	 * board
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	public static class ShowBoardPattern extends SimpleBoardPattern {
 
 		public ShowBoardPattern(Board board) {

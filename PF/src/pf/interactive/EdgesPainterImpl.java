@@ -9,6 +9,7 @@ import java.awt.geom.Line2D;
 import java.awt.geom.Line2D.Float;
 import java.util.Iterator;
 
+import pf.animator.RandomizedIterator;
 import pf.graph.Edge;
 
 public class EdgesPainterImpl implements EdgesPainter {
@@ -72,8 +73,8 @@ public class EdgesPainterImpl implements EdgesPainter {
 
 	@Override
 	public void paintEdges(Graphics2D g2d, GameBoard gameBoard) {
-		Iterator<Edge> ei = gameBoard.getBoard().getGraph()
-				.edgesIterator(false);
+		Iterator<Edge> ei = new RandomizedIterator<Edge>(gameBoard.getBoard()
+				.getGraph().edgesIterator(false));
 		Edge e;
 		while (ei.hasNext()) {
 			e = ei.next();

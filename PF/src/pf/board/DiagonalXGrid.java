@@ -3,6 +3,20 @@ package pf.board;
 import pf.analytics.Point;
 import pf.graph.DirectionImpl;
 
+/**
+ * One type of grid which allows following pattern:
+ * 
+ * <pre>
+ * .---.
+ * |\ /|
+ * | . |
+ * |/ \|
+ * .---.
+ * </pre>
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class DiagonalXGrid extends DiagonalGrid {
 
 	public DiagonalXGrid(Point p1, Point p2, Point p3) {

@@ -8,6 +8,12 @@ import java.util.Set;
 import pf.analytics.Point;
 import pf.graph.Vertex;
 
+/**
+ * Extends BoardPattern, adds factory methods and iterator over edges.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public abstract class AbstractBoardPattern implements BoardPattern {
 
 	public static BoardPattern createBoardPattern(Board board, GridPattern gp,

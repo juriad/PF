@@ -10,6 +10,13 @@ import java.util.Set;
 import pf.analytics.Point;
 import pf.analytics.PointImpl;
 
+/**
+ * Complex board pattern which keeps all edges in a list. It is represented as
+ * many lines in file containing two points each: point1 point2
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class ListBoardPattern extends ComplexBoardPattern {
 
 	public static BoardPattern createListBoardPattern(Board board, File f) {

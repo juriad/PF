@@ -9,7 +9,7 @@ import java.util.Set;
  * Graph.
  * <p>
  * Vertex provides all methods for edge management. Vertex has a location
- * specified in integer x and y. It doesn't use Point from analytics package and
+ * specified by integer x and y. It doesn't use Point from analytics package and
  * it rather has its own implementation.
  * <p>
  * There often is a parameter used in some methods. It has a meaning of a

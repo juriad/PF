@@ -6,6 +6,9 @@ package pf.graph;
  * To have totally independent packages {@link pf.graph} and
  * {@link pf.analytics}, this interface doesn't use advantages of Vectors, it
  * has its own implementation.
+ * <p>
+ * In this application, sometimes temporary edges with no direction are
+ * required, these have {@code dx == \plusminus Integer.MAX_VALUE}
  * 
  * @author Adam Juraszek
  * 

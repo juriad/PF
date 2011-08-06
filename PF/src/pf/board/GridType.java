@@ -3,6 +3,12 @@ package pf.board;
 import pf.analytics.Point;
 import pf.analytics.PointImpl;
 
+/**
+ * List of all grid types
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public enum GridType {
 	DIAGONAL (4, "diagonal", new Point[] { new PointImpl(0, 0),
 			new PointImpl(0, 1), new PointImpl(1, 0) }, 1),
@@ -39,10 +45,16 @@ public enum GridType {
 		return desc;
 	}
 
+	/**
+	 * @return number of gridlines in this grid type
+	 */
 	public int getLines() {
 		return lines;
 	}
 
+	/**
+	 * @return points which makes a regular grid
+	 */
 	public Point[] getRegularPoints() {
 		return points;
 	}
@@ -51,6 +63,12 @@ public enum GridType {
 		return unitSize;
 	}
 
+	/**
+	 * Tests whether points2 makes a regular grid
+	 * 
+	 * @param points2
+	 * @return
+	 */
 	public boolean isRegular(Point[] points2) {
 		if (points2 == null) {
 			throw new IllegalArgumentException();
@@ -64,5 +82,10 @@ public enum GridType {
 			}
 		}
 		return true;
+	}
+
+	@Override
+	public String toString() {
+		return getDesc();
 	}
 }

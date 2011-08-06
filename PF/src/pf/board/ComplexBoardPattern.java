@@ -4,6 +4,13 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.Set;
 
+/**
+ * Board pattern which is complex enough to describe whole board, it needs more
+ * information from file.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public abstract class ComplexBoardPattern extends AbstractBoardPattern {
 
 	public static BoardPattern createComplexBoardPattern(Board b, File f,

@@ -7,8 +7,8 @@ import java.util.List;
 /**
  * Default implementation of {@link Path}.
  * <p>
- * It stores each edge in two containers to provide both quick iteration and
- * quick next/previous queries.
+ * It stores separately both edges and vertices, because some paths over
+ * multiple edges are hard to calculate lastVertex.
  * 
  * @author Adam Juraszek
  * 

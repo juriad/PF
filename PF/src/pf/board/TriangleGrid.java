@@ -3,11 +3,22 @@ package pf.board;
 import pf.analytics.Point;
 import pf.graph.DirectionImpl;
 
+/**
+ * One type of grid which allows following pattern:
+ * 
+ * <pre>
+ * .---.
+ *  \ / \
+ *   .---.
+ * </pre>
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class TriangleGrid extends AbstractGrid {
 
 	public TriangleGrid(Point p1, Point p2, Point p3) {
 		super(p1, p2, p3);
-
 	}
 
 	@Override

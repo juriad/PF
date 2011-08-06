@@ -5,6 +5,12 @@ import pf.analytics.LineImpl;
 import pf.analytics.Point;
 import pf.analytics.Vector;
 
+/**
+ * Implementation of {@link GridLine}
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class GridLineImpl extends LineImpl implements GridLine {
 	private final Point p3;
 	private final Vector v;

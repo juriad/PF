@@ -50,17 +50,17 @@ public class EulerAnimator extends StepAnimator {
 
 		@Override
 		public void modeEdit(GameModeEvent e) {
-			updateControlEnabled(e.getNewValue());
+			updateControl();
 		}
 
 		@Override
 		public void modeRun(GameModeEvent e) {
-			updateControlEnabled(e.getNewValue());
+			updateControl();
 		}
 
 		@Override
 		public void modeShow(GameModeEvent e) {
-			updateControlEnabled(e.getNewValue());
+			updateControl();
 		}
 	}
 
@@ -128,7 +128,7 @@ public class EulerAnimator extends StepAnimator {
 		board.addGameModeListener(new ModeListener());
 		paths = new ArrayList<PartialPath>();
 		pathPaintes = new ArrayList<PathPainterImpl>();
-		updateControlEnabled(board.getMode());
+		updateControl();
 	}
 
 	public InteractiveBoard getBoard() {
@@ -155,21 +155,10 @@ public class EulerAnimator extends StepAnimator {
 		this.symultanous = symultanous;
 	}
 
-	private void updateControlEnabled(GameMode gm) {
-		if (gm.equals(GameMode.RUN)) {
-			updateControl();
-			stepSlider.setEnabled(true);
-		} else {
-			stepSlider.setEnabled(false);
-			playPauseButton.setEnabled(false);
-			stopButton.setEnabled(false);
-		}
-	}
-
 	@Override
 	protected void clean() {
 		board.removePaths();
-		EulerPaths.setUnused(board.getBoard().getGraph());
+		board.getBoard().getGraph().unuseAll();
 		board.repaint();
 	}
 
@@ -234,16 +223,23 @@ public class EulerAnimator extends StepAnimator {
 	@Override
 	protected void updateControl() {
 		super.updateControl();
-		if (isRunning()) {
-			pathMenuItem.setEnabled(false);
+		GameMode gm = board == null ? GameMode.SHOW : board.getMode();
+		if (gm.equals(GameMode.RUN)) {
+			if (isRunning()) {
+				pathMenuItem.setEnabled(false);
+			} else {
+				pathMenuItem.setEnabled(true);
+			}
+			if (isStopped()) {
+				symultanousMenuItem.setEnabled(true);
+			} else {
+				symultanousMenuItem.setEnabled(false);
+			}
+			stepSlider.setEnabled(true);
 		} else {
-			pathMenuItem.setEnabled(true);
-		}
-		if (isStopped()) {
-			symultanousMenuItem.setEnabled(true);
-		} else {
-			symultanousMenuItem.setEnabled(false);
+			stepSlider.setEnabled(false);
+			playPauseButton.setEnabled(false);
+			stopButton.setEnabled(false);
 		}
 	}
-
 }

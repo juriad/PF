@@ -4,8 +4,8 @@ package pf.graph;
  * Edge is a connection between two {@link Vertex}es in a graph. Edge is
  * represented by Vertices where it ends. Edge also has a used flag.
  * <p>
- * Because this package is designed to work on a board with grid, edge has has a
- * direction of edge.
+ * Because this package is designed to work on a board with grid, each edge has
+ * a direction.
  * 
  * @author Adam Juraszek
  * 

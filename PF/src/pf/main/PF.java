@@ -49,9 +49,6 @@ public class PF extends JFrame {
 			if (!board.getMode().equals(GameMode.EDIT)) {
 				return;
 			}
-			System.out.println("t cancelled");
-			// do nothing
-
 		}
 
 		@Override
@@ -59,8 +56,6 @@ public class PF extends JFrame {
 			if (!board.getMode().equals(GameMode.EDIT)) {
 				return;
 			}
-			System.out.println("t ended");
-			// do nothing
 		}
 
 		@Override
@@ -68,8 +63,6 @@ public class PF extends JFrame {
 			if (!board.getMode().equals(GameMode.EDIT)) {
 				return;
 			}
-			System.out.println("t longer");
-			// toggle used
 			e.getEdge().setUsed(!e.getEdge().isUsed());
 			board.repaintEdge(e.getEdge());
 		}
@@ -79,8 +72,6 @@ public class PF extends JFrame {
 			if (!board.getMode().equals(GameMode.EDIT)) {
 				return;
 			}
-			System.out.println("t shorter");
-			// toggle used
 			e.getEdge().setUsed(!e.getEdge().isUsed());
 			board.repaintEdge(e.getEdge());
 		}
@@ -90,10 +81,7 @@ public class PF extends JFrame {
 			if (!board.getMode().equals(GameMode.EDIT)) {
 				return;
 			}
-			System.out.println("t started");
-			// do nothing
 		}
-
 	}
 
 	protected class ModeListener implements GameModeListener {
@@ -103,19 +91,16 @@ public class PF extends JFrame {
 			updatePainters();
 			board.setTouchActive(true);
 			board.setTouchReturnAllowed(true);
-			setAnimatorControlEnabled(false);
 		}
 
 		@Override
 		public void modeRun(GameModeEvent e) {
 			updatePainters();
-			setAnimatorControlEnabled(true);
 		}
 
 		@Override
 		public void modeShow(GameModeEvent e) {
 			updatePainters();
-			setAnimatorControlEnabled(false);
 		}
 	}
 
@@ -435,21 +420,14 @@ public class PF extends JFrame {
 		repaint();
 	}
 
-	private void setAnimatorControlEnabled(boolean b) {
-		Component c = layout.getLayoutComponent(BorderLayout.SOUTH);
-		if (c != null) {
-			c.setEnabled(b);
-		}
-	}
-
 	private void setAnimatorMenu() {
 		amenu.removeAll();
 		if (board.getBoard() != null) {
 			amenu.add(new AnimatorAction());
-		}
-		if (board.getAnimator() != null) {
-			amenu.addSeparator();
-			board.getAnimator().setMenu(amenu);
+			if (board.getAnimator() != null) {
+				amenu.addSeparator();
+				board.getAnimator().setMenu(amenu);
+			}
 		}
 	}
 

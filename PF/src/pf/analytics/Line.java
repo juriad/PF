@@ -2,7 +2,7 @@ package pf.analytics;
 
 /**
  * 
- * This represents a line defined by two {@link Point}s.
+ * This class represents a line defined by two {@link Point}s.
  * <p>
  * Most methods suppose this line is infinitely long, but this can be
  * implementation specific. Some methods are similar to those in

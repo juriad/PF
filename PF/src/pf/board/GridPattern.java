@@ -40,4 +40,9 @@ public enum GridPattern {
 	public boolean isSimple() {
 		return simple;
 	}
+
+	@Override
+	public String toString() {
+		return getDesc();
+	}
 }

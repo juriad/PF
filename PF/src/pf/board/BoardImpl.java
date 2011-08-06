@@ -23,8 +23,20 @@ import pf.graph.Edge;
 import pf.graph.EdgeImpl;
 import pf.graph.Vertex;
 
+/**
+ * Implementation of {@link Board}, provides many factory methods to create a
+ * new board in many various ways.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class BoardImpl implements Board {
-
+	/**
+	 * Represents header of file which contains saved board
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	public static class FileHeader {
 		public final String stype;
 		public final GridType type;
@@ -35,7 +47,6 @@ public class BoardImpl implements Board {
 		public final Point[] points;
 		public final String spattern;
 		public final GridPattern pattern;
-
 		public final String line1;
 		public final String line2;
 
@@ -88,7 +99,6 @@ public class BoardImpl implements Board {
 			this.width = width;
 			this.height = height;
 			this.points = points;
-
 			String line12;
 			if (type.isRegular(points)) {
 				line12 = "";
@@ -107,10 +117,14 @@ public class BoardImpl implements Board {
 		}
 	}
 
-	public enum GridForm {
+	/**
+	 * Distinguishes between regular grid and a free grid
+	 * 
+	 * @author Adam Juraszek
+	 */
+	public static enum GridForm {
 		FREE ("free"),
 		REGULAR ("regular");
-
 		public static GridForm getForm(String desc) {
 			for (GridForm f : values()) {
 				if (f.getDesc().equals(desc)) {
@@ -129,12 +143,33 @@ public class BoardImpl implements Board {
 		public String getDesc() {
 			return desc;
 		}
+
+		@Override
+		public String toString() {
+			return getDesc();
+		}
 	}
 
+	/**
+	 * Creates a board from file
+	 * 
+	 * @param f
+	 * @return board
+	 * @throws FileNotFoundException
+	 * @see {@link #createBoard(File, GridPattern)}
+	 */
 	public static Board createBoard(File f) throws FileNotFoundException {
 		return createBoard(f, null);
 	}
 
+	/**
+	 * Creates a board form file with overridden grid pattern.
+	 * 
+	 * @param f
+	 * @param gp
+	 * @return
+	 * @throws FileNotFoundException
+	 */
 	public static Board createBoard(File f, GridPattern gp)
 			throws FileNotFoundException {
 		FileHeader fh = new FileHeader(f);
@@ -152,6 +187,12 @@ public class BoardImpl implements Board {
 		return b;
 	}
 
+	/**
+	 * Creates a board for edit mode from a current board
+	 * 
+	 * @param board
+	 * @return board for edit
+	 */
 	public static Board createEditBoard(Board board) {
 		BoardImpl b = new BoardImpl(board.getGrid(), board.getWidth(),
 				board.getHeight());
@@ -166,6 +207,12 @@ public class BoardImpl implements Board {
 		return b;
 	}
 
+	/**
+	 * Creates a board for show mode for a current board
+	 * 
+	 * @param board
+	 * @return board for show
+	 */
 	public static Board createShowBoard(Board board) {
 		BoardImpl b = new BoardImpl(board.getGrid(), board.getWidth(),
 				board.getHeight());
@@ -180,10 +227,16 @@ public class BoardImpl implements Board {
 		return b;
 	}
 
+	/**
+	 * Creates a new edge in a graph of board. Used in factory methods
+	 * 
+	 * @param b
+	 *            board
+	 * @param pe
+	 */
 	private static void createEdge(Board b, PointsEdge pe) {
 		Vertex v1 = b.getVertex(pe.p1);
 		Vertex v2 = b.getVertex(pe.p2);
-
 		Edge e = new EdgeImpl(v1, v2, b.getGrid().getDirections()
 				.getNearestDirection(v1, v2));
 		e.setUsed(pe.used);
@@ -191,6 +244,12 @@ public class BoardImpl implements Board {
 		v2.add(e);
 	}
 
+	/**
+	 * Fills vertices cache of board
+	 * 
+	 * @param b
+	 *            board
+	 */
 	private static void fillVs(BoardImpl b) {
 		Iterator<Vertex> vi = b.getGraph().verticesIterator();
 		while (vi.hasNext()) {
@@ -201,11 +260,16 @@ public class BoardImpl implements Board {
 	private BoardGraph graph;
 	private final Grid grid;
 	private final int height;
-
 	protected final Map<Point, Vertex> vs;
-
 	private final int width;
 
+	/**
+	 * Constructor, creates board with no edges
+	 * 
+	 * @param grid
+	 * @param width
+	 * @param height
+	 */
 	public BoardImpl(Grid grid, int width, int height) {
 		this.grid = grid;
 		this.width = width;
@@ -215,6 +279,15 @@ public class BoardImpl implements Board {
 		fillVs(this);
 	}
 
+	/**
+	 * Creates a board with edges defined by grid pattern
+	 * 
+	 * @param grid
+	 * @param width
+	 * @param height
+	 * @param gp
+	 *            pattern
+	 */
 	public BoardImpl(Grid grid, int width, int height, GridPattern gp) {
 		this(grid, width, height);
 		BoardPattern bp = AbstractBoardPattern.createBoardPattern(this, gp,
@@ -252,23 +325,17 @@ public class BoardImpl implements Board {
 			Line2D.Float l2 = new Line2D.Float(ll2.getP1().getX(), ll2.getP1()
 					.getY(), ll2.getP2().getX(), ll2.getP2().getY());
 			l1.ptLineDist(ll2.getP1().getX(), ll2.getP1().getY());
-
 			Line ll0 = gl.getLine(0);
 			Line2D.Float l0 = new Line2D.Float(ll0.getP1().getX(), ll0.getP1()
 					.getY(), ll0.getP2().getX(), ll0.getP2().getY());
-
 			double dist = l0.ptLineDist(x, y);
 			double dist1 = l1.ptLineDist(x, y);
 			double dist2 = l2.ptLineDist(x, y);
-
 			dist *= (dist1 < dist2 ? -1 : 1);
-
 			double pard = dist / Math.abs(l0.ptLineDist(l1.getP1()));
 			int par = (int) Math.round(pard);
-
 			pars[i] = gl.getLine(par);
 		}
-
 		Point pp = null;
 		Vertex v = null;
 		double dist = Integer.MAX_VALUE;
@@ -298,7 +365,6 @@ public class BoardImpl implements Board {
 		for (int i = 0; i < grid.getGridType().getLines(); i++) {
 			pars[i] = grid.getGridLine(i).getNearestLine(p);
 		}
-
 		Point pp = null;
 		Vertex v = null;
 		int dist = Integer.MAX_VALUE;
@@ -348,14 +414,12 @@ public class BoardImpl implements Board {
 		bw.newLine();
 		bw.write(fh.line2);
 		bw.newLine();
-
 		Set<PointsEdge> pes = new HashSet<BoardPattern.PointsEdge>();
 		Iterator<Edge> ei = getGraph().edgesIterator(false);
 		while (ei.hasNext()) {
 			Edge e = ei.next();
 			pes.add(new PointsEdge(e.getV1(), e.getV2(), e.isUsed()));
 		}
-
 		BoardPattern bp = AbstractBoardPattern.createBoardPattern(this,
 				pattern, pes);
 		bp.save(bw);

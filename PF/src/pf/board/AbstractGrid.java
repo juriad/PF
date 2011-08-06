@@ -15,6 +15,15 @@ import pf.graph.DirectionsImpl;
 import pf.graph.Vertex;
 import pf.graph.VertexImpl;
 
+/**
+ * Abstract grid provides basic implementation of most methods.
+ * <p>
+ * {@link #createGrid(GridType, Point, Point, Point)} is a root method for
+ * constructing grid. It calls particular equivalents in subclasses.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public abstract class AbstractGrid implements Grid {
 
 	public static Grid createGrid(GridType type, Point p1, Point p2, Point p3) {
@@ -178,5 +187,12 @@ public abstract class AbstractGrid implements Grid {
 		return l.getP2().getY() - l.getP1().getY();
 	}
 
+	/**
+	 * Whether intersection of following two gridlines makes a vertex
+	 * 
+	 * @param gl1
+	 * @param gl2
+	 * @return
+	 */
 	protected abstract boolean shouldIntersect(GridLine gl1, GridLine gl2);
 }

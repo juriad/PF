@@ -5,11 +5,14 @@ import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
@@ -45,15 +48,16 @@ public abstract class StepAnimator implements Animator {
 		FINISHED
 	}
 
-	private final Object lock = new Object();
+	private final Object pauseLock = new Object();
+	private final Object stateLock = new Object();
 
 	protected static String playText = "Play";
 	protected static String pauseText = "Pause";
 
 	protected static String stopText = "Stop";
-	protected int slowStep = 1;
-	protected int fastStep = 100;
-	protected int defaultStep = 10;
+	protected int slowStep = -2;
+	protected int fastStep = 8;
+	protected int defaultStep = 0;
 
 	protected int step = defaultStep;
 
@@ -120,17 +124,29 @@ public abstract class StepAnimator implements Animator {
 	@Override
 	public void pause() {
 		state = State.PAUSED;
+		synchronized (stateLock) {
+			try {
+				stateLock.wait();
+			} catch (InterruptedException ex) {
+			}
+		}
 		updateControl();
 	}
 
 	@Override
 	public void run() {
 		boolean finished = false;
+		synchronized (stateLock) {
+			stateLock.notify();
+		}
 		while (!state.equals(State.STOPPED) || state.equals(State.FINISHED)) {
 			if (state.equals(State.PAUSED)) {
+				synchronized (stateLock) {
+					stateLock.notify();
+				}
 				try {
-					synchronized (lock) {
-						lock.wait();
+					synchronized (pauseLock) {
+						pauseLock.wait();
 					}
 				} catch (InterruptedException ex) {
 				}
@@ -141,9 +157,14 @@ public abstract class StepAnimator implements Animator {
 				}
 
 				try {
-					Thread.sleep(1000 / step);
+					Thread.sleep(getSleepTime());
 				} catch (InterruptedException ex) {
 				}
+			}
+		}
+		if (isStopped()) {
+			synchronized (stateLock) {
+				stateLock.notify();
 			}
 		}
 		if (finished) {
@@ -170,13 +191,19 @@ public abstract class StepAnimator implements Animator {
 	public void start() {
 		if (isPaused()) {
 			state = State.RUNNING;
-			synchronized (lock) {
-				lock.notify();
+			synchronized (pauseLock) {
+				pauseLock.notify();
 			}
 		} else {
 			state = State.RUNNING;
 			init();
 			new Thread(this).start();
+			synchronized (stateLock) {
+				try {
+					stateLock.wait();
+				} catch (InterruptedException ex) {
+				}
+			}
 		}
 		updateControl();
 	}
@@ -184,12 +211,18 @@ public abstract class StepAnimator implements Animator {
 	@Override
 	public void stop() {
 		state = State.STOPPED;
-		stepSlider.setValue(step);
+		synchronized (stateLock) {
+			stateLock.notify();
+		}
 		updateControl();
 		clean();
 	}
 
 	protected abstract void clean();
+
+	protected long getSleepTime() {
+		return (long) (Math.pow(2, -step) * 1000);
+	}
 
 	protected abstract void init();
 
@@ -202,6 +235,7 @@ public abstract class StepAnimator implements Animator {
 		JPanel stepControl = new JPanel(new MigLayout("", "[grow,fill] [] []"));
 		stepSlider = new JSlider(SwingConstants.HORIZONTAL, slowStep, fastStep,
 				defaultStep);
+		setStepSlider();
 		stepControl.add(stepSlider);
 		stepSlider.addChangeListener(new ChangeListener() {
 			@Override
@@ -238,6 +272,18 @@ public abstract class StepAnimator implements Animator {
 		});
 		stepControl.add(stopButton);
 		return stepControl;
+	}
+
+	protected void setStepSlider() {
+		stepSlider.setSnapToTicks(true);
+		stepSlider.setMajorTickSpacing(1);
+		stepSlider.setPaintTicks(true);
+		stepSlider.setPaintLabels(true);
+		Dictionary<Integer, JLabel> dict = new Hashtable<Integer, JLabel>();
+		for (int i = slowStep; i <= fastStep; i++) {
+			dict.put(i, new JLabel("" + Math.pow(2, i)));
+		}
+		stepSlider.setLabelTable(dict);
 	}
 
 	protected abstract boolean step();
