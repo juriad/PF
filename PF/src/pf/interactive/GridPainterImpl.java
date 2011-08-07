@@ -14,8 +14,21 @@ import pf.board.Grid;
 import pf.board.GridLine;
 import pf.board.GridType;
 
+/**
+ * Implementation of {@link GridPainter} which can paint each gridline its own
+ * color and stroke. Moreover it can draw each n-th line of grid its own style.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class GridPainterImpl implements GridPainter {
 
+	/**
+	 * Inner class containing data
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	protected class Info {
 		final int line;
 		Color color = Color.ORANGE;
@@ -34,6 +47,11 @@ public class GridPainterImpl implements GridPainter {
 
 	protected List<Info> infos;
 
+	/**
+	 * Grid painter needs to know how many gridlines exists in this grid
+	 * 
+	 * @param gt
+	 */
 	public GridPainterImpl(GridType gt) {
 		this.gt = gt;
 		infos = new ArrayList<Info>();
@@ -42,34 +60,64 @@ public class GridPainterImpl implements GridPainter {
 		}
 	}
 
+	/**
+	 * @param line
+	 * @return color of ordinary line of gridline line
+	 */
 	public Color getColor(int line) {
 		return infos.get(line).color;
 	}
 
+	/**
+	 * @return type of grid which this grid painter can paint
+	 */
 	public GridType getGridType() {
 		return gt;
 	}
 
+	/**
+	 * @return number of gridlines in grid
+	 */
 	public int getLines() {
 		return gt.getLines();
 	}
 
+	/**
+	 * @param line
+	 * @return color of main line of gridline line
+	 */
 	public Color getMainColor(int line) {
 		return infos.get(line).mainColor;
 	}
 
+	/**
+	 * @param line
+	 * @return stroke of main line of gridline line
+	 */
 	public Stroke getMainStroke(int line) {
 		return infos.get(line).mainStroke;
 	}
 
+	/**
+	 * @param line
+	 * @return main line start offset of gridline line
+	 */
 	public int getOffset(int line) {
 		return infos.get(line).offset;
 	}
 
+	/**
+	 * @param line
+	 * @return main line repetition of gridline line
+	 */
 	public int getRepetition(int line) {
 		return infos.get(line).repetition;
 	}
 
+	/**
+	 * @param line
+	 * @return stroke of ordinary line of gridline line
+	 */
 	public Stroke getStroke(int line) {
 		return infos.get(line).stroke;
 	}
@@ -101,6 +149,12 @@ public class GridPainterImpl implements GridPainter {
 
 	}
 
+	/**
+	 * Sets color of ordinary line of gridline line
+	 * 
+	 * @param line
+	 * @param color
+	 */
 	public void setColor(int line, Color color) {
 		if (color == null) {
 			throw new IllegalArgumentException();
@@ -108,12 +162,23 @@ public class GridPainterImpl implements GridPainter {
 		infos.get(line).color = color;
 	}
 
+	/**
+	 * Sets colors of ordinary lines of all gridlines
+	 * 
+	 * @param color
+	 */
 	public void setColors(Color color) {
 		for (int line = 0; line < getLines(); line++) {
 			setColor(line, color);
 		}
 	}
 
+	/**
+	 * Sets color of main line of gridline line
+	 * 
+	 * @param line
+	 * @param color
+	 */
 	public void setMainColor(int line, Color color) {
 		if (color == null) {
 			throw new IllegalArgumentException();
@@ -121,12 +186,23 @@ public class GridPainterImpl implements GridPainter {
 		infos.get(line).mainColor = color;
 	}
 
+	/**
+	 * Sets colors of main lines of all gridlines
+	 * 
+	 * @param color
+	 */
 	public void setMainColors(Color color) {
 		for (int line = 0; line < getLines(); line++) {
 			setMainColor(line, color);
 		}
 	}
 
+	/**
+	 * Sets stroke of main line of gridline line
+	 * 
+	 * @param line
+	 * @param stroke
+	 */
 	public void setMainStroke(int line, Stroke stroke) {
 		if (stroke == null) {
 			throw new IllegalArgumentException();
@@ -134,22 +210,45 @@ public class GridPainterImpl implements GridPainter {
 		infos.get(line).mainStroke = stroke;
 	}
 
+	/**
+	 * Sets stroke of main lines of all gridlines
+	 * 
+	 * @param stroke
+	 */
 	public void setMainStrokes(Stroke stroke) {
 		for (int line = 0; line < getLines(); line++) {
 			setMainStroke(line, stroke);
 		}
 	}
 
+	/**
+	 * Sets start offset of main line of gridline line
+	 * 
+	 * @param line
+	 * @param offset
+	 */
 	public void setOffset(int line, int offset) {
 		infos.get(line).offset = offset;
 	}
 
+	/**
+	 * Sets start offsets of main lines of all gridlines
+	 * 
+	 * @param line
+	 * @param offset
+	 */
 	public void setOffsets(int offset) {
 		for (int line = 0; line < getLines(); line++) {
 			setOffset(line, offset);
 		}
 	}
 
+	/**
+	 * Sets repetition of main lines of gridline line
+	 * 
+	 * @param line
+	 * @param repetition
+	 */
 	public void setRepetition(int line, int repetition) {
 		if (repetition <= 0) {
 			throw new IllegalArgumentException();
@@ -157,12 +256,24 @@ public class GridPainterImpl implements GridPainter {
 		infos.get(line).repetition = repetition;
 	}
 
+	/**
+	 * Sets repetitions of main lines of all gridlines
+	 * 
+	 * @param line
+	 * @param repetition
+	 */
 	public void setRepetitions(int repetition) {
 		for (int line = 0; line < getLines(); line++) {
 			setRepetition(line, repetition);
 		}
 	}
 
+	/**
+	 * Sets stroke of ordinary line of gridline line
+	 * 
+	 * @param line
+	 * @param stroke
+	 */
 	public void setStroke(int line, Stroke stroke) {
 		if (stroke == null) {
 			throw new IllegalArgumentException();
@@ -170,16 +281,37 @@ public class GridPainterImpl implements GridPainter {
 		infos.get(line).stroke = stroke;
 	}
 
+	/**
+	 * Sets stroke of orinary lines of all gridlines
+	 * 
+	 * @param stroke
+	 */
 	public void setStroked(Stroke stroke) {
 		for (int line = 0; line < getLines(); line++) {
 			setStroke(line, stroke);
 		}
 	}
 
+	/**
+	 * Tests if this parallel line of gridline line is main line
+	 * 
+	 * @param line
+	 * @param parallel
+	 * @return
+	 */
 	private boolean isMainLine(int line, int parallel) {
 		return (parallel - getOffset(line)) % getRepetition(line) == 0;
 	}
 
+	/**
+	 * Draws gridline line in range from min to max
+	 * 
+	 * @param g2d
+	 * @param board
+	 * @param line
+	 * @param min
+	 * @param max
+	 */
 	protected void drawGrid(Graphics2D g2d, GameBoard board, int line, int min,
 			int max) {
 		GridLine gridLine = board.getBoard().getGrid().getGridLine(line);
@@ -195,6 +327,13 @@ public class GridPainterImpl implements GridPainter {
 		}
 	}
 
+	/**
+	 * Draws particular line of gridline
+	 * 
+	 * @param g2d
+	 * @param board
+	 * @param line
+	 */
 	protected void drawLine(Graphics2D g2d, GameBoard board, Line line) {
 		Rectangle r = g2d.getClipBounds();
 		Point2D.Float p1 = new Point2D.Float(board.translateXToScreen(line

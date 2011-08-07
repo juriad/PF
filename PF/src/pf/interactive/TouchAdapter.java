@@ -1,5 +1,11 @@
 package pf.interactive;
 
+/**
+ * Trivial implementation of {@link TouchListener}.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public abstract class TouchAdapter implements TouchListener {
 
 	@Override

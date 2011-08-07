@@ -1,5 +1,11 @@
 package pf.interactive;
 
+/**
+ * Mode of {@link InteractiveBoard}
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public enum GameMode {
 	EDIT ("Edit"),
 	SHOW ("Show"),
@@ -13,5 +19,10 @@ public enum GameMode {
 
 	public String getDesc() {
 		return desc;
+	}
+
+	@Override
+	public String toString() {
+		return getDesc();
 	}
 }

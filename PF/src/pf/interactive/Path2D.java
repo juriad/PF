@@ -10,9 +10,23 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Reimplemented Path2D from standard library.
+ * 
+ * @author Adam Juraszek
+ * 
+ * @param <E>
+ *            what number system will be used by calculations
+ */
 public class Path2D<E extends Number & Comparable<E>> implements Shape {
 
-	public enum SegmentType {
+	/**
+	 * Segment type of Path2D
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
+	public static enum SegmentType {
 		SEG_MOVETO (0, 2),
 		SEG_LINETO (1, 2),
 		SEG_QUADTO (2, 4),
@@ -27,15 +41,28 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 			this.size = size;
 		}
 
+		/**
+		 * @return number of parameters of this segment type
+		 */
 		public int getSize() {
 			return size;
 		}
 
+		/**
+		 * @return type compatible with {@link Shape}
+		 */
 		public int getType() {
 			return type;
 		}
 	}
 
+	/**
+	 * Winding rule of path, Path2D doesn't provide such possibilities, but is
+	 * necessary to keep compatibility with Shape
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	public enum WindingRule {
 		WIND_EVEN_ODD (0),
 		WIND_NON_ZERO (1);
@@ -46,15 +73,30 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 			this.rule = rule;
 		}
 
+		/**
+		 * @return {@link Shape} compatible rule
+		 */
 		public int getRule() {
 			return rule;
 		}
 	}
 
+	/**
+	 * Represents one segment of this path
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	protected class Segment {
 		private final SegmentType type;
 		private final E[] coords;
 
+		/**
+		 * @param type
+		 *            segment type
+		 * @param coords
+		 *            parameters of segment
+		 */
 		public Segment(SegmentType type, E... coords) {
 			this.type = type;
 			this.coords = coords;
@@ -87,10 +129,16 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 			return true;
 		}
 
+		/**
+		 * @return parameters of segment
+		 */
 		public E[] getCoords() {
 			return coords;
 		}
 
+		/**
+		 * @return type of this segment
+		 */
 		public SegmentType getType() {
 			return type;
 		}
@@ -107,6 +155,12 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 		}
 	}
 
+	/**
+	 * Iterator directly over this path
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	class SelfIterator implements PathIterator {
 		protected Path2D<E> path;
 		protected int index;
@@ -176,6 +230,12 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 		}
 	}
 
+	/**
+	 * Iterator over this path with a transformation
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	class TxIterator implements PathIterator {
 		private final AffineTransform affine;
 		private final SelfIterator iterator;

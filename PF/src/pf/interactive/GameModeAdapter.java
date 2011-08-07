@@ -1,5 +1,11 @@
 package pf.interactive;
 
+/**
+ * Trivial implementation of {@link GameModeListener}
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public abstract class GameModeAdapter implements GameModeListener {
 
 	@Override
