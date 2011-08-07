@@ -4,6 +4,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
 
+/**
+ * Buffers all items of original iterator and iterates over them in random
+ * order.
+ * 
+ * @author Adam Juraszek
+ * 
+ * @param <E>
+ *            type of items
+ */
 public class RandomizedIterator<E> implements Iterator<E> {
 	private ArrayList<E> items;
 	private int remaining;

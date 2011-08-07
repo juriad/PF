@@ -6,6 +6,15 @@ import pf.graph.Edge;
 import pf.graph.Path;
 import pf.graph.Vertex;
 
+/**
+ * Filter around {@link Path} which allows setting length to provide smaller
+ * view.
+ * <p>
+ * Many methods are unsupported.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class PartialPath implements Path {
 
 	private final Path full;
@@ -84,15 +93,26 @@ public class PartialPath implements Path {
 		};
 	}
 
+	/**
+	 * @return fake length set by {@link #setLength(int)}
+	 */
 	@Override
 	public int length() {
 		return length;
 	}
 
+	/**
+	 * @return real length of full path
+	 */
 	public int realLength() {
 		return full.length();
 	}
 
+	/**
+	 * Sets a fake length.
+	 * 
+	 * @param length
+	 */
 	public void setLength(int length) {
 		if (length < 0 || length > realLength()) {
 			throw new IllegalArgumentException();

@@ -22,6 +22,10 @@ import pf.interactive.PathPainterImpl;
 
 public class EulerAnimator extends StepAnimator {
 
+	/**
+	 * @author Adam Juraszek
+	 * 
+	 */
 	public static class EulerAnimatorFactory implements AnimatorFactory {
 
 		private static volatile EulerAnimatorFactory factory = null;

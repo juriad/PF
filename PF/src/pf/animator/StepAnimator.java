@@ -23,8 +23,20 @@ import javax.swing.event.ChangeListener;
 
 import net.miginfocom.swing.MigLayout;
 
+/**
+ * Animator which runs in steps.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public abstract class StepAnimator implements Animator {
 
+	/**
+	 * Shows loop item in menu.
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	protected class LoopAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 
@@ -41,7 +53,13 @@ public abstract class StepAnimator implements Animator {
 		}
 	}
 
-	protected enum State {
+	/**
+	 * Inner state of animator
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
+	protected static enum State {
 		RUNNING,
 		PAUSED,
 		STOPPED,
@@ -102,6 +120,9 @@ public abstract class StepAnimator implements Animator {
 		return state.equals(State.FINISHED);
 	}
 
+	/**
+	 * @return whether loop after finishing this run
+	 */
 	public boolean isLoop() {
 		return loop;
 	}
@@ -177,6 +198,11 @@ public abstract class StepAnimator implements Animator {
 		}
 	}
 
+	/**
+	 * Sets whether loop after finishing this run.
+	 * 
+	 * @param loop
+	 */
 	public void setLoop(boolean loop) {
 		this.loop = loop;
 	}
@@ -218,19 +244,35 @@ public abstract class StepAnimator implements Animator {
 		clean();
 	}
 
+	/**
+	 * Addition stuff after stop.
+	 */
 	protected abstract void clean();
 
+	/**
+	 * @return time to sleep between steps.
+	 */
 	protected long getSleepTime() {
 		return (long) (Math.pow(2, -step) * 1000);
 	}
 
+	/**
+	 * Initialize animator before start.
+	 */
 	protected abstract void init();
 
+	/**
+	 * Makes control panel for step animator.
+	 */
 	protected void makeControl() {
 		control = new JPanel(new BorderLayout());
 		control.add(makeStepControl());
 	}
 
+	/**
+	 * @return panel containing control of step slider and state controling
+	 *         buttons
+	 */
 	protected JPanel makeStepControl() {
 		JPanel stepControl = new JPanel(new MigLayout("", "[grow,fill] [] []"));
 		stepSlider = new JSlider(SwingConstants.HORIZONTAL, slowStep, fastStep,
@@ -274,6 +316,9 @@ public abstract class StepAnimator implements Animator {
 		return stepControl;
 	}
 
+	/**
+	 * Sets step slider parameters.
+	 */
 	protected void setStepSlider() {
 		stepSlider.setSnapToTicks(true);
 		stepSlider.setMajorTickSpacing(1);
@@ -286,8 +331,14 @@ public abstract class StepAnimator implements Animator {
 		stepSlider.setLabelTable(dict);
 	}
 
+	/**
+	 * @return true if animation has finished, false otherwise
+	 */
 	protected abstract boolean step();
 
+	/**
+	 * Updates control depending on state.
+	 */
 	protected void updateControl() {
 		switch (state) {
 		case PAUSED:

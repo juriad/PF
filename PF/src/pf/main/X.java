@@ -14,12 +14,19 @@ import pf.board.BoardImpl;
 import pf.board.GridPattern;
 import pf.gui.InteractiveBoardControl;
 import pf.interactive.EdgesPainterImpl;
+import pf.interactive.GameBoard;
 import pf.interactive.GridPainterImpl;
 import pf.interactive.InteractiveBoard;
 import pf.interactive.TouchEvent;
 import pf.interactive.TouchListener;
 import pf.interactive.VerticesPainterImpl;
 
+/**
+ * Tests {@link GameBoard} and mode switching.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class X {
 
 	public static void main(String[] args) throws IOException {

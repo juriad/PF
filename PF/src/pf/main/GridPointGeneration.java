@@ -9,6 +9,12 @@ import pf.board.BoardImpl;
 import pf.graph.Graph;
 import pf.graph.Vertex;
 
+/**
+ * Tests generation of points for a grid
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class GridPointGeneration {
 	public static void main(String[] args) throws FileNotFoundException {
 		File f = new File("/home/adam/srgrid.txt");

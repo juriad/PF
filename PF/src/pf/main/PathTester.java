@@ -18,6 +18,12 @@ import pf.interactive.PathPainterImpl;
 import pf.interactive.VerticesPainterImpl;
 import pf.interactive.VerticesPainterImpl.DegreeType;
 
+/**
+ * Tests path painting
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class PathTester {
 
 	public static void main(String[] args) throws FileNotFoundException {

@@ -6,6 +6,12 @@ import java.util.List;
 import pf.gui.PathPainterDialog;
 import pf.interactive.PathPainterImpl;
 
+/**
+ * Tests various dialogs.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class DialogTester {
 
 	/**

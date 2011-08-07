@@ -41,7 +41,19 @@ import pf.interactive.TouchListener;
 import pf.interactive.VerticesPainterImpl;
 import pf.interactive.VerticesPainterImpl.DegreeType;
 
+/**
+ * Main class and application window.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class PF extends JFrame {
+	/**
+	 * Listens to touch events in edit mode.
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	public class TListener implements TouchListener {
 
 		@Override
@@ -84,6 +96,12 @@ public class PF extends JFrame {
 		}
 	}
 
+	/**
+	 * Listens for mode changes and updates {@link InteractiveBoard} properties.
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	protected class ModeListener implements GameModeListener {
 
 		@Override
@@ -104,6 +122,12 @@ public class PF extends JFrame {
 		}
 	}
 
+	/**
+	 * Stores painters for each mode
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	protected class Painters {
 		GridPainterImpl gpe, gps, gpr;
 		EdgesPainterImpl epe, eps, epr;
@@ -116,6 +140,12 @@ public class PF extends JFrame {
 		}
 	}
 
+	/**
+	 * Action which shows dialog to select animator.
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	class AnimatorAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
@@ -142,6 +172,12 @@ public class PF extends JFrame {
 		}
 	}
 
+	/**
+	 * Action which shows dialog to edit edge painters properties.
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	class EdgeAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
@@ -168,6 +204,12 @@ public class PF extends JFrame {
 		}
 	}
 
+	/**
+	 * Action which shows dialog to edit grid painters properties.
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	class GridAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
@@ -195,6 +237,12 @@ public class PF extends JFrame {
 		}
 	}
 
+	/**
+	 * Action which show dialog to create or load new board.
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	class NewAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
@@ -233,6 +281,12 @@ public class PF extends JFrame {
 		}
 	}
 
+	/**
+	 * Action which quits this application.
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	class QuitAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
@@ -250,6 +304,12 @@ public class PF extends JFrame {
 		}
 	}
 
+	/**
+	 * Action which shows dialog to save current board to file.
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	class SaveAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
@@ -268,6 +328,12 @@ public class PF extends JFrame {
 		}
 	}
 
+	/**
+	 * Action which shows dialog to edit vertices painters properties.
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	class VertexAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
@@ -299,6 +365,11 @@ public class PF extends JFrame {
 
 	private static final String title = "PFko";
 
+	/**
+	 * Main method
+	 * 
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		new PF().setVisible(true);
 	}
@@ -377,6 +448,11 @@ public class PF extends JFrame {
 		pack();
 	}
 
+	/**
+	 * Sets a new animator for current board.
+	 * 
+	 * @param af
+	 */
 	public void setAnimator(AnimatorFactory af) {
 		board.setAnimator(af != null ? af.newInstance(board) : null);
 		if (board.getAnimator() != null) {
@@ -387,6 +463,9 @@ public class PF extends JFrame {
 		setAnimatorMenu();
 	}
 
+	/**
+	 * Updates enabled state of menu items.
+	 */
 	public void updateMenu() {
 		boolean b = board.getBoard() != null;
 		bms.setEnabled(b);
@@ -396,6 +475,9 @@ public class PF extends JFrame {
 		setAnimatorMenu();
 	}
 
+	/**
+	 * Loads addons.
+	 */
 	private void addons() {
 		try {
 			Class.forName("pf.animator.EulerAnimator");
@@ -404,10 +486,18 @@ public class PF extends JFrame {
 		}
 	}
 
+	/**
+	 * Quits this application.
+	 */
 	private void quit() {
 		System.exit(0);
 	}
 
+	/**
+	 * Sets animator control panel
+	 * 
+	 * @param ac
+	 */
 	private void setAnimatorControl(Component ac) {
 		Component c = layout.getLayoutComponent(BorderLayout.SOUTH);
 		if (c != null) {
@@ -420,6 +510,9 @@ public class PF extends JFrame {
 		repaint();
 	}
 
+	/**
+	 * Sets animator menu items in animator menu.
+	 */
 	private void setAnimatorMenu() {
 		amenu.removeAll();
 		if (board.getBoard() != null) {
@@ -431,6 +524,9 @@ public class PF extends JFrame {
 		}
 	}
 
+	/**
+	 * Updates painters in {@link InteractiveBoard} after each mode change.
+	 */
 	private void updatePainters() {
 		switch (board.getMode()) {
 		case EDIT:

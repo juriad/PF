@@ -14,8 +14,22 @@ import pf.graph.Path;
 import pf.graph.PathImpl;
 import pf.graph.Vertex;
 
+/**
+ * @author Adam Juraszek
+ * 
+ */
 public class EulerPaths {
 
+	/**
+	 * Calculates list of paths which together covers all edges in graph. Each
+	 * edge is used exactly once and count of paths is the least possible.
+	 * <p>
+	 * First it makes each graph eulerian, then it calculates eulerian path and
+	 * finaly it cuts this path into smaller paths.
+	 * 
+	 * @param bg
+	 * @return list of paths
+	 */
 	public static List<Path> getEulerPaths(BoardGraph bg) {
 		int pc = getPathsCount(bg);
 		if (pc == 0) {
@@ -33,6 +47,12 @@ public class EulerPaths {
 		return splitPath(p);
 	}
 
+	/**
+	 * Calculates count of paths needed to cover all edges.
+	 * 
+	 * @param bg
+	 * @return count of paths
+	 */
 	public static int getPathsCount(BoardGraph bg) {
 		bg.makeComponents();
 
@@ -57,6 +77,12 @@ public class EulerPaths {
 		return paths;
 	}
 
+	/**
+	 * Calculates circuit paths from and to vertex v.
+	 * 
+	 * @param v
+	 * @return collection of paths
+	 */
 	private static Collection<? extends Iterator<Edge>> createCircuits(Vertex v) {
 		List<Iterator<Edge>> ps = new ArrayList<Iterator<Edge>>();
 		while (v.getDegree(true) > 0) {
@@ -65,11 +91,35 @@ public class EulerPaths {
 		return ps;
 	}
 
+	/**
+	 * Determines whether specified edge e is a worm hole.
+	 * 
+	 * @param e
+	 * @return whether e is worm hole
+	 */
 	private static boolean isOdd(Edge e) {
 		int dx = e.getDirection(e.getV1()).getDx();
 		return dx == Integer.MAX_VALUE || dx == -Integer.MAX_VALUE;
 	}
 
+	/**
+	 * Adds extra edges to graph to connect all components and make all vertices
+	 * even-degree.
+	 * <p>
+	 * First it collects all odd-degree vertices in a component. Next, it
+	 * connects nearly all of them by a worm hole. Only two odd-degree vertices
+	 * in each component should stay, if a component doesn't contain any
+	 * odd-degree vertices, it adds one vertex to the list twice.
+	 * <p>
+	 * In a next step, it connects each component to the next one. If there is
+	 * only one component, create the last worm hole unless both vertices are
+	 * equal.
+	 * <p>
+	 * This uses minimum extra edges to make a graph eulerian.
+	 * 
+	 * @param bg
+	 * @return set of extra edges
+	 */
 	private static List<Edge> makeEuler(BoardGraph bg) {
 		List<Edge> set = new ArrayList<Edge>();
 		if (bg.getSubGraphs().size() == 0) {
@@ -123,6 +173,16 @@ public class EulerPaths {
 		return set;
 	}
 
+	/**
+	 * Graph theory ensures there is always a circuit in a eulerian graph.
+	 * <p>
+	 * This iterates over unused edges in vertex and adds random such edge to
+	 * path and moves on.
+	 * 
+	 * @param v
+	 *            start vertex of path
+	 * @return path which is a circuit
+	 */
 	private static Path makePath(Vertex v) {
 		Path path = new PathImpl(v);
 		Edge e = null;
@@ -136,6 +196,17 @@ public class EulerPaths {
 		return path;
 	}
 
+	/**
+	 * Uses hidden recurrence implemented as a stack.
+	 * <p>
+	 * For each visited vertex it calculates all circuits going through this
+	 * vertex and follows each of them before it moves along the original
+	 * circuit.
+	 * 
+	 * @param v
+	 *            start vertex
+	 * @return one path covering whole eulerian graph
+	 */
 	private static Path onePath(Vertex v) {
 		Path p = new PathImpl(v);
 		List<Iterator<Edge>> ps = new ArrayList<Iterator<Edge>>();
@@ -155,6 +226,13 @@ public class EulerPaths {
 		return p;
 	}
 
+	/**
+	 * TODO splitPath documentation
+	 * 
+	 * @param p
+	 *            one path
+	 * @return list of smaller paths
+	 */
 	private static List<Path> splitPath(Path p) {
 		List<Path> paths = new ArrayList<Path>();
 		Iterator<Edge> ei = p.iterator();
@@ -192,6 +270,9 @@ public class EulerPaths {
 		return paths;
 	}
 
+	/**
+	 * Library class
+	 */
 	private EulerPaths() {
 	}
 
