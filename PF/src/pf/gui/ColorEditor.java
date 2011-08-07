@@ -12,6 +12,14 @@ import javax.swing.JColorChooser;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 
+/**
+ * Allows user to edit color as value in a table cell Based on <a href=
+ * "http://download.oracle.com/javase/tutorial/uiswing/components/table.html"
+ * >tutorial</a>
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class ColorEditor extends AbstractCellEditor implements TableCellEditor,
 		ActionListener {
 	private final Dialog dialog;

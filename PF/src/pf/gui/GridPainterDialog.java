@@ -22,6 +22,13 @@ import pf.interactive.GridPainterImpl;
 
 import net.miginfocom.swing.MigLayout;
 
+/**
+ * Dialog which allows to edit grid painter properties. Each mode has its own
+ * properties visualized in a table.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class GridPainterDialog extends CardDialog {
 	class GridTableModel extends AbstractTableModel {
 		private static final long serialVersionUID = 1L;

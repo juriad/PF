@@ -41,6 +41,12 @@ import pf.interactive.VerticesPainterImpl.DegreeType;
 
 import net.miginfocom.swing.MigLayout;
 
+/**
+ * Creates a new board either from file or hand input. This one has two cards.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class NewDialog extends CardDialog {
 	private static final long serialVersionUID = 1L;
 

@@ -10,6 +10,12 @@ import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
 
+/**
+ * Renders a {@link BasicStroke} value info in a table cell.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 class BasicStrokeRenderer extends JLabel implements TableCellRenderer {
 	private static final long serialVersionUID = 1L;
 	Border unselectedBorder = null;

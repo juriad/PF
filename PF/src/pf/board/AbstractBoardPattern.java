@@ -33,7 +33,7 @@ public abstract class AbstractBoardPattern implements BoardPattern {
 	}
 
 	protected final Set<PointsEdge> pes;
-	private final Board board;
+	protected final Board board;
 
 	public AbstractBoardPattern(Board board) {
 		this(board, new HashSet<PointsEdge>());

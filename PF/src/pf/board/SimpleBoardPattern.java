@@ -4,6 +4,8 @@ import java.io.BufferedWriter;
 import java.util.Iterator;
 import java.util.Set;
 
+import pf.analytics.LineImpl;
+import pf.analytics.Vector;
 import pf.graph.Direction;
 import pf.graph.Edge;
 import pf.graph.Vertex;
@@ -101,6 +103,32 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 		public void save(BufferedWriter w) {
 		}
 
+		private boolean isEdge(Vertex v, Vertex vv) {
+			switch (board.getGrid().getGridType()) {
+			case DIAGONAL:
+			case SQUARE:
+			case TRIANGLE:
+				return true;
+			case DIAGONALX:
+				// if intersection of grid line 2,3
+				Vector v1 = board.getGrid().getGridLine(2).baseVector();
+				Vector v2 = board.getGrid().getGridLine(3).baseVector();
+				int det = LineImpl.det(v1.getX(), v1.getY(), v2.getX(),
+						v2.getY());
+				int detx = LineImpl.det(v.getX(), v1.getY(), v.getX(),
+						v2.getY());
+				int dety = LineImpl.det(v1.getX(), v.getY(), v2.getX(),
+						v.getY());
+				if (detx % det == 0 && dety % det == 0) {
+					// intersection +
+					return true;
+				}
+				// intersection x
+				return false;
+			}
+			return false;
+		}
+
 		@Override
 		protected void calculateEdges() {
 			Iterator<Vertex> vi = getBoard().getGraph().verticesIterator();
@@ -110,7 +138,9 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 					Vertex vv = getBoard().getVertex(v.getX() + d.getDx(),
 							v.getY() + d.getDy());
 					if (vv != null) {
-						addEdge(v, vv);
+						if (isEdge(v, vv)) {
+							addEdge(v, vv);
+						}
 					}
 				}
 			}

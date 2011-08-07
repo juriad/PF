@@ -14,6 +14,12 @@ import pf.interactive.GameModeEvent;
 import pf.interactive.GameModeListener;
 import pf.interactive.InteractiveBoard;
 
+/**
+ * Control panel for {@link InteractiveBoard}. Allows to switch modes.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class InteractiveBoardControl extends JPanel {
 	public class GML implements GameModeListener {
 

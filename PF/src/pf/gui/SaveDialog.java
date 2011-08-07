@@ -19,6 +19,13 @@ import pf.board.GridPattern;
 
 import net.miginfocom.swing.MigLayout;
 
+/**
+ * Saves a board to file in a specified pattern. Informs about success or
+ * failure.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class SaveDialog extends CardDialog {
 
 	public static final String title = "Save dialog";

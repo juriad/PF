@@ -9,6 +9,12 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 
+/**
+ * Editor of table cell float value which restricts value to a specified range.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class FloatRangeEditor extends AbstractCellEditor implements
 		TableCellEditor {
 	private static final long serialVersionUID = 1L;

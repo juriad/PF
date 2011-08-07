@@ -8,6 +8,13 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 
+/**
+ * Editor of table cell integer value which restricts value to a specified
+ * range.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class IntegerRangeEditor extends AbstractCellEditor implements
 		TableCellEditor {
 	private static final long serialVersionUID = 1L;

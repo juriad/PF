@@ -28,6 +28,13 @@ import pf.interactive.VerticesPainterImpl.DegreeType;
 
 import net.miginfocom.swing.MigLayout;
 
+/**
+ * Dialog which allows to edit vertices painter properties. Each mode has its
+ * own properties visualized in a table.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class VerticesPainterDialog extends CardDialog {
 	class RadiusEditor extends AbstractCellEditor implements TableCellEditor {
 		private static final long serialVersionUID = 1L;

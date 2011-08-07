@@ -16,6 +16,12 @@ import pf.interactive.PathPainterImpl;
 
 import net.miginfocom.swing.MigLayout;
 
+/**
+ * Allows to edit path painter properties.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class PathPainterDialog extends CardDialog {
 
 	public class PathPainterModel extends AbstractTableModel {

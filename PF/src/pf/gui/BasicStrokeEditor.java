@@ -13,6 +13,12 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.TableCellEditor;
 
+/**
+ * Editor of {@link BasicStroke} in form of textfield in a table cell.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class BasicStrokeEditor extends AbstractCellEditor implements
 		TableCellEditor {
 	private static final long serialVersionUID = 1L;

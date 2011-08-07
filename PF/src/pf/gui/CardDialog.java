@@ -15,7 +15,20 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 
+/**
+ * Dialog which can contain more cards, which are switched by next, previous
+ * buttons.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public abstract class CardDialog extends JDialog {
+	/**
+	 * Cancel button listener
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	public class CancelAL implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -25,6 +38,12 @@ public abstract class CardDialog extends JDialog {
 		}
 	}
 
+	/**
+	 * Finish button listener
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	public class FinishAL implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -34,6 +53,12 @@ public abstract class CardDialog extends JDialog {
 		}
 	}
 
+	/**
+	 * Next button listener
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	public class NextAL implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -46,6 +71,12 @@ public abstract class CardDialog extends JDialog {
 		}
 	}
 
+	/**
+	 * Previous button listener
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	public class PrevAL implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {
@@ -83,14 +114,26 @@ public abstract class CardDialog extends JDialog {
 		initDialog();
 	}
 
+	/**
+	 * called if cancelled button has been pressed
+	 */
 	public abstract void cancelled();
 
+	/**
+	 * called if finish button has been pressed
+	 */
 	public abstract void finished();
 
+	/**
+	 * @return true of pressed finish, false otherwise
+	 */
 	public boolean isClosedProperly() {
 		return closedProperly;
 	}
 
+	/**
+	 * init method which is common for both constructors
+	 */
 	private void initDialog() {
 		Container pane = getContentPane();
 		pane.setLayout(new BorderLayout());
@@ -129,39 +172,78 @@ public abstract class CardDialog extends JDialog {
 		pack();
 	}
 
+	/**
+	 * @return true if this card is the first one, false otherwise
+	 */
 	private boolean isFirst() {
 		return current == 0;
 	}
 
+	/**
+	 * @return true if this card is the last one, false otherwise
+	 */
 	private boolean isLast() {
 		return current == cards.size() - 1;
 	}
 
+	/**
+	 * adds a panel as a new card
+	 * 
+	 * @param panel
+	 */
 	protected void addCard(JPanel panel) {
 		cards.add(panel);
 		content.add(panel);
 	}
 
+	/**
+	 * @return true if user can press finish button, false otherwise
+	 */
 	protected abstract boolean canFinish();
 
+	/**
+	 * @return true if user can flip to the next card, false otherwise
+	 */
 	protected abstract boolean canNext();
 
+	/**
+	 * @return true if user can flip to the previous card, false otherwise
+	 */
 	protected abstract boolean canPrev();
 
+	/**
+	 * called after card has been flipped to the next card
+	 */
 	protected abstract void flipNext();
 
+	/**
+	 * called after card has been flipped to the previous card
+	 */
 	protected abstract void flipPrev();
 
+	/**
+	 * @return index of current card
+	 */
 	protected int getCurrent() {
 		return current;
 	}
 
+	/**
+	 * @return current card
+	 */
 	protected JPanel getCurrentCard() {
 		return cards.get(current);
 	}
 
+	/**
+	 * called from {@link #initDialog()} method to make a content. At least one
+	 * card must be added.
+	 */
 	protected abstract void makeContent();
 
+	/**
+	 * updates control buttons at the bottom edge
+	 */
 	protected void updateButtons() {
 		finish.setEnabled(isLast() && canFinish());
 		next.setEnabled(!isLast() && canNext());

@@ -17,7 +17,7 @@ import pf.graph.DirectionImpl;
  * @author Adam Juraszek
  * 
  */
-public class DiagonalXGrid extends DiagonalGrid {
+public class DiagonalXGrid extends AbstractGrid {
 
 	public DiagonalXGrid(Point p1, Point p2, Point p3) {
 		super(p1, p2, p3);
@@ -44,9 +44,10 @@ public class DiagonalXGrid extends DiagonalGrid {
 
 	@Override
 	protected boolean shouldIntersect(GridLine gl1, GridLine gl2) {
-		return super.shouldIntersect(gl1, gl2) || gl1.equals(getGridLine(2))
-				&& gl2.equals(getGridLine(3)) || gl1.equals(getGridLine(3))
-				&& gl2.equals(getGridLine(2));
+		return gl1.equals(getGridLine(0)) && gl2.equals(getGridLine(1))
+				|| gl1.equals(getGridLine(1)) && gl2.equals(getGridLine(0))
+				|| gl1.equals(getGridLine(2)) && gl2.equals(getGridLine(3))
+				|| gl1.equals(getGridLine(3)) && gl2.equals(getGridLine(2));
 	}
 
 }

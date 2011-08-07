@@ -10,6 +10,15 @@ import pf.animator.Animators;
 
 import net.miginfocom.swing.MigLayout;
 
+/**
+ * Dialog for choosing animator, most of its content is used also in
+ * {@link NewDialog}
+ * <p>
+ * Values are acquired from {@link Animators}
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class AnimatorDialog extends CardDialog {
 	private static final long serialVersionUID = 1L;
 	private final static String title = "Animator dialog";
@@ -27,6 +36,9 @@ public class AnimatorDialog extends CardDialog {
 	public void finished() {
 	}
 
+	/**
+	 * @return selected animator
+	 */
 	public AnimatorFactory getAnimator() {
 		return (AnimatorFactory) acb.getSelectedItem();
 	}

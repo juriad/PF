@@ -38,7 +38,7 @@ public class LineImpl implements Line {
 	 * @param d
 	 * @return determinant
 	 */
-	private static int det(int a, int b, int c, int d) {
+	public static int det(int a, int b, int c, int d) {
 		return a * d - b * c;
 	}
 

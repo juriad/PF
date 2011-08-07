@@ -20,6 +20,13 @@ import pf.interactive.EdgesPainterImpl;
 
 import net.miginfocom.swing.MigLayout;
 
+/**
+ * Dialog which allows to edit edges painter properties. Each mode has its own
+ * properties visualized in a table.
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 public class EdgesPainterDialog extends CardDialog {
 	class EdgesTableModel extends AbstractTableModel {
 		private static final long serialVersionUID = 1L;

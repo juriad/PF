@@ -9,6 +9,16 @@ import javax.swing.JTable;
 import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
 
+/**
+ * Renders table cell component which shows cell value as color
+ * <p>
+ * Based on <a href=
+ * "http://download.oracle.com/javase/tutorial/uiswing/components/table.html"
+ * >tutorial</a>
+ * 
+ * @author Adam Juraszek
+ * 
+ */
 class ColorRenderer extends JLabel implements TableCellRenderer {
 	private static final long serialVersionUID = 1L;
 	Border unselectedBorder = null;
