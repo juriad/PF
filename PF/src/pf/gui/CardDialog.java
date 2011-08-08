@@ -193,7 +193,7 @@ public abstract class CardDialog extends JDialog {
 	 */
 	protected void addCard(JPanel panel) {
 		cards.add(panel);
-		content.add(panel);
+		content.add(panel, panel.toString());
 	}
 
 	/**
