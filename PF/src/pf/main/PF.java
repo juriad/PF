@@ -23,9 +23,11 @@ import javax.swing.WindowConstants;
 import pf.animator.AnimatorFactory;
 import pf.board.Board;
 import pf.board.GridType;
+import pf.gui.AboutDialog;
 import pf.gui.AnimatorDialog;
 import pf.gui.EdgesPainterDialog;
 import pf.gui.GridPainterDialog;
+import pf.gui.HelpDialog;
 import pf.gui.InteractiveBoardControl;
 import pf.gui.NewDialog;
 import pf.gui.SaveDialog;
@@ -141,6 +143,28 @@ public class PF extends JFrame {
 	}
 
 	/**
+	 * Action which shows about dialog.
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
+	class AboutAction extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		public AboutAction() {
+			super("About");
+			putValue(Action.MNEMONIC_KEY, KeyEvent.VK_A);
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			AboutDialog ad = new AboutDialog(PF.this);
+			ad.setVisible(true);
+		}
+	}
+
+	/**
 	 * Action which shows dialog to select animator.
 	 * 
 	 * @author Adam Juraszek
@@ -234,6 +258,30 @@ public class PF extends JFrame {
 				painters.gpr = gpd.getRunGridPainter();
 				updatePainters();
 			}
+		}
+	}
+
+	/**
+	 * Action which shows help dialog.
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
+	class HelpAction extends AbstractAction {
+
+		private static final long serialVersionUID = 1L;
+
+		public HelpAction() {
+			super("Help");
+			putValue(Action.MNEMONIC_KEY, KeyEvent.VK_H);
+			putValue(Action.ACCELERATOR_KEY,
+					KeyStroke.getKeyStroke(KeyEvent.VK_F1, 0));
+		}
+
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			HelpDialog hd = new HelpDialog(PF.this);
+			hd.setVisible(true);
 		}
 	}
 
@@ -422,6 +470,12 @@ public class PF extends JFrame {
 		pmenu.add(pmv);
 
 		amenu.setMnemonic(KeyEvent.VK_A);
+
+		hmenu.setMnemonic(KeyEvent.VK_H);
+		JMenuItem hmh = new JMenuItem(new HelpAction());
+		hmenu.add(hmh);
+		JMenuItem hma = new JMenuItem(new AboutAction());
+		hmenu.add(hma);
 
 		Container pane = getContentPane();
 		pane.setLayout(layout = new BorderLayout());
