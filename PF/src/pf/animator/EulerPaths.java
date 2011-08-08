@@ -227,7 +227,9 @@ public class EulerPaths {
 	}
 
 	/**
-	 * TODO splitPath documentation
+	 * A valid path is between two worm hole segments, its length is at least
+	 * one segment. Moreover the last path can continue by the first few
+	 * segments.
 	 * 
 	 * @param p
 	 *            one path

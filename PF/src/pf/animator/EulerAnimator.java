@@ -20,9 +20,24 @@ import pf.interactive.GameModeListener;
 import pf.interactive.InteractiveBoard;
 import pf.interactive.PathPainterImpl;
 
+/**
+ * @author Adam Juraszek
+ *
+ */
+/**
+ * @author Adam Juraszek
+ *
+ */
+/**
+ * @author Adam Juraszek
+ * 
+ */
 public class EulerAnimator extends StepAnimator {
 
 	/**
+	 * 
+	 * Factory for {@link EulerAnimator}
+	 * 
 	 * @author Adam Juraszek
 	 * 
 	 */
@@ -48,8 +63,21 @@ public class EulerAnimator extends StepAnimator {
 		public Animator newInstance(InteractiveBoard board) {
 			return new EulerAnimator(board);
 		}
+
+		@Override
+		public String toString() {
+			return "Animator draws the lowest number of paths to use each edge";
+		}
+
 	}
 
+	/**
+	 * Listens to mode changes of {@link InteractiveBoard} to set enabled menu
+	 * items.
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	public class ModeListener implements GameModeListener {
 
 		@Override
@@ -68,6 +96,12 @@ public class EulerAnimator extends StepAnimator {
 		}
 	}
 
+	/**
+	 * Allows to select whether animate all paths simultaneously.
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	protected class SymultanousAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 
@@ -84,6 +118,12 @@ public class EulerAnimator extends StepAnimator {
 		}
 	}
 
+	/**
+	 * Shows dialog in which user can change the way how paths are painted.
+	 * 
+	 * @author Adam Juraszek
+	 * 
+	 */
 	class PathAction extends AbstractAction {
 
 		private static final long serialVersionUID = 1L;
@@ -144,6 +184,9 @@ public class EulerAnimator extends StepAnimator {
 		return EulerAnimatorFactory.getFactory();
 	}
 
+	/**
+	 * @return whether animate all paths simultaneously
+	 */
 	public boolean isSymultanous() {
 		return symultanous;
 	}
@@ -155,6 +198,11 @@ public class EulerAnimator extends StepAnimator {
 		menu.add(symultanousMenuItem);
 	}
 
+	/**
+	 * Sets whether animate all paths simultaneously
+	 * 
+	 * @param symultanous
+	 */
 	public void setSymultanous(boolean symultanous) {
 		this.symultanous = symultanous;
 	}
@@ -180,6 +228,11 @@ public class EulerAnimator extends StepAnimator {
 		symultanousMenuItem = new JCheckBoxMenuItem(new SymultanousAction());
 	}
 
+	/**
+	 * Prepares path painters.
+	 * 
+	 * @param pc
+	 */
 	protected void makePathPainters(int pc) {
 		if (pathPaintes.size() < pc) {
 			for (int i = pathPaintes.size(); i <= pc; i++) {
@@ -192,6 +245,9 @@ public class EulerAnimator extends StepAnimator {
 		}
 	}
 
+	/**
+	 * Calculates paths to be animated.
+	 */
 	protected void makePaths() {
 		List<Path> ppaths = EulerPaths.getEulerPaths(getBoard().getBoard()
 				.getGraph());

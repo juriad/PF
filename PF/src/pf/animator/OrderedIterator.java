@@ -1,9 +1,10 @@
 package pf.animator;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 /**
  * Buffers all items of original iterator and iterates over them in random
@@ -14,18 +15,19 @@ import java.util.Random;
  * @param <E>
  *            type of items
  */
-public class RandomizedIterator<E> implements Iterator<E> {
+public class OrderedIterator<E> implements Iterator<E> {
 	private ArrayList<E> items;
-	private int remaining;
-	private Random random;
+	private Iterator<E> itemsi;
 
-	public RandomizedIterator(Iterator<E> iterator) {
+	public OrderedIterator(Iterator<E> iterator, Comparator<E> comp) {
 		items = new ArrayList<E>();
 		while (iterator.hasNext()) {
 			items.add(iterator.next());
 		}
-		remaining = items.size();
-		random = new Random();
+
+		Collections.sort(items, comp);
+
+		itemsi = items.iterator();
 	}
 
 	public List<E> getList() {
@@ -34,16 +36,12 @@ public class RandomizedIterator<E> implements Iterator<E> {
 
 	@Override
 	public boolean hasNext() {
-		return remaining > 0;
+		return itemsi.hasNext();
 	}
 
 	@Override
 	public E next() {
-		int index = random.nextInt(remaining);
-		remaining--;
-		E item = items.get(index);
-		items.set(index, items.set(remaining, item));
-		return item;
+		return itemsi.next();
 	}
 
 	@Override

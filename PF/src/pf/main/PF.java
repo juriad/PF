@@ -484,6 +484,11 @@ public class PF extends JFrame {
 		} catch (ClassNotFoundException ex) {
 			ex.printStackTrace();
 		}
+		try {
+			Class.forName("pf.animator.FSAnimator");
+		} catch (ClassNotFoundException ex) {
+			ex.printStackTrace();
+		}
 	}
 
 	/**

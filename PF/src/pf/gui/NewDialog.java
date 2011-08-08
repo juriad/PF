@@ -546,7 +546,6 @@ public class NewDialog extends CardDialog {
 	}
 
 	private void setPatLabel() {
-		System.out.println("setPatLabe;");
 		if (file == null) {
 			patl.setText("");
 		} else {
