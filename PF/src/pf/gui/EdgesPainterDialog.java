@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -13,8 +12,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 
 import pf.interactive.EdgesPainterImpl;
 
@@ -28,49 +25,6 @@ import net.miginfocom.swing.MigLayout;
  * 
  */
 public class EdgesPainterDialog extends CardDialog {
-	class EdgesTableModel extends AbstractTableModel {
-		private static final long serialVersionUID = 1L;
-		private String[] columnNames = { "State", "Color", "Stroke" };
-		private ArrayList<Object[]> data = new ArrayList<Object[]>();
-
-		public void addRow(String desc, Color color, BasicStroke stroke) {
-			data.add(new Object[] { desc, color, stroke });
-		}
-
-		@Override
-		public int getColumnCount() {
-			return columnNames.length;
-		}
-
-		@Override
-		public String getColumnName(int col) {
-			return columnNames[col];
-		}
-
-		@Override
-		public int getRowCount() {
-			return data.size();
-		}
-
-		@Override
-		public Object getValueAt(int row, int col) {
-			return data.get(row)[col];
-		}
-
-		@Override
-		public boolean isCellEditable(int row, int col) {
-			if (col < 1) {
-				return false;
-			}
-			return true;
-		}
-
-		@Override
-		public void setValueAt(Object value, int row, int col) {
-			data.get(row)[col] = value;
-			fireTableCellUpdated(row, col);
-		}
-	}
 
 	private static final long serialVersionUID = 1L;
 
@@ -153,19 +107,21 @@ public class EdgesPainterDialog extends CardDialog {
 	}
 
 	private void fillTable(EdgesPainterImpl vp, JTable t) {
-		EdgesTableModel tm = new EdgesTableModel();
+		UniversalTableModel tm = new UniversalTableModel(Color.class,
+				BasicStroke.class);
+		tm.setColumnNames("State", "Color", "Stroke");
 		if (vp == null) {
 			vp = new EdgesPainterImpl();
 		}
-		tm.addRow("unused", vp.getUnusedColor(), vp.getUnusedStroke());
-		tm.addRow("used", vp.getUsedColor(), vp.getUsedStroke());
+		tm.addRow("Unused", vp.getUnusedColor(), vp.getUnusedStroke());
+		tm.addRow("Used", vp.getUsedColor(), vp.getUsedStroke());
 		t.setModel(tm);
-		t.getColumnModel().getColumn(1)
-				.setCellRenderer(new ColorRenderer(true));
-		t.getColumnModel().getColumn(1).setCellEditor(new ColorEditor(this));
-		t.getColumnModel().getColumn(2)
-				.setCellRenderer(new BasicStrokeRenderer(true));
-		t.getColumnModel().getColumn(2).setCellEditor(new BasicStrokeEditor());
+
+		t.setDefaultEditor(Color.class, new ColorEditor(this));
+		t.setDefaultRenderer(Color.class, new ColorRenderer(true));
+		t.setDefaultEditor(BasicStroke.class, new BasicStrokeEditor());
+		t.setDefaultRenderer(BasicStroke.class, new BasicStrokeRenderer(true));
+
 		t.setPreferredScrollableViewportSize(new Dimension((int) (t
 				.getPreferredSize().getWidth() * 1.5), (int) t
 				.getPreferredSize().getHeight()));
@@ -211,11 +167,13 @@ public class EdgesPainterDialog extends CardDialog {
 	}
 
 	private void setEp(EdgesPainterImpl ep, JTable t) {
-		TableModel tm = t.getModel();
-		ep.setUnusedColor((Color) tm.getValueAt(0, 1));
-		ep.setUnusedStroke((BasicStroke) tm.getValueAt(0, 2));
-		ep.setUsedColor((Color) tm.getValueAt(1, 1));
-		ep.setUsedStroke((BasicStroke) tm.getValueAt(1, 2));
+		UniversalTableModel tm = (UniversalTableModel) t.getModel();
+		Object[] unused = tm.getRow("Unused");
+		ep.setUnusedColor((Color) unused[0]);
+		ep.setUnusedStroke((BasicStroke) unused[1]);
+		Object[] used = tm.getRow("Used");
+		ep.setUsedColor((Color) used[0]);
+		ep.setUsedStroke((BasicStroke) used[1]);
 	}
 
 	@Override

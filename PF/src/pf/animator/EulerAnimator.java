@@ -22,14 +22,6 @@ import pf.interactive.PathPainterImpl;
 
 /**
  * @author Adam Juraszek
- *
- */
-/**
- * @author Adam Juraszek
- *
- */
-/**
- * @author Adam Juraszek
  * 
  */
 public class EulerAnimator extends StepAnimator {
@@ -249,6 +241,7 @@ public class EulerAnimator extends StepAnimator {
 	 * Calculates paths to be animated.
 	 */
 	protected void makePaths() {
+		paths.clear();
 		List<Path> ppaths = EulerPaths.getEulerPaths(getBoard().getBoard()
 				.getGraph());
 		makePathPainters(ppaths.size());

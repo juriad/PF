@@ -6,6 +6,7 @@ import java.awt.Component;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
 
@@ -33,6 +34,12 @@ class ColorRenderer extends JLabel implements TableCellRenderer {
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object color,
 			boolean isSelected, boolean hasFocus, int row, int column) {
+		if (color == null) {
+			JLabel l = new JLabel("---");
+			l.setHorizontalAlignment(SwingConstants.CENTER);
+			l.setToolTipText("Set this to set all");
+			return l;
+		}
 		Color newColor = (Color) color;
 		setBackground(newColor);
 		if (isBordered) {

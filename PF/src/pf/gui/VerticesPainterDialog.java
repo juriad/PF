@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.NumberFormat;
-import java.util.ArrayList;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.BorderFactory;
@@ -18,9 +17,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableModel;
 
 import pf.board.GridType;
 import pf.interactive.VerticesPainterImpl;
@@ -80,50 +77,6 @@ public class VerticesPainterDialog extends CardDialog {
 			tf = new JFormattedTextField(NumberFormat.getIntegerInstance());
 			tf.setValue(value);
 			return tf;
-		}
-	}
-
-	class VerticesTableModel extends AbstractTableModel {
-		private static final long serialVersionUID = 1L;
-		private String[] columnNames = { "Degree", "Color", "Outer", "Inner" };
-		private ArrayList<Object[]> data = new ArrayList<Object[]>();
-
-		public void addRow(int i, Color color, int outer, int inner) {
-			data.add(new Object[] { i, color, outer, inner });
-		}
-
-		@Override
-		public int getColumnCount() {
-			return columnNames.length;
-		}
-
-		@Override
-		public String getColumnName(int col) {
-			return columnNames[col];
-		}
-
-		@Override
-		public int getRowCount() {
-			return data.size();
-		}
-
-		@Override
-		public Object getValueAt(int row, int col) {
-			return data.get(row)[col];
-		}
-
-		@Override
-		public boolean isCellEditable(int row, int col) {
-			if (col < 1) {
-				return false;
-			}
-			return true;
-		}
-
-		@Override
-		public void setValueAt(Object value, int row, int col) {
-			data.get(row)[col] = value;
-			fireTableCellUpdated(row, col);
 		}
 	}
 
@@ -194,7 +147,7 @@ public class VerticesPainterDialog extends CardDialog {
 		}
 		VerticesPainterImpl vp = new VerticesPainterImpl(gt,
 				(DegreeType) editcb.getSelectedItem());
-		setVp(vp, editt.getModel());
+		setVp(vp, editt);
 		return vp;
 	}
 
@@ -204,7 +157,7 @@ public class VerticesPainterDialog extends CardDialog {
 		}
 		VerticesPainterImpl vp = new VerticesPainterImpl(gt,
 				(DegreeType) runcb.getSelectedItem());
-		setVp(vp, runt.getModel());
+		setVp(vp, runt);
 		return vp;
 	}
 
@@ -214,23 +167,24 @@ public class VerticesPainterDialog extends CardDialog {
 		}
 		VerticesPainterImpl vp = new VerticesPainterImpl(gt,
 				(DegreeType) showcb.getSelectedItem());
-		setVp(vp, showt.getModel());
+		setVp(vp, showt);
 		return vp;
 	}
 
 	private void fillTable(VerticesPainterImpl vp, JTable t) {
-		VerticesTableModel tm = new VerticesTableModel();
+		UniversalTableModel tm = new UniversalTableModel(Color.class,
+				Integer.class, Integer.class);
+		tm.setColumnNames("Degree", "Color", "Outer", "Inner");
 		if (vp == null) {
 			vp = new VerticesPainterImpl(gt, DegreeType.BY_UNUSED);
 		}
 		for (int i = 0; i <= gt.getLines() * 2; i++) {
-			tm.addRow(i, vp.getColor(i), vp.getOuterRadius(i),
+			tm.addRow("" + i, vp.getColor(i), vp.getOuterRadius(i),
 					vp.getInnerRadius(i));
 		}
 		t.setModel(tm);
-		t.getColumnModel().getColumn(1)
-				.setCellRenderer(new ColorRenderer(true));
-		t.getColumnModel().getColumn(1).setCellEditor(new ColorEditor(this));
+		t.setDefaultEditor(Color.class, new ColorEditor(this));
+		t.setDefaultRenderer(Color.class, new ColorRenderer(true));
 		t.getColumnModel().getColumn(2).setCellEditor(new RadiusEditor());
 		t.getColumnModel().getColumn(3).setCellEditor(new RadiusEditor());
 		t.setPreferredScrollableViewportSize(new Dimension((int) (t
@@ -292,11 +246,12 @@ public class VerticesPainterDialog extends CardDialog {
 		}
 	}
 
-	private void setVp(VerticesPainterImpl vp, TableModel tm) {
+	private void setVp(VerticesPainterImpl vp, JTable t) {
+		UniversalTableModel tm = (UniversalTableModel) t.getModel();
 		for (int i = 0; i < tm.getRowCount(); i++) {
-			vp.setColor(i, (Color) tm.getValueAt(i, 1));
-			vp.setRadius(i, (Integer) tm.getValueAt(i, 2),
-					(Integer) tm.getValueAt(i, 3));
+			Object[] row = tm.getRow("" + i);
+			vp.setColor(i, (Color) row[0]);
+			vp.setRadius(i, (Integer) row[1], (Integer) row[2]);
 		}
 	}
 

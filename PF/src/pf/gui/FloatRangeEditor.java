@@ -47,6 +47,9 @@ public class FloatRangeEditor extends AbstractCellEditor implements
 			boolean isSelected, int row, int column) {
 		tf = new JFormattedTextField(
 				NumberFormat.getNumberInstance(Locale.ENGLISH));
+		if (value == null) {
+			value = min;
+		}
 		tf.setValue(value);
 		val = (Float) value;
 		return tf;

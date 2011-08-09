@@ -7,6 +7,7 @@ import java.util.Arrays;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JTable;
+import javax.swing.SwingConstants;
 import javax.swing.border.Border;
 import javax.swing.table.TableCellRenderer;
 
@@ -30,6 +31,12 @@ class BasicStrokeRenderer extends JLabel implements TableCellRenderer {
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object value,
 			boolean isSelected, boolean hasFocus, int row, int column) {
+		if (value == null) {
+			JLabel l = new JLabel("---");
+			l.setHorizontalAlignment(SwingConstants.CENTER);
+			l.setToolTipText("Set this to set all");
+			return l;
+		}
 		BasicStroke stroke = (BasicStroke) value;
 		if (isBordered) {
 			if (isSelected) {

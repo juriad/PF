@@ -56,7 +56,11 @@ public class BasicStrokeEditor extends AbstractCellEditor implements
 	@Override
 	public Component getTableCellEditorComponent(JTable table, Object value,
 			boolean isSelected, int row, int column) {
-		stroke = (BasicStroke) value;
+		if (value == null) {
+			stroke = new BasicStroke();
+		} else {
+			stroke = (BasicStroke) value;
+		}
 		tf = new JTextField(stroke.getLineWidth() + "@"
 				+ Arrays.toString(stroke.getDashArray()));
 		return tf;

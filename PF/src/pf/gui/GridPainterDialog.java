@@ -3,10 +3,8 @@ package pf.gui;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Stroke;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
@@ -14,8 +12,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableModel;
 
 import pf.board.GridType;
 import pf.interactive.GridPainterImpl;
@@ -30,53 +26,6 @@ import net.miginfocom.swing.MigLayout;
  * 
  */
 public class GridPainterDialog extends CardDialog {
-	class GridTableModel extends AbstractTableModel {
-		private static final long serialVersionUID = 1L;
-		private String[] columnNames = { "Gridline no.", "Color", "Stroke",
-				"Main color", "Main stroke", "Main repetition", "Main offset" };
-		private ArrayList<Object[]> data = new ArrayList<Object[]>();
-
-		public void addRow(int i, Color color, Stroke stroke, Color mainColor,
-				Stroke mainStroke, int repetition, int offset) {
-			data.add(new Object[] { i, color, stroke, mainColor, mainStroke,
-					repetition, offset });
-
-		}
-
-		@Override
-		public int getColumnCount() {
-			return columnNames.length;
-		}
-
-		@Override
-		public String getColumnName(int col) {
-			return columnNames[col];
-		}
-
-		@Override
-		public int getRowCount() {
-			return data.size();
-		}
-
-		@Override
-		public Object getValueAt(int row, int col) {
-			return data.get(row)[col];
-		}
-
-		@Override
-		public boolean isCellEditable(int row, int col) {
-			if (col < 1) {
-				return false;
-			}
-			return true;
-		}
-
-		@Override
-		public void setValueAt(Object value, int row, int col) {
-			data.get(row)[col] = value;
-			fireTableCellUpdated(row, col);
-		}
-	}
 
 	private static final long serialVersionUID = 1L;
 
@@ -166,28 +115,25 @@ public class GridPainterDialog extends CardDialog {
 	}
 
 	private void fillTable(GridPainterImpl gp, JTable t) {
-		GridTableModel tm = new GridTableModel();
+		UniversalTableModel tm = new UniversalTableModel(Color.class,
+				BasicStroke.class, Color.class, BasicStroke.class,
+				Integer.class, Integer.class);
+		tm.setColumnNames("Gridline no.", "Color", "Stroke", "Main color",
+				"Main stroke", "Main repetition", "Main offset");
 		if (gp == null) {
 			gp = new GridPainterImpl(gt);
 		}
 		for (int i = 0; i < gt.getLines(); i++) {
-			tm.addRow(i + 1, gp.getColor(i), gp.getStroke(i),
+			tm.addRow("" + (i + 1), gp.getColor(i), gp.getStroke(i),
 					gp.getMainColor(i), gp.getMainStroke(i),
 					gp.getRepetition(i), gp.getOffset(i));
 		}
 		t.setModel(tm);
-		t.getColumnModel().getColumn(1)
-				.setCellRenderer(new ColorRenderer(true));
-		t.getColumnModel().getColumn(1).setCellEditor(new ColorEditor(this));
-		t.getColumnModel().getColumn(2)
-				.setCellRenderer(new BasicStrokeRenderer(true));
-		t.getColumnModel().getColumn(2).setCellEditor(new BasicStrokeEditor());
-		t.getColumnModel().getColumn(3)
-				.setCellRenderer(new ColorRenderer(true));
-		t.getColumnModel().getColumn(3).setCellEditor(new ColorEditor(this));
-		t.getColumnModel().getColumn(4)
-				.setCellRenderer(new BasicStrokeRenderer(true));
-		t.getColumnModel().getColumn(4).setCellEditor(new BasicStrokeEditor());
+		t.setDefaultEditor(Color.class, new ColorEditor(this));
+		t.setDefaultRenderer(Color.class, new ColorRenderer(true));
+		t.setDefaultEditor(BasicStroke.class, new BasicStrokeEditor());
+		t.setDefaultRenderer(BasicStroke.class, new BasicStrokeRenderer(true));
+
 		t.getColumnModel().getColumn(5)
 				.setCellEditor(new IntegerRangeEditor(1, Integer.MAX_VALUE));
 		t.getColumnModel()
@@ -240,14 +186,15 @@ public class GridPainterDialog extends CardDialog {
 	}
 
 	private void setGp(GridPainterImpl gp, JTable t) {
-		TableModel tm = t.getModel();
-		for (int i = 0; i < t.getRowCount(); i++) {
-			gp.setColor(i, (Color) tm.getValueAt(i, 1));
-			gp.setStroke(i, (BasicStroke) tm.getValueAt(i, 2));
-			gp.setMainColor(i, (Color) tm.getValueAt(i, 3));
-			gp.setMainStroke(i, (BasicStroke) tm.getValueAt(i, 4));
-			gp.setRepetition(i, (Integer) tm.getValueAt(i, 5));
-			gp.setOffset(i, (Integer) tm.getValueAt(i, 6));
+		UniversalTableModel tm = (UniversalTableModel) t.getModel();
+		for (int i = 0; i < t.getRowCount() - 1; i++) {
+			Object[] row = tm.getRow("" + (i + 1));
+			gp.setColor(i, (Color) row[0]);
+			gp.setStroke(i, (BasicStroke) row[1]);
+			gp.setMainColor(i, (Color) row[2]);
+			gp.setMainStroke(i, (BasicStroke) row[3]);
+			gp.setRepetition(i, (Integer) row[4]);
+			gp.setOffset(i, (Integer) row[5]);
 		}
 	}
 

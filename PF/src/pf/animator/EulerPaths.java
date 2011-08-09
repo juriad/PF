@@ -31,20 +31,22 @@ public class EulerPaths {
 	 * @return list of paths
 	 */
 	public static List<Path> getEulerPaths(BoardGraph bg) {
-		int pc = getPathsCount(bg);
-		if (pc == 0) {
-			return new ArrayList<Path>();
-		}
+		synchronized (bg) {
+			int pc = getPathsCount(bg);
+			if (pc == 0) {
+				return new ArrayList<Path>();
+			}
 
-		List<Edge> odds = makeEuler(bg);
-		bg.unuseAll();
-		Path p = onePath(bg.verticesIterator().next());
+			List<Edge> odds = makeEuler(bg);
+			bg.unuseAll();
+			Path p = onePath(bg.verticesIterator().next());
 
-		for (Edge e : odds) {
-			e.getV1().remove(e);
-			e.getV2().remove(e);
+			for (Edge e : odds) {
+				e.getV1().remove(e);
+				e.getV2().remove(e);
+			}
+			return splitPath(p);
 		}
-		return splitPath(p);
 	}
 
 	/**

@@ -45,6 +45,9 @@ public class IntegerRangeEditor extends AbstractCellEditor implements
 	public Component getTableCellEditorComponent(JTable table, Object value,
 			boolean isSelected, int row, int column) {
 		tf = new JFormattedTextField(NumberFormat.getIntegerInstance());
+		if (value == null) {
+			value = min;
+		}
 		tf.setValue(value);
 		val = (Integer) value;
 		return tf;
