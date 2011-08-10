@@ -28,11 +28,11 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 	 */
 	public static class EditBoardPattern extends SimpleBoardPattern {
 
-		public EditBoardPattern(Board board) {
+		protected EditBoardPattern(Board board) {
 			super(board);
 		}
 
-		public EditBoardPattern(Board board, Set<PointsEdge> pes) {
+		protected EditBoardPattern(Board board, Set<PointsEdge> pes) {
 			super(board, pes);
 		}
 
@@ -65,11 +65,11 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 	 */
 	public static class EmptyBoardPattern extends SimpleBoardPattern {
 
-		public EmptyBoardPattern(Board board) {
+		protected EmptyBoardPattern(Board board) {
 			super(board);
 		}
 
-		public EmptyBoardPattern(Board board, Set<PointsEdge> pes) {
+		protected EmptyBoardPattern(Board board, Set<PointsEdge> pes) {
 			super(board, pes);
 		}
 
@@ -91,11 +91,11 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 	 */
 	public static class FullBoardPattern extends SimpleBoardPattern {
 
-		public FullBoardPattern(Board board) {
+		protected FullBoardPattern(Board board) {
 			super(board);
 		}
 
-		public FullBoardPattern(Board board, Set<PointsEdge> pes) {
+		protected FullBoardPattern(Board board, Set<PointsEdge> pes) {
 			super(board, pes);
 		}
 
@@ -156,11 +156,11 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 	 */
 	public static class ShowBoardPattern extends SimpleBoardPattern {
 
-		public ShowBoardPattern(Board board) {
+		protected ShowBoardPattern(Board board) {
 			super(board);
 		}
 
-		public ShowBoardPattern(Board board, Set<PointsEdge> pes) {
+		protected ShowBoardPattern(Board board, Set<PointsEdge> pes) {
 			super(board, pes);
 		}
 
@@ -213,12 +213,12 @@ public abstract class SimpleBoardPattern extends AbstractBoardPattern {
 		}
 	}
 
-	public SimpleBoardPattern(Board board) {
+	protected SimpleBoardPattern(Board board) {
 		super(board);
 		calculateEdges();
 	}
 
-	public SimpleBoardPattern(Board board, Set<PointsEdge> pes) {
+	protected SimpleBoardPattern(Board board, Set<PointsEdge> pes) {
 		super(board, pes);
 	}
 

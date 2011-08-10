@@ -35,11 +35,11 @@ public abstract class AbstractBoardPattern implements BoardPattern {
 	protected final Set<PointsEdge> pes;
 	protected final Board board;
 
-	public AbstractBoardPattern(Board board) {
+	protected AbstractBoardPattern(Board board) {
 		this(board, new HashSet<PointsEdge>());
 	}
 
-	public AbstractBoardPattern(Board board, Set<PointsEdge> pes) {
+	protected AbstractBoardPattern(Board board, Set<PointsEdge> pes) {
 		this.pes = pes;
 		this.board = board;
 	}

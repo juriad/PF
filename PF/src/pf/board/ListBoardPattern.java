@@ -32,12 +32,13 @@ public class ListBoardPattern extends ComplexBoardPattern {
 		return new ListBoardPattern(board, pes);
 	}
 
-	public ListBoardPattern(Board board, File f) throws FileNotFoundException {
+	protected ListBoardPattern(Board board, File f)
+			throws FileNotFoundException {
 		super(board, f);
 
 	}
 
-	public ListBoardPattern(Board board, Set<PointsEdge> pes) {
+	protected ListBoardPattern(Board board, Set<PointsEdge> pes) {
 		super(board, pes);
 	}
 

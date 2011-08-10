@@ -1,0 +1,94 @@
+Most of model of GameBoard is represented by a Graph (technically it is a Tree) which has a recursive structure.
+Graph is a Vertex or Graph is a list (either empty or not) of Graphs.
+To provide all iteration methods, Graph keeps list of his children.
+This list is represented by Set to forbid multiple same subtrees.
+Sometimes it is necessary to find out which common Graph two Vertices belong to.
+To ensure quick and easy such queries, each Graph knows its parent.
+Root graph has no parent -- is represented as null.
+
+The easiest and often used feature is vertices iteration -- iteration over all vertices in all subgraphs.
+Because each vertex has exactly one parent -- over each vertex is iterated only once.
+Iterator is recursive and until subgraph has some uniterated vertices the next vertex comes from that subgraph's iterator.
+As soon as no vertices from that subgraph are left, iterator moves to the next subgraph.
+
+Iterator over edges works in a very similar way except that fact, each edge has two ends (surprise!).
+It is necessary to ensure each edge occurs only once.
+Solution of this problem is based on a simple idea.
+Let's orient each edge and return it only in one direction.
+This doesn't work.
+Use this mechanism only if both edges has the same specified root.
+Otherwise the edge comes from this graph to another one, so it will be iterated only once.
+There may be any orientation of this out-going edge.
+And if the edge would point into this graph it wouldn't be returned.
+
+Vertex is a leaf, so it forbids to have any children.
+It can iterate over its vertices, it returns only itself.
+Iteration over its edges uses exactly the same mechanism as described above.
+The graph we iterate edges over is the vertex itself and because the the other end of any edge cannot have this vertex as ancestor, each edge is returned once.
+Because of board orientation of this implementation, Vertex has its location on the Board (x, y).
+
+Edge has two ends (Vertices) and no orientation; Edges with both ends same are prohibited.
+Because of Board oriented implementation of graph package, Edge has a Direction.
+In fact it has two Directions, one in direction v1->v2, the other in direction v2->v1.
+Also, Edge has its usage state, used/unused, which is is also propagated to both end Vertices.
+
+Edge reference is stored in both end Vertices in a Map.
+Map maps Direction of that Edge pointing from this Vertex to the Edge.
+This ensures that each Direction goes at most one Edge and Edges are usually referred by Direction they lead.
+Usage state is reflected by the second Map, which holds only unused Edges.
+Edges iterator has a flag (used) which restricts iteration to unused edges only.
+
+The last piece of graph package is Path which is simply a List of Edges.
+In Path one Edge must have a common Vertex with the following one.
+Iterator over Edges is just iterator over List with prohibited removal.
+Because getFirstVertex (getLastVertex) needs knowledge of first (last) Vertex, the sequence of Edges doesn't provide enough information to determine these Vertices clearly.
+At least information about first and last Vertex is needed.
+Iteration over Vertices could have used the same List but to provide some future extension, it uses its own List of Vertices; it also solves previous problem.
+
+The next piece of application consists of some analytics, the most important class is Point.
+Point is own implementation of standard Point with some enhances.
+This Point is as the rest of application integer-based and to avoid problems it is immutable.
+Point closely cooperates with another class: Vector.
+Vector represents a geometric two-dimensional vector.
+Vector, together with Point, provides methods for Vector arithmetics.
+Implementation of most of them is very simple.
+
+Line represents geometric line, which is defined by two points.
+Because of integer-based coordinate system, Line points aren't very accurate.
+This might seem to be problem, but it works surprisingly well.
+Implementation of Line uses some formulas from analytic geometry and linear algebra.
+
+The rest of GameBoard model is a Grid.
+Grid is a set of GridLines which defines whole Grid by their intersections.
+A GridLine is a general Line, which consists of a base Line and information about parallel line distance.
+One GridLine defines an infinite number of parallel infinitely long lines.
+Each GridLine has assigned Direction.
+More GridLines intersect regularly and form a Grid.
+
+There are only four basic types of grids in this application implemented.
+All of them need only three points to be set to clearly define a grid.
+Grid itself defines GridLines and Directions.
+Any three points which are linear independent makes a grid.
+Mode about control points can be found in source code of GridType and Grid descendants.
+A grid is called regular if its control points are the same as predefined ones.
+Grid intersections form Vertices, and therefore a Grid can create a Graph representing Vertices on the Board.
+This Graph contains all Vertices but no Edges.
+
+The Edge layout on Board is rather complicated because of very wide range of possibilities.
+The most rough information about it is the GridPattern.
+GridPattern represents only the format of source for loading and destination for saving.
+Some GridPatterns are called simple, those provide not enough information to represent any layout, and complex, those do.
+Simple are Full and Empty, those all possible edges or no edges at all, and two internal ones for converting Board.
+Complex are List and Schema; List holds all edges in a one-dimension list, Schema in a schematic diagram made of ASCII characters.
+
+Actual classes operation with GridPattern are descendants of BoardPattern.
+BoardPattern's purpose is to save or load Edges.
+AbstractBoardPattern and its descendants adds some static factory methods which allows to construct BoardPattern in many various ways either for loading or saving.
+Each BoardPattern contains set of PointEdges which is obtained from file (Complex), generated (Simple) or existing Board (Save).
+
+The rest of GameBoard's model is in Board which has access to all previous parts.
+Board has its width and height which therefore limits GridLine parallel Lines to some range.
+It has also methods for getting existing Vertex instance from Point and looking the nearest Vertex to real-based point on Board.
+Implementation of Board also contains many static factory methods which simplifies its usage.
+Another important service of Board is to decode and encode header of file to save and load from.
+
