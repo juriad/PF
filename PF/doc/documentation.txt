@@ -92,3 +92,65 @@ It has also methods for getting existing Vertex instance from Point and looking 
 Implementation of Board also contains many static factory methods which simplifies its usage.
 Another important service of Board is to decode and encode header of file to save and load from.
 
+All classes discussed so far represent only a model for graphic components.
+All classes related to these components are in package interactive, although most of them doesn't provide any interaction.
+Basic component is GameBoard which draws Graph  and Grid from Board.
+GameBoard constructor doesn't require Board because it seems to be useful to show empty GameBoard.
+Therefore it has method for setting Board which reinitialize most of inner properties.
+
+For a valid Board model various painters can be set or unset, enabled or disabled: painters paints Grid, Edges, Vertices.
+GameBoard doesn't specify the way how Painters shall do their work, it is fully on them.
+Each Painter has a method for painting and (except for Grid Painter) method for determine size required for repaint only one piece.
+Painter paints only those Edges/Vertices which are contained in the area to be repainted.
+Because GameBoard provides padding between edge-most Vertex and Edge, two sets of translation methods between screen and model coordinates are provided.
+One set for translating distance and the other for translating position. 
+GameBoard itself doesn't paint anything.
+
+GameBoard is a extended by InteractiveBoard which adds user interaction.
+As Board provides methods for finding nearest Vertex, snapping is easily realized.
+Knowledge of current position of cursor is used in TouchSupport.
+When pressed near a Vertex a new Path starting in that Vertex is initialized.
+Dragging along an Edge and getting to neighborhood of another Vertex makes that Path extend by that Edge.
+Releasing button ends the Path.
+All these events fires appropriate TouchEvent.
+This mechanism can be also disabled.
+
+InteractiveBoard also introduces Path painting.
+A Path can be registered by addPath and then a PathPainter can be assigned to it.
+PathPainter paints not only a sequence of Edges, but can do more.
+The PathPainterImpl round the corners so it is easy to follow the Path.
+PathPainting needed proper implementation of Path2D, that one included in standard java was too pure.
+
+Next enhance, InteractiveBoard introduces Animator support and three GameModes.
+From retrospective view it was a mistake to implement these in InteractiveBoard because both these features doesn't require access to inner properties.
+They might have been easily coded in the main class PF, any way they are there.
+Mode mechanism allows to use three modes which can user switch between.
+Edit mode creates a new Board which contains all Edges, but those present in Show mode are used, user can edit edges of Board in this mode.
+Switching to Show mode is Board regenerated and contains only used Edges from Edit mode.
+Because of model switch the method setBoard must have been heavily extended.
+Run mode is just a Show mode which runs an Animator.
+Animator is responsible for proper clean of changes made in Run mode.
+
+Everything around InteractiveBoard is placed in gui package.
+All dialogs are descendants of CardDialog which provides bottom control buttons and card flipping which is used only in NewDialog.
+There are many dialogs which sets Painters differently for each GameMode.
+Some settings needed special renders and editors (Color, BasicStroke, range) for TableCell.
+These dialogs content is mainly made up by JTable which uses UniversalTableModel.
+UniversalTableModel adds one dummy row at top of JTable which changes and shows common value of whole column.
+Besides Painter settings dialogs there are dialogs for creating and saving current board.
+NewDialog is the most complex of all dialogs, its complexity is mostly because of user experience while switching radio buttons and combo boxes.
+An InteractiveBoardControl is just a panel of buttons which switches InteractiveBoard's GameMode and listens for its change.
+
+The last piece of application consists of Animation.
+It is generally problem to instantiate some class without knowledge of its constructor, this solves factory class pattern.
+So each Animator has its AnimatorFactory which instantiate a new Animator on demand.
+Animator can do anything but it is convenient to do this in its new Thread.
+Animation can be stopped, running, paused or finished, not all of these states may be supported.
+Basic implementation is provided by StepAnimator which does most of work needed to control Animation.
+It is totally independent on the rest of application.
+
+There exists two final Animators, EulerAnimator and FSAnimator.
+FSAnimator after started waits for user to specify start point and than shows Depth-first search or Breadth-first search.
+Both searches uses the same resources, the only difference is in the way how elements are removed from Deque.
+Edges being added to Deque must have been ordered or randomized because in a Vertex they are stored in HashMap which doesn't ensure iteration order.
+EulerAnimator is discussed in the other document.
