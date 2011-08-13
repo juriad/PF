@@ -94,19 +94,19 @@ public class EulerAnimator extends StepAnimator {
 	 * @author Adam Juraszek
 	 * 
 	 */
-	protected class SymultanousAction extends AbstractAction {
+	protected class SimultaneousAction extends AbstractAction {
 		private static final long serialVersionUID = 1L;
 
-		public SymultanousAction() {
-			super("Symultanously");
-			putValue(Action.MNEMONIC_KEY, KeyEvent.VK_Y);
+		public SimultaneousAction() {
+			super("Simultaneously");
+			putValue(Action.MNEMONIC_KEY, KeyEvent.VK_I);
 			putValue(Action.ACCELERATOR_KEY, KeyStroke.getKeyStroke(
-					KeyEvent.VK_Y, ActionEvent.CTRL_MASK));
+					KeyEvent.VK_I, ActionEvent.CTRL_MASK));
 		}
 
 		@Override
 		public void actionPerformed(ActionEvent e) {
-			setSymultanous(symultanousMenuItem.isSelected());
+			setSimultaneous(simultaneousMenuItem.isSelected());
 		}
 	}
 
@@ -150,9 +150,9 @@ public class EulerAnimator extends StepAnimator {
 
 	private JMenuItem pathMenuItem;
 
-	private JCheckBoxMenuItem symultanousMenuItem;
+	private JCheckBoxMenuItem simultaneousMenuItem;
 
-	private boolean symultanous = false;
+	private boolean simultaneous = false;
 
 	static {
 		Animators.getInstance().addAnimator(EulerAnimatorFactory.getFactory());
@@ -179,24 +179,24 @@ public class EulerAnimator extends StepAnimator {
 	/**
 	 * @return whether animate all paths simultaneously
 	 */
-	public boolean isSymultanous() {
-		return symultanous;
+	public boolean isSimultaneous() {
+		return simultaneous;
 	}
 
 	@Override
 	public void setMenu(JMenu menu) {
 		super.setMenu(menu);
 		menu.add(pathMenuItem);
-		menu.add(symultanousMenuItem);
+		menu.add(simultaneousMenuItem);
 	}
 
 	/**
 	 * Sets whether animate all paths simultaneously
 	 * 
-	 * @param symultanous
+	 * @param simultaneous
 	 */
-	public void setSymultanous(boolean symultanous) {
-		this.symultanous = symultanous;
+	public void setSimultaneous(boolean simultaneous) {
+		this.simultaneous = simultaneous;
 	}
 
 	@Override
@@ -217,7 +217,7 @@ public class EulerAnimator extends StepAnimator {
 	protected void makeControl() {
 		super.makeControl();
 		pathMenuItem = new JMenuItem(new PathAction());
-		symultanousMenuItem = new JCheckBoxMenuItem(new SymultanousAction());
+		simultaneousMenuItem = new JCheckBoxMenuItem(new SimultaneousAction());
 	}
 
 	/**
@@ -264,7 +264,7 @@ public class EulerAnimator extends StepAnimator {
 			if (pp.length() < pp.realLength()) {
 				pp.setLength(pp.length() + 1);
 				finished = false;
-				if (!isSymultanous()) {
+				if (!isSimultaneous()) {
 					break;
 				}
 			}
@@ -284,9 +284,9 @@ public class EulerAnimator extends StepAnimator {
 				pathMenuItem.setEnabled(true);
 			}
 			if (isStopped()) {
-				symultanousMenuItem.setEnabled(true);
+				simultaneousMenuItem.setEnabled(true);
 			} else {
-				symultanousMenuItem.setEnabled(false);
+				simultaneousMenuItem.setEnabled(false);
 			}
 			stepSlider.setEnabled(true);
 		} else {

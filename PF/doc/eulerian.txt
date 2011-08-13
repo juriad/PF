@@ -1,0 +1,46 @@
+EulerAnimator is just another StepAnimator.
+It calculates minimum number of Paths to cover all Edges.
+Painters of all calculated Paths can be configured individually.
+To make the appearance interesting, There is a very strong randomization during calculation.
+Each Path is wrapped to PartialPath which has its length configurable, these PartialPaths are added to InteractiveBoard.
+Animator then extends PartialPaths' length and redraw component.
+Animation can be looped, so it starts over and over.
+There is also a simultaneous mode, in which Animator makes all PartialPaths longer together instead of one by one.
+
+Computation of Eulerian Paths is implemented in library class EulerPaths.
+It consists of several steps which changes Graph, so Thread locking is necessary.
+EulerPaths provides two methods: getPathsCount and getEulerPaths which calls getPathsCount.
+To calculate number of paths, first components in Graph are made.
+Component is a subgraph of BoardGraph which contains exactly one graph component.
+Each component which consists of at least two Vertices needs at least one Path.
+The proper number depends on number of odd-degree Vertices.
+It there is no odd-degree Vertex, Path is a circuit.
+If there are two odd-degree Vertices, there is one Path has two different ends.
+If there are more odd-degree Vertices = n, there are n/2 Paths  needed to cover all edges.
+Proof of this minimal count is easy; each Path has two odd-degree Vertices.
+So a component consists of such number of Paths to use all odd-degree Vertices and use at least one Path.
+This count is also lowest necessary.
+If so many Paths ending in odd-degree Vertices are removed and there exists an Edge, then these Edges makes circuits.
+These circuits must cross some removed Path (they are in the same component), so it is possible to extend such Path to contain that circuit.
+
+To calculate Paths I chose to make any Graph Eulerian.
+I add some extra Edges so each Vertex has event degree.
+In each component which has more than two odd-degree Vertices, new Edges connects such Vertices and leaves exactly two of them.
+I remember those two odd-degree Vertices in each component and if there are no, one Vertex is chosen twice. 
+Next step is to connect all components together.
+A set of extra edges connects each component to the next one; edge leads between remembered Vertices.
+If there is only one component then extra Edge is added if it connects odd-degree Vertices.
+This way all remaining odd-degree Vertices are used and Graph is Eulerian.
+
+If there are zero Paths, calculation finishes to prevent problems with weird Graphs.
+As Graph is Eulerian, there exists one circuit which uses all Edges.
+Also, each Path can be extended at one end until it is makes a circuit.
+Method makePath starts in a specific Vertex with zero-length Path and while there is an unused Edge to continue with, Path is extended.
+All such Paths made by makePath are circuits; there exists exactly degree/2 circuits from each Vertex.
+
+OnePath constructs the one (Eulerian) Path.
+It starts with a Vertex and calculates all circuits going through and follows each of them one by one.
+As it visits a Vertex has some unused Edges, it recurses itself and follows new circuits first.
+Recursion is implemented as a Stack into which are new circuits added and removed when they are at the end.
+Position on Path is represented rather by use of Iterator over Edges of Path than Path itself. 
+Having this Path it is easy to split it into pieces; pieces where to cut are extra edges added while making Graph Eulerian.

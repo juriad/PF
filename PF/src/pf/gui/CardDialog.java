@@ -81,7 +81,7 @@ public abstract class CardDialog extends JDialog {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			if (!isFirst()) {
-				cl.next(content);
+				cl.previous(content);
 				current--;
 				updateButtons();
 				flipPrev();

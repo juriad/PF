@@ -1,9 +1,13 @@
 package pf.gui;
 
+import java.awt.BorderLayout;
+
+import javax.swing.JEditorPane;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
+import javax.swing.text.Document;
+import javax.swing.text.html.HTMLEditorKit;
 
 public class AboutDialog extends CardDialog {
 	private static final long serialVersionUID = 1;
@@ -46,19 +50,22 @@ public class AboutDialog extends CardDialog {
 
 	@Override
 	protected void makeContent() {
-		JPanel card = new JPanel();
-		JTextArea ta = new JTextArea(
-				"This application has been developped and coded"
-						+ " by Adam Juraszek during most of summer holiday.\n"
-						+ "There were approximately 4 previous versions "
-						+ "each of them was totaly rewritten and finaly this one "
-						+ "got to state which allows user to see at least something."
-						+ "\nThis application is distributed under "
-						+ "http://sam.zoy.org/wtfpl/COPYING licence", 10, 50);
-		ta.setEditable(false);
-		ta.setLineWrap(true);
-		ta.setWrapStyleWord(true);
-		card.add(new JScrollPane(ta));
+		JPanel card = new JPanel(new BorderLayout());
+		JEditorPane html = new JEditorPane();
+		html.setEditable(false);
+		HTMLEditorKit kit = new HTMLEditorKit();
+		html.setEditorKit(kit);
+		Document doc = kit.createDefaultDocument();
+		html.setDocument(doc);
+
+		card.add(new JScrollPane(html), BorderLayout.CENTER);
+		html.setText("<body><p>This application has been developped and coded"
+				+ " by Adam Juraszek during most of summer holiday."
+				+ "<p>There were approximately 4 previous versions "
+				+ "each of them was totaly rewritten and finaly this one "
+				+ "got to state which allows user to see at least something."
+				+ "<hr>This application is distributed under "
+				+ "<a href=\"http://sam.zoy.org/wtfpl/COPYING\">WTFPL</a> licence</body>");
 		addCard(card);
 	}
 }

@@ -64,33 +64,25 @@ public class EulerPaths {
 			Graph g = gi.next();
 			Iterator<Vertex> vi = g.verticesIterator();
 			int odds = 0;
+			int vs = 0;
 			while (vi.hasNext()) {
 				Vertex v = vi.next();
+				vs++;
 				if (v.getDegree(false) % 2 == 1) {
 					odds++;
 				}
 			}
-			if (odds == 0) {
-				paths++;
-			} else {
-				paths += odds / 2;
+			// not only isolated vertex
+			if (vs > 1) {
+				// circuit
+				if (odds == 0) {
+					paths++;
+				} else {
+					paths += odds / 2;
+				}
 			}
 		}
 		return paths;
-	}
-
-	/**
-	 * Calculates circuit paths from and to vertex v.
-	 * 
-	 * @param v
-	 * @return collection of paths
-	 */
-	private static Collection<? extends Iterator<Edge>> createCircuits(Vertex v) {
-		List<Iterator<Edge>> ps = new ArrayList<Iterator<Edge>>();
-		while (v.getDegree(true) > 0) {
-			ps.add(makePath(v).iterator());
-		}
-		return ps;
 	}
 
 	/**
@@ -102,6 +94,20 @@ public class EulerPaths {
 	private static boolean isOdd(Edge e) {
 		int dx = e.getDirection(e.getV1()).getDx();
 		return dx == Integer.MAX_VALUE || dx == -Integer.MAX_VALUE;
+	}
+
+	/**
+	 * Calculates circuit paths from and to vertex v.
+	 * 
+	 * @param v
+	 * @return collection of paths
+	 */
+	private static Collection<? extends Iterator<Edge>> makeCircuits(Vertex v) {
+		List<Iterator<Edge>> ps = new ArrayList<Iterator<Edge>>();
+		while (v.getDegree(true) > 0) {
+			ps.add(makePath(v).iterator());
+		}
+		return ps;
 	}
 
 	/**
@@ -213,14 +219,14 @@ public class EulerPaths {
 		Path p = new PathImpl(v);
 		List<Iterator<Edge>> ps = new ArrayList<Iterator<Edge>>();
 
-		Collection<? extends Iterator<Edge>> c = createCircuits(v);
+		Collection<? extends Iterator<Edge>> c = makeCircuits(v);
 		ps.addAll(c);
 		while (ps.size() > 0) {
 			while (ps.get(ps.size() - 1).hasNext()) {
 				Edge e = ps.get(ps.size() - 1).next();
 				p.extend(e);
 				v = e.getOther(v);
-				c = createCircuits(v);
+				c = makeCircuits(v);
 				ps.addAll(c);
 			}
 			ps.remove(ps.size() - 1);
