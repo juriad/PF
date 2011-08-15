@@ -40,10 +40,10 @@ public class HelpDialog extends CardDialog {
 				+ "on several pages nearly all information about using this application."
 				+ "<p>Press next to start.");
 		pages.add("<h1>New board</h1>"
-				+ "<p>Use menu Board:New to show a dialog for creating a new board."
+				+ "<p>Use menu Board-&gt;New to show a dialog for creating a new board."
 				+ " You can load saved board from file, keep it as it is or edit slightly"
 				+ " or you can create your own from scratch."
-				+ "<p>Set size and choose type of grid. Each type is provides different"
+				+ "<p>Set size and choose type of grid. Each type provides different"
 				+ " ways how vertices may be connected."
 				+ "<p>You can leave grid regular (it will be square and equilateral)"
 				+ " or edit control points to have your own layout."
@@ -54,7 +54,7 @@ public class HelpDialog extends CardDialog {
 				+ "<p>At last set animator or leave it unset to animate board;"
 				+ " there are two of them available.");
 		pages.add("<h1>Managing board</h1>"
-				+ "<p>Use menu Board:Save to save this board for later use."
+				+ "<p>Use menu Board-&gt;Save to save this board for later use."
 				+ " It will ask you to choose pattern type: way how edges are saved to file."
 				+ "<p>If you want to add or remove some edges, switch to edit mode."
 				+ " Press mouse button and drag along the edge as long as there are edges to edit."
