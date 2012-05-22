@@ -18,7 +18,7 @@ public interface EdgesPainter {
 	 * 
 	 * @param gameBoard
 	 * @param e
-	 * @return
+	 * @return rectangle
 	 */
 	Rectangle getBounds(GameBoard gameBoard, Edge e);
 

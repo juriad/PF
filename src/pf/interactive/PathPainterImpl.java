@@ -163,7 +163,7 @@ public class PathPainterImpl implements PathPainter {
 	 * 
 	 * @param far
 	 * @param corner
-	 * @return
+	 * @return x
 	 */
 	private float getCornerX(Vertex far, Vertex corner) {
 		return corner.getX() + (far.getX() - corner.getX()) * radius;
@@ -174,7 +174,7 @@ public class PathPainterImpl implements PathPainter {
 	 * 
 	 * @param far
 	 * @param corner
-	 * @return
+	 * @return y
 	 */
 	private float getCornerY(Vertex far, Vertex corner) {
 		return corner.getY() + (far.getY() - corner.getY()) * radius;

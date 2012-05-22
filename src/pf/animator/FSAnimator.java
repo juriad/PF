@@ -213,7 +213,7 @@ public class FSAnimator extends StepAnimator {
 		 * Removes edge from data structure.
 		 * 
 		 * @param d
-		 * @return
+		 * @return removed edge
 		 */
 		public abstract OrientedEdge removeEdge(Deque<OrientedEdge> d);
 	}
@@ -289,7 +289,7 @@ public class FSAnimator extends StepAnimator {
 		 * 
 		 * @param from
 		 * @param i
-		 * @return
+		 * @return list of all elements from iterator
 		 */
 		public abstract List<OrientedEdge> convertIterator(Vertex from,
 				Iterator<Edge> i);

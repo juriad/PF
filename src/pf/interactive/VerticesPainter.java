@@ -17,9 +17,9 @@ public interface VerticesPainter {
 	/**
 	 * Calculates rectangle to be redrawn by v.
 	 * 
-	 * @param gameBoard
-	 * @param e
-	 * @return
+	 * @param board
+	 * @param v
+	 * @return rectangle
 	 */
 	Rectangle getBounds(GameBoard board, Vertex v);
 

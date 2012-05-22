@@ -1,0 +1,80 @@
+<html>
+<body>
+<h1 id="toc-application-pf">Application PF</h1>
+
+<p>Once upon a time just around New Year and its congratulations in my country
+called PF (Pour féliciter) I&nbsp;wanted to make a special one: to draw a picture
+which consists of one line covering nearly whole squared paper. This line goes
+always between two opposite cornes of square and the uncovered places made a
+text „PF 2011“. Some tries made by hand looked horribly, so I&nbsp;made a
+program. Coding took more time than expected and some more or less functional
+versions were produced. That time I&nbsp;also changed zápočťák for Programming
+I&nbsp;to this one. Milan liked it and wanted to add two extra features which
+completely changed whole design and I&nbsp;doubt there is a line common.</p>
+
+<p>The first change was radical, loading schema from file instead of hard typed
+„PF 2011“. The second one was to allow speed control of animation.</p>
+
+<h2 id="toc-what-it-is-for">What it is for</h2>
+
+<p>First of all, you can use this as an editor of simple regular (mostly planar)
+graphs. These graphs can be saved to file either as list of edges or as schema
+to be used in other applications. Another way how you can use this application
+is presentation how BFS and DFS go through a graph animated step by step. But
+the main and most interesting one is to draw one ot more lines which cover whole
+graph. If there exists only one such line, it is called Eulerian path. Drawing
+of these paths is animated, so you can watch how it is growing.</p>
+
+<h2 id="toc-how-to-use">How to use</h2>
+
+<p>Run application, select New dialog from menu Board and for the first tries
+use custom one with adjusted size. You can save your current board to file, this
+way you don't have to set a new one from scratch. Later you can change grid type
+and also its control points (advanced only). If you are unsatisfied with graph
+you have, change it in edit mode by dragging cursor along an edge to toggle its
+present in graph. You can assign animator to this board or do it later; switch
+to run mode and enjoy animation.</p>
+
+<h2 id="toc-board-properties">Board properties</h2>
+
+<p>You can set type of grid, there are four of them available.</p>
+
+<ul>
+	<li>SQUARE (1,1)&nbsp;&ndash; The simplest one, the basic formation is a parallelogram.</li>
+	<li>DIAGONAL (1,1)&nbsp;&ndash; SQUARE with diagonals, which don't intersect each&nbsp;other.</li>
+	<li>DIAGONALX (2,2)&nbsp;&ndash; DIAGONAL with diagonals intersecting each&nbsp;other.</li>
+	<li>TRIANGLE (8,7)&nbsp;&ndash; Like SQUARE with only one diagonal&nbsp;line.</li>
+</ul>
+
+<p>To ensure coordinates being integers, each of these types has has different
+size of regular unit&nbsp;&ndash; the smallest piece. Horizontal and vertical size of
+regular unit is in brackets. Set size to these values to see one&nbsp;unit.</p>
+
+<p>Control points are rather misterious. SQUARE,DIAGONAL,TRI&shy;ANGLE control
+points are corners. DIAGONALX has one control point in the intersection of
+diagonals to ensure its coordinates are integers.</p>
+
+<p>Regular form defines control points which makes all parallelograms square or
+triangles equilateral. Saving to file as schema is supported only in this form.
+Free is the opposite&nbsp;&ndash; user can change control points.</p>
+
+<p>Pattern determines which edges will the graph contain.</p>
+
+<h2 id="toc-painting-properties">Painting properties</h2>
+
+<p>Each grid consists of several (2..4) directions of parallel lines. Each of
+this direction can be configured independently. Color and stroke can be set for
+ordinary lines and for main lines (each n-th). Stroke defines width (part before
+&#064;) and dash attributes (alternating of paint and gap) (part after&nbsp;&#064;)</p>
+
+<p>Edges can be used and unused and have similar painting possibilities.</p>
+
+<p>Vertices are painted as rings either with filled center or not. Its diameter
+and color can be set depending on degree of the vertex. For example: paint all
+odd-degree vertices&nbsp;red.</p>
+
+<p>There is always a row called „common“ in settings which shows whether
+there is a common value in a column. Setting its value sets all values in that
+column, exactly like Milan wanted.</p>
+</body>
+</html>

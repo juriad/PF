@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project basedir="." default="release" name="PF">
+<project basedir="." default="run" name="PF">
 	<property environment="env" />
 	<property name="debuglevel" value="source,lines,vars" />
 	<property name="target" value="1.6" />
@@ -18,52 +18,50 @@
 	</target>
 	<target name="clean">
 		<delete dir="bin" />
+		<delete file="PFko.jar" />
 	</target>
-	<target depends="clean" name="cleanall" />
+	<target name="clean-javadoc">
+		<delete dir="doc/javadoc" />
+	</target>
+	<target depends="clean,clean-javadoc" name="cleanall" />
 	<target depends="init" name="build">
 		<echo message="${ant.project.name}: ${ant.file}" />
-		<javac debug="true"
-			debuglevel="${debuglevel}"
-			destdir="bin"
-			source="${source}"
-			target="${target}">
+		<javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}" includeantruntime="false">
 			<src path="src" />
 			<classpath refid="PF.classpath" />
 		</javac>
 	</target>
-	<target name="NewDialog">
+	<target name="NewDialog" depends="build">
 		<java classname="pf.gui.NewDialog" failonerror="true" fork="yes">
 			<classpath refid="PF.classpath" />
 		</java>
 	</target>
-	<target name="PF">
+	<target name="PF" depends="build">
 		<java classname="pf.main.PF" failonerror="true" fork="yes">
 			<classpath refid="PF.classpath" />
 		</java>
 	</target>
-	<target name="GridPointGeneration">
-		<java classname="pf.main.GridPointGeneration"
-			failonerror="true"
-			fork="yes">
+	<target name="GridPointGeneration" depends="build">
+		<java classname="pf.main.GridPointGeneration" failonerror="true" fork="yes">
 			<classpath refid="PF.classpath" />
 		</java>
 	</target>
-	<target name="SaveDialog">
+	<target name="SaveDialog" depends="build">
 		<java classname="pf.gui.SaveDialog" failonerror="true" fork="yes">
 			<classpath refid="PF.classpath" />
 		</java>
 	</target>
-	<target name="PathTester">
+	<target name="PathTester" depends="build">
 		<java classname="pf.main.PathTester" failonerror="true" fork="yes">
 			<classpath refid="PF.classpath" />
 		</java>
 	</target>
-	<target name="X">
+	<target name="X" depends="build">
 		<java classname="pf.main.X" failonerror="true" fork="yes">
 			<classpath refid="PF.classpath" />
 		</java>
 	</target>
-	<target name="DialogTester">
+	<target name="DialogTester" depends="build">
 		<java classname="pf.main.DialogTester" failonerror="true" fork="yes">
 			<classpath refid="PF.classpath" />
 		</java>
@@ -71,18 +69,21 @@
 	<target name="release" depends="build">
 		<jar destfile="PFko.jar">
 			<manifest>
-				<attribute name="Main-Class"
-					value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader" />
+				<attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader" />
 				<attribute name="Rsrc-Main-Class" value="pf.main.PF" />
 				<attribute name="Class-Path" value="." />
-				<attribute name="Rsrc-Class-Path"
-					value="./ 
-					miglayout-3.7.4-swing.jar" />
+				<attribute name="Rsrc-Class-Path" value="./ miglayout-3.7.4-swing.jar" />
 			</manifest>
-			<zipfileset src="jar-in-jar-loader.zip" />
+			<zipfileset src="./jar-in-jar-loader.zip" />
 			<fileset dir="./bin" />
-			<zipfileset dir="."
-				includes="miglayout-3.7.4-swing.jar" />
+			<zipfileset dir="." includes="miglayout-3.7.4-swing.jar" />
 		</jar>
+	</target>
+	<target name="run" depends="release">
+		<java jar="PFko.jar" fork="yes">
+		</java>
+	</target>
+	<target name="javadoc">
+		<javadoc access="private" author="true" classpath="miglayout-3.7.4-swing.jar:miglayout-3.7.4-sources.jar" destdir="doc/javadoc" doctitle="Java documentation for PF" nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar="false" notree="false" overview="doc/overview.html" packagenames="pf.board,pf.analytics,pf.graph,pf.animator,pf.interactive,pf.gui,pf.main" source="1.6" sourcepath="src" splitindex="true" use="true" version="true" charset="utf-8" />
 	</target>
 </project>

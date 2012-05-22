@@ -123,8 +123,7 @@ public class BoardImpl implements Board {
 	 * @author Adam Juraszek
 	 */
 	public static enum GridForm {
-		FREE ("free"),
-		REGULAR ("regular");
+		FREE("free"), REGULAR("regular");
 		public static GridForm getForm(String desc) {
 			for (GridForm f : values()) {
 				if (f.getDesc().equals(desc)) {
@@ -156,7 +155,7 @@ public class BoardImpl implements Board {
 	 * @param f
 	 * @return board
 	 * @throws FileNotFoundException
-	 * @see {@link #createBoard(File, GridPattern)}
+	 * @see #createBoard(File, GridPattern)
 	 */
 	public static Board createBoard(File f) throws FileNotFoundException {
 		return createBoard(f, null);
@@ -167,7 +166,7 @@ public class BoardImpl implements Board {
 	 * 
 	 * @param f
 	 * @param gp
-	 * @return
+	 * @return board
 	 * @throws FileNotFoundException
 	 */
 	public static Board createBoard(File f, GridPattern gp)

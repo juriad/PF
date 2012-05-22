@@ -663,8 +663,10 @@ public class InteractiveBoard extends GameBoard {
 	 * Switches to show mode and propagates game mode event.
 	 * <p>
 	 * This is a collision of names with {@link Component#show()}
+	 * 
+	 * This method has nothing to do with {@link Component#show()}, name collision occurred after refactor.
 	 */
-	@Override
+	@SuppressWarnings("deprecation")
 	public void show() {
 		if (isShow()) {
 			return;

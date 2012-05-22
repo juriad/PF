@@ -24,7 +24,7 @@ public class Animators {
 	/**
 	 * Singleton pattern with lazy initialization.
 	 * 
-	 * @return
+	 * @return singleton instance
 	 */
 	public static Animators getInstance() {
 		if (instance == null) {

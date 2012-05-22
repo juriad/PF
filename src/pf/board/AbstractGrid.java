@@ -192,7 +192,7 @@ public abstract class AbstractGrid implements Grid {
 	 * 
 	 * @param gl1
 	 * @param gl2
-	 * @return
+	 * @return true if lines should intersect each other
 	 */
 	protected abstract boolean shouldIntersect(GridLine gl1, GridLine gl2);
 }

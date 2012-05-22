@@ -286,7 +286,7 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 
 	/**
 	 * Constructs a new empty single precision {@code Path2D} object with a
-	 * default winding rule of {@link #WIND_NON_ZERO}.
+	 * default winding rule of WIND_NON_ZERO.
 	 * 
 	 * @since 1.6
 	 */
@@ -314,7 +314,7 @@ public class Path2D<E extends Number & Comparable<E>> implements Shape {
 	 * {@link Shape} object. All of the initial geometry and the winding rule
 	 * for this path are taken from the specified {@code Shape} object.
 	 * 
-	 * @param s
+	 * @param gp
 	 *            the specified {@code Shape} object
 	 * @since 1.6
 	 */

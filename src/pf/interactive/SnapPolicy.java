@@ -17,7 +17,7 @@ public interface SnapPolicy {
 	 * @param x
 	 * @param y
 	 * @param last
-	 * @return
+	 * @return vertex
 	 */
 	Vertex request(GameBoard board, float x, float y, Point last);
 }

@@ -73,7 +73,7 @@ public interface Path extends Iterable<Edge> {
 	/**
 	 * Removes the last edge of this path
 	 * 
-	 * @return
+	 * @return removed edge
 	 * 
 	 */
 	Edge shorten();

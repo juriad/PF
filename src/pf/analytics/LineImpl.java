@@ -70,7 +70,7 @@ public class LineImpl implements Line {
 	/**
 	 * Tests if point is very near: ({@code distanceSq(point) < eps}
 	 * 
-	 * @see eps
+	 * @see #eps
 	 */
 	@Override
 	public boolean contains(Point point) {

@@ -67,7 +67,7 @@ public enum GridType {
 	 * Tests whether points2 makes a regular grid
 	 * 
 	 * @param points2
-	 * @return
+	 * @return true if is regular
 	 */
 	public boolean isRegular(Point[] points2) {
 		if (points2 == null) {

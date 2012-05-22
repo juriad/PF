@@ -339,7 +339,7 @@ public class GameBoard extends JComponent {
 	 * Translates horizontal distance of x pixels to model coordinate system
 	 * 
 	 * @param x
-	 * @return
+	 * @return translated x
 	 */
 	public float translateRawXFromScreen(int x) {
 		return x * ((float) getBoard().getWidth())
@@ -350,7 +350,7 @@ public class GameBoard extends JComponent {
 	 * Translates horizontal distance of model to screen coordinate system
 	 * 
 	 * @param x
-	 * @return
+	 * @return translated x
 	 */
 	public int translateRawXToScreen(float x) {
 		return (int) ((x * (getWidth() - getPaddingLeft() - getPaddingRight())) / getBoard()
@@ -360,8 +360,8 @@ public class GameBoard extends JComponent {
 	/**
 	 * Translates vertical distance of x pixels to model coordinate system
 	 * 
-	 * @param x
-	 * @return
+	 * @param y
+	 * @return translated y
 	 */
 	public float translateRawYFromScreen(int y) {
 		return y * ((float) getBoard().getHeight())
@@ -371,8 +371,8 @@ public class GameBoard extends JComponent {
 	/**
 	 * Translates vertical distance of model to screen coordinate system
 	 * 
-	 * @param x
-	 * @return
+	 * @param y
+	 * @return translated y
 	 */
 	public int translateRawYToScreen(float y) {
 		return (int) (y * (getHeight() - getPaddingTop() - getPaddingBottom()) / getBoard()
@@ -383,7 +383,7 @@ public class GameBoard extends JComponent {
 	 * Translates x value of point on screen to model coordinate system
 	 * 
 	 * @param x
-	 * @return
+	 * @return translated x
 	 */
 	public float translateXFromScreen(int x) {
 		return translateRawXFromScreen(x - getPaddingLeft());
@@ -393,7 +393,7 @@ public class GameBoard extends JComponent {
 	 * Translates x value of point in model to screen coordinate system
 	 * 
 	 * @param x
-	 * @return
+	 * @return translated x
 	 */
 	public int translateXToScreen(float x) {
 		return translateRawXToScreen(x) + getPaddingLeft();
@@ -403,7 +403,7 @@ public class GameBoard extends JComponent {
 	 * Translates y value of point on screen to model coordinate system
 	 * 
 	 * @param y
-	 * @return
+	 * @return translated y
 	 */
 	public float translateYFromScreen(int y) {
 		return translateRawYFromScreen(y - getPaddingTop());
@@ -413,7 +413,7 @@ public class GameBoard extends JComponent {
 	 * Translates y value of point in model to screen coordinate system
 	 * 
 	 * @param y
-	 * @return
+	 * @return translated y
 	 */
 	public int translateYToScreen(float y) {
 		return translateRawYToScreen(y) + getPaddingTop();

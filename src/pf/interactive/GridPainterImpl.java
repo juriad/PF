@@ -234,7 +234,6 @@ public class GridPainterImpl implements GridPainter {
 	/**
 	 * Sets start offsets of main lines of all gridlines
 	 * 
-	 * @param line
 	 * @param offset
 	 */
 	public void setOffsets(int offset) {
@@ -259,7 +258,6 @@ public class GridPainterImpl implements GridPainter {
 	/**
 	 * Sets repetitions of main lines of all gridlines
 	 * 
-	 * @param line
 	 * @param repetition
 	 */
 	public void setRepetitions(int repetition) {
@@ -297,7 +295,7 @@ public class GridPainterImpl implements GridPainter {
 	 * 
 	 * @param line
 	 * @param parallel
-	 * @return
+	 * @return true if line is main line
 	 */
 	private boolean isMainLine(int line, int parallel) {
 		return (parallel - getOffset(line)) % getRepetition(line) == 0;
